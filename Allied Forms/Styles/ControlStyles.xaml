@@ -1,10 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <!-- Base containers -->
+
     <Style TargetType="Window">
         <Setter Property="Background" Value="{DynamicResource Brush.Background}" />
         <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontFamily" Value="{StaticResource Font.Palanquin}" />
     </Style>
 
     <Style TargetType="Page">
@@ -16,6 +18,8 @@
         <Setter Property="Background" Value="{DynamicResource Brush.Background}" />
     </Style>
 
+    <!-- Borders / cards -->
+
     <Style x:Key="CardBorderStyle" TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
@@ -24,15 +28,82 @@
         <Setter Property="Padding" Value="16" />
     </Style>
 
-    <Style TargetType="TextBlock">
+    <!-- Text styles -->
+
+    <Style x:Key="TextBlock.Base" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
+        <Setter Property="FontFamily" Value="{StaticResource Font.Palanquin}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlock.Base}" />
+
+    <Style x:Key="TextBlock.Heading1" TargetType="TextBlock" BasedOn="{StaticResource TextBlock.Base}">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Alegreya}" />
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style x:Key="TextBlock.Heading2" TargetType="TextBlock" BasedOn="{StaticResource TextBlock.Base}">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Alegreya}" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style x:Key="TextBlock.SectionTitle" TargetType="TextBlock" BasedOn="{StaticResource TextBlock.Base}">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Trirong}" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+
+    <Style x:Key="TextBlock.Body" TargetType="TextBlock" BasedOn="{StaticResource TextBlock.Base}">
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <Style x:Key="TextBlock.Secondary" TargetType="TextBlock" BasedOn="{StaticResource TextBlock.Base}">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.SecondaryText}" />
+        <Setter Property="FontSize" Value="14" />
+    </Style>
+
+    <Style x:Key="TextBlock.Caption" TargetType="TextBlock" BasedOn="{StaticResource TextBlock.Base}">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.SecondaryText}" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <!-- Inputs -->
+
+    <Style TargetType="TextBox">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Palanquin}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
+        <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="10,6" />
+    </Style>
+
+    <Style TargetType="ComboBox">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Palanquin}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
+        <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="8,4" />
+    </Style>
+
+    <Style TargetType="Label">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Palanquin}" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
     </Style>
 
-    <Style x:Key="SecondaryTextBlockStyle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.SecondaryText}" />
-    </Style>
+    <!-- Buttons -->
 
     <Style TargetType="Button">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Palanquin}" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="Background" Value="{DynamicResource Brush.PrimaryAccent}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.PrimaryAccent}" />
@@ -60,22 +131,6 @@
                 <Setter Property="Opacity" Value="0.65" />
             </Trigger>
         </Style.Triggers>
-    </Style>
-
-    <Style TargetType="TextBox">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="10,6" />
-    </Style>
-
-    <Style TargetType="ComboBox">
-        <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
-        <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="8,4" />
     </Style>
 
 </ResourceDictionary>

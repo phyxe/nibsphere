@@ -10,8 +10,170 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Fonts\Alegreya\Alegreya-Italic-VariableFont_wght.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\Alegreya-VariableFont_wght.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\static\Alegreya-Black.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\static\Alegreya-BlackItalic.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\static\Alegreya-Bold.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\static\Alegreya-BoldItalic.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\static\Alegreya-ExtraBold.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\static\Alegreya-ExtraBoldItalic.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\static\Alegreya-Italic.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\static\Alegreya-Medium.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\static\Alegreya-MediumItalic.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\static\Alegreya-Regular.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\static\Alegreya-SemiBold.ttf" />
+    <None Remove="Resources\Fonts\Alegreya\static\Alegreya-SemiBoldItalic.ttf" />
+    <None Remove="Resources\Fonts\Palanquin\Palanquin-Bold.ttf" />
+    <None Remove="Resources\Fonts\Palanquin\Palanquin-ExtraLight.ttf" />
+    <None Remove="Resources\Fonts\Palanquin\Palanquin-Light.ttf" />
+    <None Remove="Resources\Fonts\Palanquin\Palanquin-Medium.ttf" />
+    <None Remove="Resources\Fonts\Palanquin\Palanquin-Regular.ttf" />
+    <None Remove="Resources\Fonts\Palanquin\Palanquin-SemiBold.ttf" />
+    <None Remove="Resources\Fonts\Palanquin\Palanquin-Thin.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-Black.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-BlackItalic.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-Bold.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-BoldItalic.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-ExtraBold.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-ExtraBoldItalic.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-ExtraLight.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-ExtraLightItalic.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-Italic.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-Light.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-LightItalic.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-Medium.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-MediumItalic.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-Regular.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-SemiBold.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-SemiBoldItalic.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-Thin.ttf" />
+    <None Remove="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AFCORE\AFCORE.csproj" />
     <ProjectReference Include="..\AFDATA\AFDATA.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Fonts\Alegreya\Alegreya-Italic-VariableFont_wght.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\Alegreya-VariableFont_wght.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\static\Alegreya-Black.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\static\Alegreya-BlackItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\static\Alegreya-Bold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\static\Alegreya-BoldItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\static\Alegreya-ExtraBold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\static\Alegreya-ExtraBoldItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\static\Alegreya-Italic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\static\Alegreya-Medium.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\static\Alegreya-MediumItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\static\Alegreya-Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\static\Alegreya-SemiBold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Alegreya\static\Alegreya-SemiBoldItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Palanquin\Palanquin-Bold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Palanquin\Palanquin-ExtraLight.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Palanquin\Palanquin-Light.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Palanquin\Palanquin-Medium.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Palanquin\Palanquin-Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Palanquin\Palanquin-SemiBold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Palanquin\Palanquin-Thin.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-Black.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-BlackItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-Bold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-BoldItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-ExtraBold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-ExtraBoldItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-ExtraLight.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-ExtraLightItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-Italic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-Light.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-LightItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-Medium.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-MediumItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-SemiBold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-SemiBoldItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-Thin.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

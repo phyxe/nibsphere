@@ -1,25 +1,35 @@
-﻿using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace Allied_Forms
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private bool _isNavCollapsed = false;
+
         public MainWindow()
         {
             InitializeComponent();
-            MessageBox.Show(App.AppPaths.RootDirectory);
+        }
+
+        private void NavToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            _isNavCollapsed = !_isNavCollapsed;
+
+            NavColumn.Width = _isNavCollapsed
+                ? new GridLength(72)
+                : new GridLength(220);
+
+            NavHeaderText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            NavFooterTitle.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            NavFooterValue.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+
+            DashboardNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            SchoolProfileNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            SchoolYearNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            StudentsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            LearningAreasNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            ReportsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            SettingsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }
