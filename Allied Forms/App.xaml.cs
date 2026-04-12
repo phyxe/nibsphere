@@ -1,4 +1,5 @@
 ﻿using AFCore.Interfaces;
+using AFData.Database;
 using AFData.Infrastructure;
 using System.Configuration;
 using System.Data;
@@ -13,7 +14,7 @@ namespace Allied_Forms
     {
         public static IAppPaths AppPaths { get; private set; } = null!;
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
@@ -21,6 +22,9 @@ namespace Allied_Forms
 
             var storageInitializer = new AppStorageInitializer(AppPaths);
             storageInitializer.EnsureDirectoriesExist();
+
+            var databaseInitializer = new DatabaseInitializer(AppPaths);
+            await databaseInitializer.InitializeAsync();
         }
     }
 

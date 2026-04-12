@@ -15,4 +15,8 @@
     <ProjectReference Include="..\AFCORE\AFCORE.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Database\Scripts\" />
+  </ItemGroup>
+
 </Project>
