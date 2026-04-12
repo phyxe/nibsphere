@@ -19,6 +19,7 @@ namespace Allied_Forms
         public MainWindow()
         {
             InitializeComponent();
+            MessageBox.Show(App.AppPaths.RootDirectory);
         }
     }
 }

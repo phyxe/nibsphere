@@ -9,4 +9,9 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AFCORE\AFCORE.csproj" />
+    <ProjectReference Include="..\AFDATA\AFDATA.csproj" />
+  </ItemGroup>
+
 </Project>

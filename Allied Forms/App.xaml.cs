@@ -1,4 +1,6 @@
-﻿using System.Configuration;
+﻿using AFCore.Interfaces;
+using AFData.Infrastructure;
+using System.Configuration;
 using System.Data;
 using System.Windows;
 
@@ -9,6 +11,17 @@ namespace Allied_Forms
     /// </summary>
     public partial class App : Application
     {
+        public static IAppPaths AppPaths { get; private set; } = null!;
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            AppPaths = new AppPaths();
+
+            var storageInitializer = new AppStorageInitializer(AppPaths);
+            storageInitializer.EnsureDirectoriesExist();
+        }
     }
 
 }
