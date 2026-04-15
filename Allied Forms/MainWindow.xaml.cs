@@ -20,8 +20,10 @@ namespace Allied_Forms
                 : new GridLength(220);
 
             NavHeaderText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            NavFooterTitle.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            NavFooterValue.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            ThemeToggleNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            SchoolNameLabel.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            SchoolNameText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+            BottomSettingsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 
             DashboardNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
             SchoolProfileNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;

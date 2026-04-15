@@ -49,6 +49,11 @@
     <None Remove="Resources\Fonts\Trirong\Trirong-SemiBoldItalic.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-Thin.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf" />
+    <None Remove="Resources\Icons\home.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -174,6 +179,7 @@
     <Resource Include="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Icons\home.svg" />
   </ItemGroup>
 
 </Project>

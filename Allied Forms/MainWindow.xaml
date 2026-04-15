@@ -3,6 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:svg="http://sharpvectors.codeplex.com/runtime/"
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         mc:Ignorable="d"
         Title="Allied Forms"
         Width="1280"
@@ -20,7 +22,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="52"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="28"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <!-- Command Strip -->
@@ -108,7 +110,7 @@
 
                             <TextBlock x:Name="NavHeaderText"
                                        Grid.Column="1"
-                                       Text="Navigation"
+                                       Text="FEATURES"
                                        Margin="10,0,0,0"
                                        VerticalAlignment="Center"
                                        Foreground="White"
@@ -128,55 +130,22 @@
                                         Background="{DynamicResource Brush.NavItemActive}"
                                         BorderBrush="{DynamicResource Brush.NavItemActive}">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="⌂"
-                                                   Foreground="White"
-                                                   FontSize="16"
-                                                   VerticalAlignment="Center"/>
+                                        <svgc:SvgIcon Width="18"
+                                                    Height="18"
+                                                    Fill="{DynamicResource Brush.NavIcon}"
+                                                    UriSource="/Resources/Icons/home.svg"
+                                                    AppName="Allied Forms" />
                                         <TextBlock x:Name="DashboardNavText"
                                                    Text="Dashboard"
                                                    Margin="12,0,0,0"
-                                                   Foreground="White"
+                                                   Foreground="{DynamicResource Brush.NavIcon}"
                                                    VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
 
-                                <Button x:Name="SchoolProfileNavButton"
-                                        Height="42"
-                                        Margin="0,0,0,8"
-                                        HorizontalContentAlignment="Left"
-                                        Background="Transparent"
-                                        BorderBrush="Transparent">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="⌘"
-                                                   Foreground="White"
-                                                   FontSize="16"
-                                                   VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="SchoolProfileNavText"
-                                                   Text="School Profile"
-                                                   Margin="12,0,0,0"
-                                                   Foreground="White"
-                                                   VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Button>
+                               
 
-                                <Button x:Name="SchoolYearNavButton"
-                                        Height="42"
-                                        Margin="0,0,0,8"
-                                        HorizontalContentAlignment="Left"
-                                        Background="Transparent"
-                                        BorderBrush="Transparent">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="▣"
-                                                   Foreground="White"
-                                                   FontSize="16"
-                                                   VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="SchoolYearNavText"
-                                                   Text="School Years"
-                                                   Margin="12,0,0,0"
-                                                   Foreground="White"
-                                                   VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Button>
+                               
 
                                 <Button x:Name="StudentsNavButton"
                                         Height="42"
@@ -237,6 +206,7 @@
 
                                 <Button x:Name="SettingsNavButton"
                                         Height="42"
+                                        Margin="0,0,0,8"
                                         HorizontalContentAlignment="Left"
                                         Background="Transparent"
                                         BorderBrush="Transparent">
@@ -255,20 +225,72 @@
                             </StackPanel>
                         </ScrollViewer>
 
-                        <!-- Nav Footer -->
+                        <!-- Nav Bottom Section -->
                         <Border Grid.Row="2"
-                                BorderBrush="{DynamicResource Brush.NavItemHover}"
-                                BorderThickness="0,1,0,0"
-                                Padding="12,8">
+        BorderBrush="{DynamicResource Brush.NavItemHover}"
+        BorderThickness="0,1,0,0"
+        Padding="10">
+
                             <StackPanel>
-                                <TextBlock x:Name="NavFooterTitle"
-                                           Text="Active Context"
-                                           Foreground="White"
-                                           Style="{StaticResource TextBlock.Caption}"/>
-                                <TextBlock x:Name="NavFooterValue"
-                                           Text="No active school year"
-                                           Foreground="White"
-                                           Style="{StaticResource TextBlock.Body}"/>
+                                <!-- Theme Toggle -->
+                                <Button x:Name="ThemeToggleNavButton"
+                Height="42"
+                Margin="0,0,0,8"
+                HorizontalContentAlignment="Left"
+                VerticalContentAlignment="Center"
+                Padding="12,0,0,0"
+                Background="Transparent"
+                BorderBrush="Transparent">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="◐"
+                           Foreground="White"
+                           FontSize="16"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock x:Name="ThemeToggleNavText"
+                           Text=""
+                           Margin="12,0,0,0"
+                           Foreground="White"
+                           VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <!-- School Name -->
+                                <Border Background="{DynamicResource Brush.NavItemHover}"
+                CornerRadius="8"
+                Padding="12,10"
+                Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <TextBlock x:Name="SchoolNameLabel"
+                           Text="School"
+                           Foreground="White"
+                           Style="{StaticResource TextBlock.Caption}"/>
+                                        <TextBlock x:Name="SchoolNameText"
+                           Text="School not set"
+                           Foreground="White"
+                           Style="{StaticResource TextBlock.Body}"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Settings -->
+                                <Button x:Name="BottomSettingsNavButton"
+                Height="42"
+                HorizontalContentAlignment="Left"
+                VerticalContentAlignment="Center"
+                Padding="12,0,0,0"
+                Background="Transparent"
+                BorderBrush="Transparent">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="⚙"
+                           Foreground="White"
+                           FontSize="16"
+                           VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="BottomSettingsNavText"
+                           Text="Settings"
+                           Margin="12,0,0,0"
+                           Foreground="White"
+                           VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
                             </StackPanel>
                         </Border>
                     </Grid>
