@@ -143,10 +143,6 @@
                                     </StackPanel>
                                 </Button>
 
-                               
-
-                               
-
                                 <Button x:Name="StudentsNavButton"
                                         Height="42"
                                         Margin="0,0,0,8"
@@ -154,33 +150,15 @@
                                         Background="Transparent"
                                         BorderBrush="Transparent">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="◫"
-                                                   Foreground="White"
-                                                   FontSize="16"
-                                                   VerticalAlignment="Center"/>
+                                        <svgc:SvgIcon Width="18"
+                                                    Height="18"
+                                                    Fill="{DynamicResource Brush.NavIcon}"
+                                                    UriSource="/Resources/Icons/student.svg"
+                                                    AppName="Allied Forms" />
                                         <TextBlock x:Name="StudentsNavText"
                                                    Text="Students"
                                                    Margin="12,0,0,0"
-                                                   Foreground="White"
-                                                   VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Button>
-
-                                <Button x:Name="LearningAreasNavButton"
-                                        Height="42"
-                                        Margin="0,0,0,8"
-                                        HorizontalContentAlignment="Left"
-                                        Background="Transparent"
-                                        BorderBrush="Transparent">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="≡"
-                                                   Foreground="White"
-                                                   FontSize="16"
-                                                   VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="LearningAreasNavText"
-                                                   Text="Learning Areas"
-                                                   Margin="12,0,0,0"
-                                                   Foreground="White"
+                                                   Foreground="{DynamicResource Brush.NavIcon}"
                                                    VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
@@ -192,31 +170,13 @@
                                         Background="Transparent"
                                         BorderBrush="Transparent">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="⎙"
-                                                   Foreground="White"
-                                                   FontSize="16"
-                                                   VerticalAlignment="Center"/>
+                                        <svgc:SvgIcon Width="18"
+                                                    Height="18"
+                                                    Fill="{DynamicResource Brush.NavIcon}"
+                                                    UriSource="/Resources/Icons/document.svg"
+                                                    AppName="Allied Forms" />
                                         <TextBlock x:Name="ReportsNavText"
                                                    Text="Reports"
-                                                   Margin="12,0,0,0"
-                                                   Foreground="White"
-                                                   VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Button>
-
-                                <Button x:Name="SettingsNavButton"
-                                        Height="42"
-                                        Margin="0,0,0,8"
-                                        HorizontalContentAlignment="Left"
-                                        Background="Transparent"
-                                        BorderBrush="Transparent">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="⚙"
-                                                   Foreground="White"
-                                                   FontSize="16"
-                                                   VerticalAlignment="Center"/>
-                                        <TextBlock x:Name="SettingsNavText"
-                                                   Text="Settings"
                                                    Margin="12,0,0,0"
                                                    Foreground="White"
                                                    VerticalAlignment="Center"/>
@@ -234,23 +194,23 @@
                             <StackPanel>
                                 <!-- Theme Toggle -->
                                 <Button x:Name="ThemeToggleNavButton"
-                Height="42"
-                Margin="0,0,0,8"
-                HorizontalContentAlignment="Left"
-                VerticalContentAlignment="Center"
-                Padding="12,0,0,0"
-                Background="Transparent"
-                BorderBrush="Transparent">
+                                            Height="42"
+                                            Margin="0,0,0,8"
+                                            HorizontalContentAlignment="Left"
+                                            VerticalContentAlignment="Center"
+                                            Padding="12,0,0,0"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="◐"
-                           Foreground="White"
-                           FontSize="16"
-                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            Foreground="White"
+                                            FontSize="16"
+                                            VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                         <TextBlock x:Name="ThemeToggleNavText"
-                           Text=""
-                           Margin="12,0,0,0"
-                           Foreground="White"
-                           VerticalAlignment="Center"/>
+                                            Text=""
+                                            Margin="12,0,0,0"
+                                            Foreground="White"
+                                            VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
 

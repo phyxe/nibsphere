@@ -49,7 +49,9 @@
     <None Remove="Resources\Fonts\Trirong\Trirong-SemiBoldItalic.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-Thin.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf" />
+    <None Remove="Resources\Icons\document.svg" />
     <None Remove="Resources\Icons\home.svg" />
+    <None Remove="Resources\Icons\student.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -179,7 +181,13 @@
     <Resource Include="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Icons\home.svg" />
+    <Resource Include="Resources\Icons\document.svg" />
+    <Resource Include="Resources\Icons\home.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\student.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

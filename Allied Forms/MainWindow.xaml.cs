@@ -24,14 +24,9 @@ namespace Allied_Forms
             SchoolNameLabel.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
             SchoolNameText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
             BottomSettingsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-
             DashboardNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            SchoolProfileNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            SchoolYearNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
             StudentsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            LearningAreasNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
             ReportsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-            SettingsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }
