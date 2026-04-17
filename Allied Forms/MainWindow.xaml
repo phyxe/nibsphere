@@ -186,23 +186,19 @@
                         </ScrollViewer>
                         <!-- Nav Bottom Section -->
                         <Border Grid.Row="2"
-        BorderBrush="{DynamicResource Brush.NavItemHover}"
-        BorderThickness="0,1,0,0"
-        Padding="10">
+                            BorderBrush="{DynamicResource Brush.NavItemHover}"
+                            BorderThickness="0,1,0,0"
+                            Padding="10">
 
                             <Grid Height="42">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="10" />
                                     <ColumnDefinition Width="42" />
                                     <ColumnDefinition Width="42" />
                                 </Grid.ColumnDefinitions>
-
-                                <TextBlock Grid.Column="0"
-                                Text=""
-                                VerticalAlignment="Center" />
-
+                                
                                 <Button x:Name="ThemeToggleNavButton"
-                                    Grid.Column="1"
+                                    Grid.Column="2"
                                     Width="36"
                                     Height="36"
                                     Margin="0,0,8,0"
@@ -214,13 +210,13 @@
                                     ToolTip="Toggle theme">
                                     <Viewbox Width="18" Height="18" Stretch="Uniform">
                                         <svgc:SvgIcon Fill="{DynamicResource Brush.NavIcon}"
-                              UriSource="/Resources/Icons/moon.svg"
-                              AppName="Allied Forms" />
+                                            UriSource="/Resources/Icons/themedark.svg"
+                                            AppName="Allied Forms" />
                                     </Viewbox>
                                 </Button>
 
                                 <Button x:Name="BottomSettingsNavButton"
-                                    Grid.Column="2"
+                                    Grid.Column="1"
                                     Width="36"
                                     Height="36"
                                     HorizontalAlignment="Center"
@@ -231,8 +227,8 @@
                                     ToolTip="Settings">
                                     <Viewbox Width="18" Height="18" Stretch="Uniform">
                                         <svgc:SvgIcon Fill="{DynamicResource Brush.NavIcon}"
-                              UriSource="/Resources/Icons/settings.svg"
-                              AppName="Allied Forms" />
+                                            UriSource="/Resources/Icons/settings.svg"
+                                            AppName="Allied Forms" />
                                     </Viewbox>
                                 </Button>
                             </Grid>
