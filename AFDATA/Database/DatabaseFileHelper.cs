@@ -2,18 +2,18 @@
 
 namespace AFData.Database
 {
-    public class DatabaseFileHelper
-    {
-        private readonly IAppPaths _appPaths;
+	public class DatabaseFileHelper
+	{
+		private readonly IAppPaths _appPaths;
 
-        public DatabaseFileHelper(IAppPaths appPaths)
-        {
-            _appPaths = appPaths;
-        }
+		public DatabaseFileHelper(IAppPaths appPaths)
+		{
+			_appPaths = appPaths;
+		}
 
-        public string GetDatabaseFilePath()
-        {
-            return _appPaths.DatabaseFilePath;
-        }
-    }
+		public string GetDatabaseFilePath()
+		{
+			return _appPaths.DatabaseFilePath;
+		}
+	}
 }

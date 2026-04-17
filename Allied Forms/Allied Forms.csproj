@@ -51,6 +51,8 @@
     <None Remove="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf" />
     <None Remove="Resources\Icons\document.svg" />
     <None Remove="Resources\Icons\home.svg" />
+    <None Remove="Resources\Icons\moon.svg" />
+    <None Remove="Resources\Icons\settings.svg" />
     <None Remove="Resources\Icons\student.svg" />
   </ItemGroup>
 
@@ -185,6 +187,8 @@
     <Resource Include="Resources\Icons\home.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Icons\moon.svg" />
+    <Resource Include="Resources\Icons\settings.svg" />
     <Resource Include="Resources\Icons\student.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

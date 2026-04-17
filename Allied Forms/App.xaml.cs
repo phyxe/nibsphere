@@ -1,31 +1,29 @@
 ﻿using AFCore.Interfaces;
 using AFData.Database;
 using AFData.Infrastructure;
-using System.Configuration;
-using System.Data;
 using System.Windows;
 
 namespace Allied_Forms
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
-    {
-        public static IAppPaths AppPaths { get; private set; } = null!;
+	/// <summary>
+	/// Interaction logic for App.xaml
+	/// </summary>
+	public partial class App : Application
+	{
+		public static IAppPaths AppPaths { get; private set; } = null!;
 
-        protected override async void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
+		protected override async void OnStartup(StartupEventArgs e)
+		{
+			base.OnStartup(e);
 
-            AppPaths = new AppPaths();
+			AppPaths = new AppPaths();
 
-            var storageInitializer = new AppStorageInitializer(AppPaths);
-            storageInitializer.EnsureDirectoriesExist();
+			var storageInitializer = new AppStorageInitializer(AppPaths);
+			storageInitializer.EnsureDirectoriesExist();
 
-            var databaseInitializer = new DatabaseInitializer(AppPaths);
-            await databaseInitializer.InitializeAsync();
-        }
-    }
+			var databaseInitializer = new DatabaseInitializer(AppPaths);
+			await databaseInitializer.InitializeAsync();
+		}
+	}
 
 }

@@ -1,38 +1,37 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using AFCore.Interfaces;
+﻿using AFCore.Interfaces;
 using Microsoft.Data.SqlClient;
+using System.IO;
 
 namespace AFData.Database
 {
-    public class DatabaseInitializer
-    {
-        private readonly IAppPaths _appPaths;
-        private readonly LocalDbConnectionFactory _connectionFactory;
+	public class DatabaseInitializer
+	{
+		private readonly IAppPaths _appPaths;
+		private readonly LocalDbConnectionFactory _connectionFactory;
 
-        public DatabaseInitializer(IAppPaths appPaths)
-        {
-            _appPaths = appPaths;
-            _connectionFactory = new LocalDbConnectionFactory(appPaths);
-        }
+		public DatabaseInitializer(IAppPaths appPaths)
+		{
+			_appPaths = appPaths;
+			_connectionFactory = new LocalDbConnectionFactory(appPaths);
+		}
 
-        public async Task InitializeAsync()
-        {
-            if (!File.Exists(_appPaths.DatabaseFilePath))
-            {
-                await CreateDatabaseAsync();
-            }
+		public async Task InitializeAsync()
+		{
+			if (!File.Exists(_appPaths.DatabaseFilePath))
+			{
+				await CreateDatabaseAsync();
+			}
 
-            await CreateTablesAsync();
-        }
+			await CreateTablesAsync();
+		}
 
-        private async Task CreateDatabaseAsync()
-        {
-            string databaseName = "AlliedForms";
-            string logFilePath = Path.Combine(_appPaths.DataDirectory, "AlliedForms_log.ldf");
+		private async Task CreateDatabaseAsync()
+		{
+			string databaseName = "AlliedForms";
+			string logFilePath = Path.Combine(_appPaths.DataDirectory, "AlliedForms_log.ldf");
 
-            string createDatabaseSql =
-                $"""
+			string createDatabaseSql =
+				$"""
                 CREATE DATABASE [{databaseName}]
                 ON PRIMARY
                 (
@@ -46,17 +45,17 @@ namespace AFData.Database
                 );
                 """;
 
-            using SqlConnection connection = _connectionFactory.CreateMasterConnection();
-            await connection.OpenAsync();
+			using SqlConnection connection = _connectionFactory.CreateMasterConnection();
+			await connection.OpenAsync();
 
-            using SqlCommand command = new SqlCommand(createDatabaseSql, connection);
-            await command.ExecuteNonQueryAsync();
-        }
+			using SqlCommand command = new SqlCommand(createDatabaseSql, connection);
+			await command.ExecuteNonQueryAsync();
+		}
 
-        private async Task CreateTablesAsync()
-        {
-            string sql =
-                """
+		private async Task CreateTablesAsync()
+		{
+			string sql =
+				"""
                 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'SchoolProfile')
                 BEGIN
                     CREATE TABLE SchoolProfile
@@ -125,11 +124,11 @@ namespace AFData.Database
                 END
                 """;
 
-            using SqlConnection connection = _connectionFactory.CreateAppConnection();
-            await connection.OpenAsync();
+			using SqlConnection connection = _connectionFactory.CreateAppConnection();
+			await connection.OpenAsync();
 
-            using SqlCommand command = new SqlCommand(sql, connection);
-            await command.ExecuteNonQueryAsync();
-        }
-    }
+			using SqlCommand command = new SqlCommand(sql, connection);
+			await command.ExecuteNonQueryAsync();
+		}
+	}
 }
