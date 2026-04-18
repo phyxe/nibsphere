@@ -49,23 +49,6 @@
     <None Remove="Resources\Fonts\Trirong\Trirong-SemiBoldItalic.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-Thin.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf" />
-    <None Remove="Resources\Icons\calendar.svg" />
-    <None Remove="Resources\Icons\dashboard.svg" />
-    <None Remove="Resources\Icons\del2.svg" />
-    <None Remove="Resources\Icons\delete.svg" />
-    <None Remove="Resources\Icons\document.svg" />
-    <None Remove="Resources\Icons\edit.svg" />
-    <None Remove="Resources\Icons\home.svg" />
-    <None Remove="Resources\Icons\modedark.svg" />
-    <None Remove="Resources\Icons\modelight.svg" />
-    <None Remove="Resources\Icons\navigation.svg" />
-    <None Remove="Resources\Icons\report.svg" />
-    <None Remove="Resources\Icons\save.svg" />
-    <None Remove="Resources\Icons\setting.svg" />
-    <None Remove="Resources\Icons\settings.svg" />
-    <None Remove="Resources\Icons\student.svg" />
-    <None Remove="Resources\Icons\themedark.svg" />
-    <None Remove="Resources\Icons\themelight.svg" />
   </ItemGroup>
 
   <ItemGroup>
