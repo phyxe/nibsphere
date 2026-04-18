@@ -1,0 +1,221 @@
+﻿<UserControl x:Class="Allied_Forms.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="600"
+             d:DesignWidth="900"
+             Background="{DynamicResource Brush.Background}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Settings"
+                   Style="{StaticResource TextBlock.Heading1}" />
+
+        <TabControl Grid.Row="2">
+            <TabItem Header="School">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <Grid Margin="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="16"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0"
+                                   Text="School Information"
+                                   Style="{StaticResource TextBlock.SectionTitle}" />
+
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="School Name"
+                                           Margin="0,0,0,6"
+                                           Style="{StaticResource TextBlock.Body}" />
+                                <TextBox x:Name="SchoolNameTextBox"
+                                         MinHeight="36" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="School ID"
+                                           Margin="0,0,0,6"
+                                           Style="{StaticResource TextBlock.Body}" />
+                                <TextBox x:Name="SchoolIdTextBox"
+                                         MinHeight="36" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Region"
+                                           Margin="0,0,0,6"
+                                           Style="{StaticResource TextBlock.Body}" />
+                                <TextBox x:Name="RegionTextBox"
+                                         MinHeight="36" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Division"
+                                           Margin="0,0,0,6"
+                                           Style="{StaticResource TextBlock.Body}" />
+                                <TextBox x:Name="DivisionTextBox"
+                                         MinHeight="36" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="District"
+                                           Margin="0,0,0,6"
+                                           Style="{StaticResource TextBlock.Body}" />
+                                <TextBox x:Name="DistrictTextBox"
+                                         MinHeight="36" />
+                            </StackPanel>
+                        </Grid>
+             
+
+                        <TextBlock Grid.Row="10"
+                                   Text="Default Signatories"
+                                   Style="{StaticResource TextBlock.SectionTitle}" />
+
+                        <Grid Grid.Row="12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="16"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="School Head Name"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="SchoolHeadNameTextBox"
+                                             MinHeight="36" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="School Head Position"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="SchoolHeadPositionTextBox"
+                                             MinHeight="36" />
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+
+                        <Button Grid.Row="14"
+                                Content="Save School Settings"
+                                Width="170"
+                                Height="38"
+                                HorizontalAlignment="Left" />
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="User">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <Grid Margin="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="16"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0"
+                                   Text="User Defaults"
+                                   Style="{StaticResource TextBlock.SectionTitle}" />
+
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Complete Name"
+                                           Margin="0,0,0,6"
+                                           Style="{StaticResource TextBlock.Body}" />
+                                <TextBox x:Name="UserDefaultFullNameTextBox"
+                                         MinHeight="36" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Position"
+                                           Margin="0,0,0,6"
+                                           Style="{StaticResource TextBlock.Body}" />
+                                <TextBox x:Name="UserDefaultPositionTextBox"
+                                         MinHeight="36" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Button Grid.Row="6"
+                                Content="Save User Settings"
+                                Width="160"
+                                Height="38"
+                                HorizontalAlignment="Left" />
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Learning Areas">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="16"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Learning Areas"
+                               Style="{StaticResource TextBlock.SectionTitle}" />
+
+                    <TextBlock Grid.Row="2"
+                               Text="This section will be designed next."
+                               Style="{StaticResource TextBlock.Secondary}" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

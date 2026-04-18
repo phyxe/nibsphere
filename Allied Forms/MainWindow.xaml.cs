@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Allied_Forms.Views;
+using System.Windows;
 
 namespace Allied_Forms
 {
@@ -23,6 +24,11 @@ namespace Allied_Forms
 			DashboardNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 			StudentsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 			ReportsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+		}
+
+		private void BottomSettingsNavButton_Click(object sender, RoutedEventArgs e)
+		{
+			MainContentHost.Content = new SettingsView();
 		}
 	}
 }

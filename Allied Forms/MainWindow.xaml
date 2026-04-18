@@ -192,7 +192,6 @@
 
                             <Grid Height="42">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="10" />
                                     <ColumnDefinition Width="42" />
                                     <ColumnDefinition Width="42" />
                                 </Grid.ColumnDefinitions>
@@ -201,14 +200,13 @@
                                     Grid.Column="2"
                                     Width="36"
                                     Height="36"
-                                    Margin="0,0,8,0"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     Background="Transparent"
                                     BorderBrush="Transparent"
                                     Padding="0"
                                     ToolTip="Toggle theme">
-                                    <Viewbox Width="18" Height="18" Stretch="Uniform">
+                                    <Viewbox Width="24" Height="24" Stretch="Uniform">
                                         <svgc:SvgIcon Fill="{DynamicResource Brush.NavIcon}"
                                             UriSource="/Resources/Icons/themedark.svg"
                                             AppName="Allied Forms" />
@@ -216,7 +214,7 @@
                                 </Button>
 
                                 <Button x:Name="BottomSettingsNavButton"
-                                    Grid.Column="1"
+                                    Grid.Column="0"
                                     Width="36"
                                     Height="36"
                                     HorizontalAlignment="Center"
@@ -224,7 +222,8 @@
                                     Background="Transparent"
                                     BorderBrush="Transparent"
                                     Padding="0"
-                                    ToolTip="Settings">
+                                    ToolTip="Settings"
+                                    Click="BottomSettingsNavButton_Click">
                                     <Viewbox Width="18" Height="18" Stretch="Uniform">
                                         <svgc:SvgIcon Fill="{DynamicResource Brush.NavIcon}"
                                             UriSource="/Resources/Icons/settings.svg"
@@ -242,35 +241,12 @@
                     <Border Margin="16"
 							Style="{StaticResource CardBorderStyle}">
                         <ContentControl x:Name="MainContentHost">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Text="Allied Forms"
-										   Style="{StaticResource TextBlock.Heading1}"/>
-
-                                <TextBlock Grid.Row="1"
-										   Text="School Records and Reporting Workspace"
-										   Margin="0,4,0,0"
-										   Style="{StaticResource TextBlock.SectionTitle}"/>
-
-                                <TextBlock Grid.Row="2"
-										   Text="This area will host the active user control."
-										   Margin="0,10,0,18"
-										   Style="{StaticResource TextBlock.Secondary}"/>
-
-                                <Border Grid.Row="3"
-										Background="{DynamicResource Brush.SurfaceAlt}"
-										CornerRadius="8"
-										Padding="20">
-                                    <TextBlock Text="Main workspace placeholder"
-											   Style="{StaticResource TextBlock.Body}"/>
-                                </Border>
-                            </Grid>
+                            <Border Background="{DynamicResource Brush.SurfaceAlt}"
+                                CornerRadius="20"
+                                Padding="20">
+                                <TextBlock Text="Main content host"
+                                    Style="{StaticResource TextBlock.Body}" />
+                            </Border>
                         </ContentControl>
                     </Border>
                 </Grid>
