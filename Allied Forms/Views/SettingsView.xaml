@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="900"
@@ -19,6 +20,7 @@
                    Style="{StaticResource TextBlock.Heading1}" />
 
         <TabControl Grid.Row="2">
+            
             <TabItem Header="School">
                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled">
@@ -26,14 +28,6 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="16"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="Auto"/>
@@ -102,49 +96,46 @@
                                          MinHeight="36" />
                             </StackPanel>
                         </Grid>
-             
 
-                        <TextBlock Grid.Row="10"
-                                   Text="Default Signatories"
-                                   Style="{StaticResource TextBlock.SectionTitle}" />
+                        <Grid Grid.Row="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                        <Grid Grid.Row="12">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="16"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="School Head Name"
+                                           Margin="0,0,0,6"
+                                           Style="{StaticResource TextBlock.Body}" />
+                                <TextBox x:Name="SchoolHeadNameTextBox"
+                                         MinHeight="36" />
+                            </StackPanel>
 
-                            <Grid Grid.Row="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="20" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <StackPanel Grid.Column="0">
-                                    <TextBlock Text="School Head Name"
-                                               Margin="0,0,0,6"
-                                               Style="{StaticResource TextBlock.Body}" />
-                                    <TextBox x:Name="SchoolHeadNameTextBox"
-                                             MinHeight="36" />
-                                </StackPanel>
-
-                                <StackPanel Grid.Column="2">
-                                    <TextBlock Text="School Head Position"
-                                               Margin="0,0,0,6"
-                                               Style="{StaticResource TextBlock.Body}" />
-                                    <TextBox x:Name="SchoolHeadPositionTextBox"
-                                             MinHeight="36" />
-                                </StackPanel>
-                            </Grid>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="School Head Position"
+                                           Margin="0,0,0,6"
+                                           Style="{StaticResource TextBlock.Body}" />
+                                <TextBox x:Name="SchoolHeadPositionTextBox"
+                                         MinHeight="36" />
+                            </StackPanel>
                         </Grid>
 
-                        <Button Grid.Row="14"
-                                Content="Save School Settings"
-                                Width="170"
-                                Height="38"
-                                HorizontalAlignment="Left" />
+                        <Button x:Name="SaveSchoolSettingsButton"
+                                Grid.Row="6"
+                                Width="36"
+                                Height="36"
+                                Padding="0"
+                                HorizontalAlignment="Right"
+                                ToolTip="Save School Settings"
+                                Click="SaveSchoolSettingsButton_Click">
+                            <Viewbox Width="18" Height="18">
+                                <svgc:SvgIcon x:Name="SaveSchoolSettingsIcon"
+                                    Fill="{DynamicResource Brush.PrimaryText}"
+                                    UriSource="/Resources/Icons/save.svg"
+                                    AppName="Allied Forms" />
+                            </Viewbox>
+                        </Button>
                     </Grid>
                 </ScrollViewer>
             </TabItem>
@@ -164,7 +155,7 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0"
-                                   Text="User Defaults"
+                                   Text="User Information"
                                    Style="{StaticResource TextBlock.SectionTitle}" />
 
                         <Grid Grid.Row="2">
@@ -191,11 +182,21 @@
                             </StackPanel>
                         </Grid>
 
-                        <Button Grid.Row="6"
-                                Content="Save User Settings"
-                                Width="160"
-                                Height="38"
-                                HorizontalAlignment="Left" />
+                        <Button x:Name="SaveUserSettingsButton"
+                                Grid.Row="6"
+                                Width="36"
+                                Height="36"
+                                Padding="0"
+                                HorizontalAlignment="Right"
+                                ToolTip="Save User Settings"
+                                Click="SaveUserSettingsButton_Click">
+                            <Viewbox Width="18" Height="18">
+                                <svgc:SvgIcon x:Name="SaveUserSettingsIcon"
+                                    Fill="{DynamicResource Brush.PrimaryText}"
+                      UriSource="/Resources/Icons/save.svg"
+                      AppName="Allied Forms" />
+                            </Viewbox>
+                        </Button>
                     </Grid>
                 </ScrollViewer>
             </TabItem>
@@ -206,16 +207,157 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="16"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="16"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="Learning Areas"
-                               Style="{StaticResource TextBlock.SectionTitle}" />
+                    <!-- Top form section -->
+                    <Border Grid.Row="0"
+                            Style="{StaticResource CardBorderStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="16"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="16"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="2"
-                               Text="This section will be designed next."
-                               Style="{StaticResource TextBlock.Secondary}" />
+                            <TextBlock Text="Learning Area Entry"
+                                       Style="{StaticResource TextBlock.SectionTitle}" />
+
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="16" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="16" />
+                                    <ColumnDefinition Width="3*" />
+                                    <ColumnDefinition Width="16" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Category"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="LearningAreaCategoryTextBox"
+                                             MinHeight="36" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Code"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="LearningAreaCodeTextBox"
+                                             MinHeight="36" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Description"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="LearningAreaDescriptionTextBox"
+                                             MinHeight="36" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="6">
+                                    <TextBlock Text="Sort"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="LearningAreaSortTextBox"
+                                             MinHeight="36" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Button Grid.Row="4"
+                                    Width="36"
+                                    Height="36"
+                                    Padding="0"
+                                    HorizontalAlignment="Left"
+                                    ToolTip="Save Learning Area">
+                                <Viewbox Width="18" Height="18">
+                                    <svgc:SvgIcon Fill="{DynamicResource Brush.PrimaryText}"
+                                      UriSource="/Resources/Icons/save.svg"
+                                      AppName="Allied Forms" />
+                                </Viewbox>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Bottom list section -->
+                    <Border Grid.Row="2"
+                            Style="{StaticResource CardBorderStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="16"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Learning Area List"
+                                       Style="{StaticResource TextBlock.SectionTitle}" />
+
+                            <DataGrid Grid.Row="2"
+                                      x:Name="LearningAreasDataGrid"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      HeadersVisibility="Column"
+                                      IsReadOnly="True"
+                                      RowHeaderWidth="0"
+                                      MinHeight="220">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Category"
+                                                        Binding="{Binding Category}"
+                                                        Width="2*" />
+                                    <DataGridTextColumn Header="Code"
+                                                        Binding="{Binding Code}"
+                                                        Width="*" />
+                                    <DataGridTextColumn Header="Description"
+                                                        Binding="{Binding Description}"
+                                                        Width="3*" />
+                                    <DataGridTextColumn Header="Sort"
+                                                        Binding="{Binding Sort}"
+                                                        Width="*" />
+                                    <DataGridTemplateColumn Header="Action"
+                                                            Width="110">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal"
+                                                            HorizontalAlignment="Center">
+                                                    <Button Width="32"
+                                                            Height="32"
+                                                            Margin="0,0,8,0"
+                                                            Padding="0"
+                                                            ToolTip="Edit">
+                                                        <Viewbox Width="16" Height="16">
+                                                            <svgc:SvgIcon Fill="{DynamicResource Brush.PrimaryText}"
+                                                                          UriSource="/Resources/Icons/edit.svg"
+                                                                          AppName="Allied Forms" />
+                                                        </Viewbox>
+                                                    </Button>
+
+                                                    <Button Width="32"
+                                                            Height="32"
+                                                            Padding="0"
+                                                            ToolTip="Delete">
+                                                        <Viewbox Width="16" Height="16">
+                                                            <svgc:SvgIcon Fill="{DynamicResource Brush.PrimaryAccent}"
+                                                                          UriSource="/Resources/Icons/trash.svg"
+                                                                          AppName="Allied Forms" />
+                                                        </Viewbox>
+                                                    </Button>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Border>
                 </Grid>
             </TabItem>
+            
         </TabControl>
     </Grid>
 </UserControl>

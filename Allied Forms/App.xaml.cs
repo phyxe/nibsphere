@@ -12,6 +12,7 @@ namespace Allied_Forms
 	{
 		public static IAppPaths AppPaths { get; private set; } = null!;
 
+
 		protected override async void OnStartup(StartupEventArgs e)
 		{
 			base.OnStartup(e);

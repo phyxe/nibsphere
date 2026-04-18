@@ -49,8 +49,11 @@
     <None Remove="Resources\Fonts\Trirong\Trirong-SemiBoldItalic.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-Thin.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf" />
+    <None Remove="Resources\Icons\delete.svg" />
     <None Remove="Resources\Icons\document.svg" />
+    <None Remove="Resources\Icons\edit.svg" />
     <None Remove="Resources\Icons\home.svg" />
+    <None Remove="Resources\Icons\save.svg" />
     <None Remove="Resources\Icons\settings.svg" />
     <None Remove="Resources\Icons\student.svg" />
     <None Remove="Resources\Icons\themedark.svg" />
@@ -184,8 +187,17 @@
     <Resource Include="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Icons\delete.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Icons\document.svg" />
+    <Resource Include="Resources\Icons\edit.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Icons\home.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\save.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\settings.svg">

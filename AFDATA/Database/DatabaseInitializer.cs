@@ -62,28 +62,14 @@ namespace AFData.Database
                     (
                         Id INT PRIMARY KEY IDENTITY(1,1),
                         SchoolName NVARCHAR(200) NOT NULL,
-                        SchoolAddress NVARCHAR(300) NULL,
-                        SchoolLogoPath NVARCHAR(500) NULL,
+                        SchoolId NVARCHAR(100) NULL,
+                        Region NVARCHAR(150) NULL,
+                        Division NVARCHAR(150) NULL,
+                        District NVARCHAR(150) NULL,
                         SchoolHeadName NVARCHAR(150) NULL,
                         SchoolHeadPosition NVARCHAR(150) NULL,
                         CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
                         UpdatedAt DATETIME2 NULL
-                    );
-                END
-
-                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'SchoolSignatory')
-                BEGIN
-                    CREATE TABLE SchoolSignatory
-                    (
-                        Id INT PRIMARY KEY IDENTITY(1,1),
-                        SchoolProfileId INT NOT NULL,
-                        RoleName NVARCHAR(100) NOT NULL,
-                        FullName NVARCHAR(150) NOT NULL,
-                        PositionTitle NVARCHAR(150) NULL,
-                        SortOrder INT NOT NULL DEFAULT 0,
-                        IsActive BIT NOT NULL DEFAULT 1,
-                        CONSTRAINT FK_SchoolSignatory_SchoolProfile FOREIGN KEY (SchoolProfileId)
-                            REFERENCES SchoolProfile(Id)
                     );
                 END
 
@@ -100,26 +86,6 @@ namespace AFData.Database
                         IsPrimary BIT NOT NULL DEFAULT 1,
                         CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
                         UpdatedAt DATETIME2 NULL
-                    );
-                END
-
-                IF NOT EXISTS (SELECT 1 FROM SchoolProfile)
-                BEGIN
-                    INSERT INTO SchoolProfile
-                    (
-                        SchoolName,
-                        SchoolAddress,
-                        SchoolLogoPath,
-                        SchoolHeadName,
-                        SchoolHeadPosition
-                    )
-                    VALUES
-                    (
-                        'New School',
-                        NULL,
-                        NULL,
-                        NULL,
-                        NULL
                     );
                 END
                 """;
