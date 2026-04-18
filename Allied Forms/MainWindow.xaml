@@ -5,6 +5,7 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:svg="http://sharpvectors.codeplex.com/runtime/"
 		xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+        xmlns:controls="clr-namespace:Allied_Forms.Controls"
 		mc:Ignorable="d"
 		Title="Allied Forms"
 		Width="1280"
@@ -60,13 +61,10 @@
 									VerticalAlignment="Center"
 									Background="Transparent"
 									Click="NavToggleButton_Click">
-                                <StackPanel Orientation="Horizontal">
-                                    <svgc:SvgIcon Width="18"
-													Height="18"
-													Fill="{DynamicResource Brush.NavIcon}"
-													UriSource="/Resources/Icons/navigation-left.svg"
-													AppName="Allied Forms" />
-                                </StackPanel>
+                                <controls:SkiaSvgIcon Width="18"
+                          Height="18"
+                          Source="/Resources/Icons/navigation-left.svg"
+                          Tint="{DynamicResource Brush.NavIcon}" />
                             </Button>
 
                             <TextBlock x:Name="NavHeaderText"

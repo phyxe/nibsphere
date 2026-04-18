@@ -14,7 +14,7 @@
     <SolidColorBrush x:Key="Brush.PrimaryAccentHover" Color="#FF23B5D3"/>
     <SolidColorBrush x:Key="Brush.SecondaryAccent" Color="#FF23B5D3"/>
 
-    <SolidColorBrush x:Key="Brush.NavBackground" Color="#FF16181B"/>
+    <SolidColorBrush x:Key="Brush.NavBackground" Color="#23b5d3"/>
     <SolidColorBrush x:Key="Brush.NavItemHover" Color="#FF1D2126"/>
     <SolidColorBrush x:Key="Brush.NavItemActive" Color="#FF279AF1"/>
     <SolidColorBrush x:Key="Brush.NavIcon" Color="#FFF7F7FF"/>
