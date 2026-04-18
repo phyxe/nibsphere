@@ -77,13 +77,59 @@ namespace AFData.Repositories
 			await connection.OpenAsync();
 
 			using SqlCommand command = new SqlCommand(sql, connection);
+			AddParameters(command, learningArea);
+
+			object? result = await command.ExecuteScalarAsync();
+			return result is int id ? id : 0;
+		}
+
+		public async Task UpdateAsync(LearningArea learningArea)
+		{
+			const string sql =
+				"""
+                UPDATE LearningArea
+                SET
+                    Category = @Category,
+                    Code = @Code,
+                    Description = @Description,
+                    Sort = @Sort,
+                    UpdatedAt = GETDATE()
+                WHERE Id = @Id;
+                """;
+
+			using SqlConnection connection = _connectionFactory.CreateAppConnection();
+			await connection.OpenAsync();
+
+			using SqlCommand command = new SqlCommand(sql, connection);
+			AddParameters(command, learningArea);
+			command.Parameters.AddWithValue("@Id", learningArea.Id);
+
+			await command.ExecuteNonQueryAsync();
+		}
+
+		public async Task DeleteAsync(int id)
+		{
+			const string sql =
+				"""
+                DELETE FROM LearningArea
+                WHERE Id = @Id;
+                """;
+
+			using SqlConnection connection = _connectionFactory.CreateAppConnection();
+			await connection.OpenAsync();
+
+			using SqlCommand command = new SqlCommand(sql, connection);
+			command.Parameters.AddWithValue("@Id", id);
+
+			await command.ExecuteNonQueryAsync();
+		}
+
+		private static void AddParameters(SqlCommand command, LearningArea learningArea)
+		{
 			command.Parameters.AddWithValue("@Category", learningArea.Category);
 			command.Parameters.AddWithValue("@Code", learningArea.Code);
 			command.Parameters.AddWithValue("@Description", learningArea.Description);
 			command.Parameters.AddWithValue("@Sort", learningArea.Sort);
-
-			object? result = await command.ExecuteScalarAsync();
-			return result is int id ? id : 0;
 		}
 	}
 }

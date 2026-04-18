@@ -21,4 +21,15 @@
 
     <SolidColorBrush x:Key="Brush.NavIcon" Color="#FFFFFF"/>
 
+    <SolidColorBrush x:Key="Brush.InputReadOnlyBackground" Color="#FF20323B"/>
+    <SolidColorBrush x:Key="Brush.TabBackground" Color="#FF2A3F49"/>
+    <SolidColorBrush x:Key="Brush.TabActiveBackground" Color="#FF3A4F59"/>
+    <SolidColorBrush x:Key="Brush.TabForeground" Color="#FFEFF1F3"/>
+    <SolidColorBrush x:Key="Brush.GridHeaderBackground" Color="#FF2A3F49"/>
+    <SolidColorBrush x:Key="Brush.GridRowBackground" Color="#FF223843"/>
+    <SolidColorBrush x:Key="Brush.GridAlternateRowBackground" Color="#FF1D2E36"/>
+    <SolidColorBrush x:Key="Brush.GridSelectionBackground" Color="#FF3D5561"/>
+    <SolidColorBrush x:Key="Brush.IconButtonBackground" Color="Transparent"/>
+    <SolidColorBrush x:Key="Brush.IconButtonHoverBackground" Color="#33D8B4A0"/>
+
 </ResourceDictionary>

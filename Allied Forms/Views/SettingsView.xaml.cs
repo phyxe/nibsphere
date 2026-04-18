@@ -15,6 +15,7 @@ namespace Allied_Forms.Views
 		private AppUserProfile? _appUserProfile;
 		private bool _isUserEditMode;
 		private readonly LearningAreaRepository _learningAreaRepository;
+		private LearningArea? _editingLearningArea;
 
 		public SettingsView()
 		{
@@ -301,33 +302,118 @@ namespace Allied_Forms.Views
 				return;
 			}
 
-			LearningArea learningArea = new LearningArea
+			if (_editingLearningArea == null)
 			{
-				Category = category,
-				Code = code,
-				Description = description,
-				Sort = sort
-			};
+				LearningArea learningArea = new LearningArea
+				{
+					Category = category,
+					Code = code,
+					Description = description,
+					Sort = sort
+				};
 
-			await _learningAreaRepository.InsertAsync(learningArea);
+				await _learningAreaRepository.InsertAsync(learningArea);
+
+				MessageBox.Show(
+					"Learning area saved successfully.",
+					"Settings Saved",
+					MessageBoxButton.OK,
+					MessageBoxImage.Information);
+			}
+			else
+			{
+				_editingLearningArea.Category = category;
+				_editingLearningArea.Code = code;
+				_editingLearningArea.Description = description;
+				_editingLearningArea.Sort = sort;
+
+				await _learningAreaRepository.UpdateAsync(_editingLearningArea);
+
+				MessageBox.Show(
+					"Learning area updated successfully.",
+					"Settings Updated",
+					MessageBoxButton.OK,
+					MessageBoxImage.Information);
+			}
 
 			await LoadLearningAreasAsync();
 			ClearLearningAreaEntryFields();
+			SetLearningAreaButtonToSaveMode();
+		}
+
+		private void EditLearningAreaButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is not Button button || button.Tag is not LearningArea learningArea)
+			{
+				return;
+			}
+
+			_editingLearningArea = learningArea;
+
+			LearningAreaCategoryTextBox.Text = learningArea.Category;
+			LearningAreaCodeTextBox.Text = learningArea.Code;
+			LearningAreaDescriptionTextBox.Text = learningArea.Description;
+			LearningAreaSortTextBox.Text = learningArea.Sort.ToString();
+
+			SetLearningAreaButtonToEditMode();
+			LearningAreaCategoryTextBox.Focus();
+		}
+
+		private async void DeleteLearningAreaButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is not Button button || button.Tag is not LearningArea learningArea)
+			{
+				return;
+			}
+
+			MessageBoxResult result = MessageBox.Show(
+				$"Delete learning area '{learningArea.Description}'?",
+				"Confirm Delete",
+				MessageBoxButton.YesNo,
+				MessageBoxImage.Warning);
+
+			if (result != MessageBoxResult.Yes)
+			{
+				return;
+			}
+
+			await _learningAreaRepository.DeleteAsync(learningArea.Id);
+
+			if (_editingLearningArea?.Id == learningArea.Id)
+			{
+				ClearLearningAreaEntryFields();
+				SetLearningAreaButtonToSaveMode();
+			}
+
+			await LoadLearningAreasAsync();
 
 			MessageBox.Show(
-				"Learning area saved successfully.",
-				"Settings Saved",
+				"Learning area deleted successfully.",
+				"Deleted",
 				MessageBoxButton.OK,
 				MessageBoxImage.Information);
 		}
 
 		private void ClearLearningAreaEntryFields()
 		{
+			_editingLearningArea = null;
 			LearningAreaCategoryTextBox.Clear();
 			LearningAreaCodeTextBox.Clear();
 			LearningAreaDescriptionTextBox.Clear();
 			LearningAreaSortTextBox.Clear();
 			LearningAreaCategoryTextBox.Focus();
+		}
+
+		private void SetLearningAreaButtonToSaveMode()
+		{
+			SaveLearningAreaButton.ToolTip = "Save Learning Area";
+			SaveLearningAreaIcon.UriSource = new Uri("/Resources/Icons/save.svg", UriKind.Relative);
+		}
+
+		private void SetLearningAreaButtonToEditMode()
+		{
+			SaveLearningAreaButton.ToolTip = "Update Learning Area";
+			SaveLearningAreaIcon.UriSource = new Uri("/Resources/Icons/edit.svg", UriKind.Relative);
 		}
 	}
 }

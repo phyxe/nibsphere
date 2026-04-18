@@ -10,6 +10,7 @@ namespace Allied_Forms
 		public MainWindow()
 		{
 			InitializeComponent();
+			UpdateThemeUi();
 		}
 
 		private void NavToggleButton_Click(object sender, RoutedEventArgs e)
@@ -29,6 +30,28 @@ namespace Allied_Forms
 		private void BottomSettingsNavButton_Click(object sender, RoutedEventArgs e)
 		{
 			MainContentHost.Content = new SettingsView();
+		}
+
+		private void ThemeToggleNavButton_Click(object sender, RoutedEventArgs e)
+		{
+			App.ToggleTheme();
+			UpdateThemeUi();
+		}
+
+		private void UpdateThemeUi()
+		{
+			if (App.IsDarkTheme)
+			{
+				ThemeStatusTextBlock.Text = "Theme: Dark";
+				ThemeToggleNavButton.ToolTip = "Switch to Light Theme";
+				ThemeToggleNavIcon.UriSource = new Uri("/Resources/Icons/themelight.svg", UriKind.Relative);
+			}
+			else
+			{
+				ThemeStatusTextBlock.Text = "Theme: Light";
+				ThemeToggleNavButton.ToolTip = "Switch to Dark Theme";
+				ThemeToggleNavIcon.UriSource = new Uri("/Resources/Icons/themedark.svg", UriKind.Relative);
+			}
 		}
 	}
 }

@@ -124,6 +124,7 @@
                         </Grid>
 
                         <Button x:Name="SaveSchoolSettingsButton"
+                                Style="{StaticResource IconButtonStyle}"
                                 Grid.Row="8"
                                 Width="36"
                                 Height="36"
@@ -185,6 +186,7 @@
                         </Grid>
 
                         <Button x:Name="SaveUserSettingsButton"
+                                Style="{StaticResource IconButtonStyle}"
                                 Grid.Row="6"
                                 Width="36"
                                 Height="36"
@@ -273,14 +275,16 @@
                                    Margin="0,0,0,6"
                                    Style="{StaticResource TextBlock.Body}" />
                                     <Button x:Name="SaveLearningAreaButton"
-                                Width="36"
-                                Height="36"
-                                Padding="0"
-                                HorizontalAlignment="Left"
-                                ToolTip="Save Learning Area"
-                                Click="SaveLearningAreaButton_Click">
+                                            Style="{StaticResource IconButtonStyle}"
+                                            Width="36"
+                                            Height="36"
+                                            Padding="0"
+                                            HorizontalAlignment="Left"
+                                            ToolTip="Save Learning Area"
+                                            Click="SaveLearningAreaButton_Click">
                                         <Viewbox Width="18" Height="18">
-                                            <svgc:SvgIcon Fill="{DynamicResource Brush.PrimaryText}"
+                                            <svgc:SvgIcon x:Name="SaveLearningAreaIcon"
+                                              Fill="{DynamicResource Brush.PrimaryText}"
                                               UriSource="/Resources/Icons/save.svg"
                                               AppName="Allied Forms" />
                                         </Viewbox>
@@ -327,10 +331,13 @@
                                                 <StackPanel Orientation="Horizontal"
                                                 HorizontalAlignment="Center">
                                                     <Button Width="32"
-                                                Height="32"
-                                                Margin="0,0,8,0"
-                                                Padding="0"
-                                                ToolTip="Edit">
+                                                        Height="32"
+                                                        Margin="0,0,8,0"
+                                                        Padding="0"
+                                                        ToolTip="Edit"
+                                                        Tag="{Binding}"
+                                                        Click="EditLearningAreaButton_Click"
+                                                        Style="{StaticResource IconButtonStyle}">
                                                         <Viewbox Width="16" Height="16">
                                                             <svgc:SvgIcon Fill="{DynamicResource Brush.PrimaryText}"
                                                               UriSource="/Resources/Icons/edit.svg"
@@ -339,12 +346,15 @@
                                                     </Button>
 
                                                     <Button Width="32"
-                                                Height="32"
-                                                Padding="0"
-                                                ToolTip="Delete">
+                                                        Height="32"
+                                                        Padding="0"
+                                                        ToolTip="Delete"
+                                                        Tag="{Binding}"
+                                                        Click="DeleteLearningAreaButton_Click"
+                                                        Style="{StaticResource IconButtonStyle}">
                                                         <Viewbox Width="16" Height="16">
-                                                            <svgc:SvgIcon Fill="{DynamicResource Brush.PrimaryAccent}"
-                                                              UriSource="/Resources/Icons/delete.svg"
+                                                            <svgc:SvgIcon Fill="{DynamicResource Brush.PrimaryText}"
+                                                              UriSource="/Resources/Icons/del2.svg"
                                                               AppName="Allied Forms" />
                                                         </Viewbox>
                                                     </Button>

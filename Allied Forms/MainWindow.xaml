@@ -20,56 +20,13 @@
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="52"/>
+                
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Command Strip -->
-            <Border Grid.Row="0"
-					Background="{DynamicResource Brush.Surface}"
-					BorderBrush="{DynamicResource Brush.Border}"
-					BorderThickness="0,0,0,1"
-					Padding="12,6">
-
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Orientation="Horizontal"
-								VerticalAlignment="Center">
-                        <Button Content="New"
-								MinWidth="82"
-								Margin="0,0,8,0"/>
-                        <Button Content="Edit"
-								MinWidth="82"
-								Margin="0,0,8,0"/>
-                        <Button Content="Save"
-								MinWidth="82"
-								Margin="0,0,8,0"/>
-                        <Button Content="Refresh"
-								MinWidth="82"
-								Margin="0,0,8,0"/>
-                        <Button Content="Export"
-								MinWidth="82"/>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1"
-								Orientation="Horizontal"
-								VerticalAlignment="Center">
-                        <Button Content="Light"
-								MinWidth="72"
-								Margin="0,0,8,0"/>
-                        <Button Content="Dark"
-								MinWidth="72"/>
-                    </StackPanel>
-                </Grid>
-            </Border>
-
             <!-- Main Workspace -->
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="NavColumn" Width="220"/>
                     <ColumnDefinition Width="*"/>
@@ -197,7 +154,7 @@
                                 </Grid.ColumnDefinitions>
                                 
                                 <Button x:Name="ThemeToggleNavButton"
-                                    Grid.Column="2"
+                                    Grid.Column="1"
                                     Width="36"
                                     Height="36"
                                     HorizontalAlignment="Center"
@@ -205,9 +162,11 @@
                                     Background="Transparent"
                                     BorderBrush="Transparent"
                                     Padding="0"
-                                    ToolTip="Toggle theme">
-                                    <Viewbox Width="24" Height="24" Stretch="Uniform">
-                                        <svgc:SvgIcon Fill="{DynamicResource Brush.NavIcon}"
+                                    ToolTip="Toggle theme"
+                                    Click="ThemeToggleNavButton_Click">
+                                    <Viewbox Width="18" Height="18" Stretch="Uniform">
+                                        <svgc:SvgIcon x:Name="ThemeToggleNavIcon"
+                                            Fill="{DynamicResource Brush.NavIcon}"
                                             UriSource="/Resources/Icons/themedark.svg"
                                             AppName="Allied Forms" />
                                     </Viewbox>
@@ -276,7 +235,8 @@
 							   VerticalAlignment="Center"
 							   Style="{StaticResource TextBlock.Caption}"/>
 
-                    <TextBlock Grid.Column="2"
+                    <TextBlock x:Name="ThemeStatusTextBlock"
+                               Grid.Column="2"
 							   Text="Theme: Light"
 							   VerticalAlignment="Center"
 							   Style="{StaticResource TextBlock.Caption}"/>
