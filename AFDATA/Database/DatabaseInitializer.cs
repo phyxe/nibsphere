@@ -83,6 +83,7 @@ namespace AFData.Database
                         EmailAddress NVARCHAR(150) NULL,
                         ContactNumber NVARCHAR(50) NULL,
                         SignaturePath NVARCHAR(500) NULL,
+                        ThemePreference NVARCHAR(20) NULL,
                         IsPrimary BIT NOT NULL DEFAULT 1,
                         CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
                         UpdatedAt DATETIME2 NULL

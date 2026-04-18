@@ -8,6 +8,7 @@
 		public string? EmailAddress { get; set; }
 		public string? ContactNumber { get; set; }
 		public string? SignaturePath { get; set; }
+		public string? ThemePreference { get; set; }
 		public bool IsPrimary { get; set; }
 	}
 }

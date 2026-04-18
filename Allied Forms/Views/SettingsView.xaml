@@ -155,6 +155,8 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="24"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Row="0"
@@ -185,9 +187,33 @@
                             </StackPanel>
                         </Grid>
 
+                        <Grid Grid.Row="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Theme Preference"
+                                   Margin="0,0,0,6"
+                                   Style="{StaticResource TextBlock.Body}" />
+                                <ComboBox x:Name="ThemePreferenceComboBox"
+                                      MinHeight="36"
+                                      Background="{DynamicResource Brush.Surface}"
+                                      Foreground="{DynamicResource Brush.PrimaryText}"
+                                      BorderBrush="{DynamicResource Brush.Border}"
+                                      SelectedIndex="0">
+                                    <ComboBoxItem Content="System" />
+                                    <ComboBoxItem Content="Light" />
+                                    <ComboBoxItem Content="Dark" />
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+
                         <Button x:Name="SaveUserSettingsButton"
                                 Style="{StaticResource IconButtonStyle}"
-                                Grid.Row="6"
+                                Grid.Row="8"
                                 Width="36"
                                 Height="36"
                                 Padding="0"

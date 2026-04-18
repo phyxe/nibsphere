@@ -25,6 +25,7 @@ namespace AFData.Repositories
                     EmailAddress,
                     ContactNumber,
                     SignaturePath,
+                    ThemePreference,
                     IsPrimary
                 FROM AppUserProfile
                 WHERE IsPrimary = 1
@@ -50,6 +51,7 @@ namespace AFData.Repositories
 				EmailAddress = reader["EmailAddress"] as string,
 				ContactNumber = reader["ContactNumber"] as string,
 				SignaturePath = reader["SignaturePath"] as string,
+				ThemePreference = reader["ThemePreference"] as string,
 				IsPrimary = reader.GetBoolean(reader.GetOrdinal("IsPrimary"))
 			};
 		}
@@ -65,6 +67,7 @@ namespace AFData.Repositories
                     EmailAddress,
                     ContactNumber,
                     SignaturePath,
+                    ThemePreference,
                     IsPrimary
                 )
                 VALUES
@@ -74,6 +77,7 @@ namespace AFData.Repositories
                     @EmailAddress,
                     @ContactNumber,
                     @SignaturePath,
+                    @ThemePreference,
                     @IsPrimary
                 );
 
@@ -101,6 +105,7 @@ namespace AFData.Repositories
                     EmailAddress = @EmailAddress,
                     ContactNumber = @ContactNumber,
                     SignaturePath = @SignaturePath,
+                    ThemePreference = @ThemePreference,
                     IsPrimary = @IsPrimary,
                     UpdatedAt = GETDATE()
                 WHERE Id = @Id;
@@ -123,6 +128,7 @@ namespace AFData.Repositories
 			command.Parameters.AddWithValue("@EmailAddress", (object?)userProfile.EmailAddress ?? DBNull.Value);
 			command.Parameters.AddWithValue("@ContactNumber", (object?)userProfile.ContactNumber ?? DBNull.Value);
 			command.Parameters.AddWithValue("@SignaturePath", (object?)userProfile.SignaturePath ?? DBNull.Value);
+			command.Parameters.AddWithValue("@ThemePreference", (object?)userProfile.ThemePreference ?? DBNull.Value);
 			command.Parameters.AddWithValue("@IsPrimary", userProfile.IsPrimary);
 		}
 	}

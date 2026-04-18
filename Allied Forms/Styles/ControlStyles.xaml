@@ -93,6 +93,22 @@
         <Setter Property="Padding" Value="8,4" />
     </Style>
 
+    <Style TargetType="ComboBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
+        <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
+        <Setter Property="Padding" Value="8,6" />
+        <Style.Triggers>
+            <Trigger Property="IsHighlighted" Value="True">
+                <Setter Property="Background" Value="{DynamicResource Brush.GridSelectionBackground}" />
+                <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource Brush.TabActiveBackground}" />
+                <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="Label">
         <Setter Property="FontFamily" Value="{StaticResource Font.Palanquin}" />
         <Setter Property="FontSize" Value="14" />
@@ -161,12 +177,51 @@
         <Setter Property="Foreground" Value="{DynamicResource Brush.TabForeground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
         <Setter Property="Padding" Value="12,6" />
-        <Style.Triggers>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{DynamicResource Brush.TabActiveBackground}" />
-                <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
-            </Trigger>
-        </Style.Triggers>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Border x:Name="TabBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="1,1,1,0"
+                        CornerRadius="8,8,0,0"
+                        Margin="0,0,4,0"
+                        Padding="{TemplateBinding Padding}">
+                        <ContentPresenter x:Name="HeaderContent"
+                                      ContentSource="Header"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      RecognizesAccessKey="True"
+                                      TextElement.Foreground="{TemplateBinding Foreground}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="TabBorder"
+                                Property="Background"
+                                Value="{DynamicResource Brush.TabActiveBackground}" />
+                            <Setter Property="Foreground"
+                                Value="{DynamicResource Brush.TabActiveForeground}" />
+                            <Setter TargetName="HeaderContent"
+                                Property="TextElement.Foreground"
+                                Value="{DynamicResource Brush.TabActiveForeground}" />
+                            <Setter Property="Panel.ZIndex"
+                                Value="1" />
+                        </Trigger>
+
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="TabBorder"
+                                Property="Background"
+                                Value="{DynamicResource Brush.TabActiveBackground}" />
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity"
+                                Value="0.6" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style TargetType="DataGrid">

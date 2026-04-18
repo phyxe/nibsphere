@@ -156,15 +156,19 @@ namespace Allied_Forms.Views
 				SetUserFieldsEditable(true);
 				SetUserButtonToSaveMode();
 				_isUserEditMode = true;
+				SetThemePreferenceSelection(null);
 				return;
 			}
 
 			UserDefaultFullNameTextBox.Text = _appUserProfile.FullName;
 			UserDefaultPositionTextBox.Text = _appUserProfile.PositionTitle ?? string.Empty;
+			SetThemePreferenceSelection(_appUserProfile.ThemePreference);
 
 			SetUserFieldsEditable(false);
 			SetUserButtonToEditMode();
 			_isUserEditMode = false;
+
+
 		}
 
 		private async void SaveUserSettingsButton_Click(object sender, RoutedEventArgs e)
@@ -198,6 +202,7 @@ namespace Allied_Forms.Views
 			userProfile.EmailAddress = null;
 			userProfile.ContactNumber = null;
 			userProfile.SignaturePath = null;
+			userProfile.ThemePreference = GetSelectedThemePreference();
 			userProfile.IsPrimary = true;
 
 			if (_appUserProfile == null)
@@ -227,6 +232,7 @@ namespace Allied_Forms.Views
 		{
 			UserDefaultFullNameTextBox.IsReadOnly = !isEditable;
 			UserDefaultPositionTextBox.IsReadOnly = !isEditable;
+			ThemePreferenceComboBox.IsEnabled = isEditable;
 		}
 
 		private void SetUserButtonToSaveMode()
@@ -239,6 +245,36 @@ namespace Allied_Forms.Views
 		{
 			SaveUserSettingsButton.ToolTip = "Edit User Settings";
 			SaveUserSettingsIcon.UriSource = new Uri("/Resources/Icons/edit.svg", UriKind.Relative);
+		}
+
+		private string GetSelectedThemePreference()
+		{
+			if (ThemePreferenceComboBox.SelectedItem is ComboBoxItem item &&
+				item.Content is string value)
+			{
+				return value;
+			}
+
+			return "System";
+		}
+
+		private void SetThemePreferenceSelection(string? themePreference)
+		{
+			string target = string.IsNullOrWhiteSpace(themePreference)
+				? "System"
+				: themePreference;
+
+			foreach (var item in ThemePreferenceComboBox.Items)
+			{
+				if (item is ComboBoxItem comboBoxItem &&
+					string.Equals(comboBoxItem.Content as string, target, StringComparison.OrdinalIgnoreCase))
+				{
+					ThemePreferenceComboBox.SelectedItem = comboBoxItem;
+					return;
+				}
+			}
+
+			ThemePreferenceComboBox.SelectedIndex = 0;
 		}
 
 		private async Task LoadLearningAreasAsync()

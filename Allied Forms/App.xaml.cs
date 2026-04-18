@@ -1,6 +1,8 @@
 ﻿using AFCore.Interfaces;
 using AFData.Database;
 using AFData.Infrastructure;
+using AFData.Repositories;
+using Microsoft.Win32;
 using System.Windows;
 
 namespace Allied_Forms
@@ -22,7 +24,8 @@ namespace Allied_Forms
 			var databaseInitializer = new DatabaseInitializer(AppPaths);
 			await databaseInitializer.InitializeAsync();
 
-			ApplyTheme(false);
+			bool useDarkTheme = await ResolveInitialThemeAsync();
+			ApplyTheme(useDarkTheme);
 		}
 
 		public static void ApplyTheme(bool useDarkTheme)
@@ -49,6 +52,43 @@ namespace Allied_Forms
 		public static void ToggleTheme()
 		{
 			ApplyTheme(!IsDarkTheme);
+		}
+
+		private static async Task<bool> ResolveInitialThemeAsync()
+		{
+			var repository = new AppUserProfileRepository(AppPaths);
+			var userProfile = await repository.GetPrimaryUserProfileAsync();
+
+			string? preference = userProfile?.ThemePreference;
+
+			if (string.Equals(preference, "Dark", StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+
+			if (string.Equals(preference, "Light", StringComparison.OrdinalIgnoreCase))
+			{
+				return false;
+			}
+
+			return IsSystemDarkMode();
+		}
+
+		private static bool IsSystemDarkMode()
+		{
+			const string personalizeKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+			const string appsUseLightTheme = "AppsUseLightTheme";
+
+			using RegistryKey? key = Registry.CurrentUser.OpenSubKey(personalizeKeyPath);
+
+			object? value = key?.GetValue(appsUseLightTheme);
+
+			if (value is int intValue)
+			{
+				return intValue == 0;
+			}
+
+			return false;
 		}
 	}
 }
