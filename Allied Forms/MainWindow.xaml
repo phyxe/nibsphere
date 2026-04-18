@@ -56,14 +56,18 @@
                             <Button x:Name="NavToggleButton"
 									Width="36"
 									Height="36"
-									Content="☰"
-									FontSize="16"
-									HorizontalAlignment="Left"
+									HorizontalAlignment="Center"
 									VerticalAlignment="Center"
-									Background="{DynamicResource Brush.NavItemHover}"
-									BorderBrush="{DynamicResource Brush.NavItemHover}"
-									Foreground="White"
-									Click="NavToggleButton_Click"/>
+									Background="Transparent"
+									Click="NavToggleButton_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <svgc:SvgIcon Width="18"
+													Height="18"
+													Fill="{DynamicResource Brush.NavIcon}"
+													UriSource="/Resources/Icons/navigation-left.svg"
+													AppName="Allied Forms" />
+                                </StackPanel>
+                            </Button>
 
                             <TextBlock x:Name="NavHeaderText"
 									   Grid.Column="1"
@@ -139,6 +143,25 @@
 												   VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
+                                <Button x:Name="SchoolYearNavButton"
+										Height="42"
+										Margin="0,0,0,8"
+										HorizontalContentAlignment="Left"
+										Background="Transparent"
+										BorderBrush="Transparent">
+                                    <StackPanel Orientation="Horizontal">
+                                        <svgc:SvgIcon Width="18"
+													Height="18"
+													Fill="{DynamicResource Brush.NavIcon}"
+													UriSource="/Resources/Icons/schoolyear.svg"
+													AppName="Allied Forms" />
+                                        <TextBlock x:Name="SchoolYear"
+												   Text="School Year"
+												   Margin="12,0,0,0"
+												   Foreground="{DynamicResource Brush.NavIcon}"
+												   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>                                
                             </StackPanel>
                         </ScrollViewer>
                         <!-- Nav Bottom Section -->

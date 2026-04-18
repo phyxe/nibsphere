@@ -53,6 +53,8 @@
     <None Remove="Resources\Icons\document.svg" />
     <None Remove="Resources\Icons\edit.svg" />
     <None Remove="Resources\Icons\home.svg" />
+    <None Remove="Resources\Icons\navigation-left.svg" />
+    <None Remove="Resources\Icons\navigation-right.svg" />
     <None Remove="Resources\Icons\save.svg" />
     <None Remove="Resources\Icons\settings.svg" />
     <None Remove="Resources\Icons\student.svg" />
@@ -195,6 +197,12 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\home.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\navigation-left.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\navigation-right.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\save.svg">
