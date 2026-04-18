@@ -3,8 +3,6 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:svg="http://sharpvectors.codeplex.com/runtime/"
-		xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:controls="clr-namespace:Allied_Forms.Controls"
 		mc:Ignorable="d"
 		Title="Allied Forms"
@@ -55,16 +53,15 @@
                             </Grid.ColumnDefinitions>
 
                             <Button x:Name="NavToggleButton"
-									Width="36"
-									Height="36"
 									HorizontalAlignment="Center"
 									VerticalAlignment="Center"
 									Background="Transparent"
+                                    BorderBrush="Transparent"
 									Click="NavToggleButton_Click">
-                                <controls:SkiaSvgIcon Width="18"
-                          Height="18"
-                          Source="/Resources/Icons/navigation-left.svg"
-                          Tint="{DynamicResource Brush.NavIcon}" />
+                                <controls:ControlSvgIcon Width="18"
+                                     Height="18"
+                                     Source="/Resources/Icons/navigation.svg"
+                                     Tint="{DynamicResource Brush.NavIcon}" />
                             </Button>
 
                             <TextBlock x:Name="NavHeaderText"
@@ -89,11 +86,10 @@
 										Background="{DynamicResource Brush.NavItemActive}"
 										BorderBrush="{DynamicResource Brush.NavItemActive}">
                                     <StackPanel Orientation="Horizontal">
-                                        <svgc:SvgIcon Width="18"
-													Height="18"
-													Fill="{DynamicResource Brush.NavIcon}"
-													UriSource="/Resources/Icons/home.svg"
-													AppName="Allied Forms" />
+                                        <controls:ControlSvgIcon Width="18"
+                                         Height="18"
+                                         Source="/Resources/Icons/dashboard.svg"
+                                         Tint="{DynamicResource Brush.NavIcon}" />
                                         <TextBlock x:Name="DashboardNavText"
 												   Text="Dashboard"
 												   Margin="12,0,0,0"
@@ -109,11 +105,10 @@
 										Background="Transparent"
 										BorderBrush="Transparent">
                                     <StackPanel Orientation="Horizontal">
-                                        <svgc:SvgIcon Width="18"
-													Height="18"
-													Fill="{DynamicResource Brush.NavIcon}"
-													UriSource="/Resources/Icons/student.svg"
-													AppName="Allied Forms" />
+                                        <controls:ControlSvgIcon Width="18"
+                                             Height="18"
+                                             Source="/Resources/Icons/student.svg"
+                                             Tint="{DynamicResource Brush.NavIcon}" />
                                         <TextBlock x:Name="StudentsNavText"
 												   Text="Students"
 												   Margin="12,0,0,0"
@@ -129,11 +124,10 @@
 										Background="Transparent"
 										BorderBrush="Transparent">
                                     <StackPanel Orientation="Horizontal">
-                                        <svgc:SvgIcon Width="18"
-													Height="18"
-													Fill="{DynamicResource Brush.NavIcon}"
-													UriSource="/Resources/Icons/document.svg"
-													AppName="Allied Forms" />
+                                        <controls:ControlSvgIcon Width="18"
+                                             Height="18"
+                                             Source="/Resources/Icons/report.svg"
+                                             Tint="{DynamicResource Brush.NavIcon}" />
                                         <TextBlock x:Name="ReportsNavText"
 												   Text="Reports"
 												   Margin="12,0,0,0"
@@ -148,11 +142,10 @@
 										Background="Transparent"
 										BorderBrush="Transparent">
                                     <StackPanel Orientation="Horizontal">
-                                        <svgc:SvgIcon Width="18"
-													Height="18"
-													Fill="{DynamicResource Brush.NavIcon}"
-													UriSource="/Resources/Icons/schoolyear.svg"
-													AppName="Allied Forms" />
+                                        <controls:ControlSvgIcon Width="18"
+                                             Height="18"
+                                             Source="/Resources/Icons/calendar.svg"
+                                             Tint="{DynamicResource Brush.NavIcon}" />
                                         <TextBlock x:Name="SchoolYear"
 												   Text="School Year"
 												   Margin="12,0,0,0"
@@ -186,10 +179,11 @@
                                     ToolTip="Toggle theme"
                                     Click="ThemeToggleNavButton_Click">
                                     <Viewbox Width="18" Height="18" Stretch="Uniform">
-                                        <svgc:SvgIcon x:Name="ThemeToggleNavIcon"
-                                            Fill="{DynamicResource Brush.NavIcon}"
-                                            UriSource="/Resources/Icons/themedark.svg"
-                                            AppName="Allied Forms" />
+                                        <controls:ControlSvgIcon x:Name="ThemeToggleNavIcon"
+                                            Width="18"
+                                            Height="18"
+                                            Source="/Resources/Icons/modedark.svg"
+                                            Tint="{DynamicResource Brush.NavIcon}" />
                                     </Viewbox>
                                 </Button>
 
@@ -205,9 +199,10 @@
                                     ToolTip="Settings"
                                     Click="BottomSettingsNavButton_Click">
                                     <Viewbox Width="18" Height="18" Stretch="Uniform">
-                                        <svgc:SvgIcon Fill="{DynamicResource Brush.NavIcon}"
-                                            UriSource="/Resources/Icons/settings.svg"
-                                            AppName="Allied Forms" />
+                                        <controls:ControlSvgIcon Width="18"
+                                            Height="18"
+                                            Source="/Resources/Icons/setting.svg"
+                                            Tint="{DynamicResource Brush.NavIcon}" />
                                     </Viewbox>
                                 </Button>
                             </Grid>

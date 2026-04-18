@@ -44,13 +44,13 @@ namespace Allied_Forms
 			{
 				ThemeStatusTextBlock.Text = "Theme: Dark";
 				ThemeToggleNavButton.ToolTip = "Switch to Light Theme";
-				ThemeToggleNavIcon.UriSource = new Uri("/Resources/Icons/themelight.svg", UriKind.Relative);
+				ThemeToggleNavIcon.Source = "/Resources/Icons/modelight.svg";
 			}
 			else
 			{
 				ThemeStatusTextBlock.Text = "Theme: Light";
 				ThemeToggleNavButton.ToolTip = "Switch to Dark Theme";
-				ThemeToggleNavIcon.UriSource = new Uri("/Resources/Icons/themedark.svg", UriKind.Relative);
+				ThemeToggleNavIcon.Source = "/Resources/Icons/modedark.svg";
 			}
 		}
 	}

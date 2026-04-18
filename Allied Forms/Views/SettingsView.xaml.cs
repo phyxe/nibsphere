@@ -133,13 +133,13 @@ namespace Allied_Forms.Views
 		private void SetSchoolButtonToSaveMode()
 		{
 			SaveSchoolSettingsButton.ToolTip = "Save School Settings";
-			SaveSchoolSettingsIcon.UriSource = new System.Uri("/Resources/Icons/save.svg", System.UriKind.Relative);
+			SaveSchoolSettingsIcon.Source = "/Resources/Icons/save.svg";
 		}
 
 		private void SetSchoolButtonToEditMode()
 		{
 			SaveSchoolSettingsButton.ToolTip = "Edit School Settings";
-			SaveSchoolSettingsIcon.UriSource = new System.Uri("/Resources/Icons/edit.svg", System.UriKind.Relative);
+			SaveSchoolSettingsIcon.Source = "/Resources/Icons/edit.svg";
 		}
 
 		private static string? NullIfWhiteSpace(string? value)
@@ -238,13 +238,13 @@ namespace Allied_Forms.Views
 		private void SetUserButtonToSaveMode()
 		{
 			SaveUserSettingsButton.ToolTip = "Save User Settings";
-			SaveUserSettingsIcon.UriSource = new Uri("/Resources/Icons/save.svg", UriKind.Relative);
+			SaveUserSettingsIcon.Source = "/Resources/Icons/save.svg";
 		}
 
 		private void SetUserButtonToEditMode()
 		{
 			SaveUserSettingsButton.ToolTip = "Edit User Settings";
-			SaveUserSettingsIcon.UriSource = new Uri("/Resources/Icons/edit.svg", UriKind.Relative);
+			SaveUserSettingsIcon.Source = "/Resources/Icons/edit.svg";
 		}
 
 		private string GetSelectedThemePreference()
@@ -443,13 +443,13 @@ namespace Allied_Forms.Views
 		private void SetLearningAreaButtonToSaveMode()
 		{
 			SaveLearningAreaButton.ToolTip = "Save Learning Area";
-			SaveLearningAreaIcon.UriSource = new Uri("/Resources/Icons/save.svg", UriKind.Relative);
+			SaveLearningAreaIcon.Source = "/Resources/Icons/save.svg";
 		}
 
 		private void SetLearningAreaButtonToEditMode()
 		{
 			SaveLearningAreaButton.ToolTip = "Update Learning Area";
-			SaveLearningAreaIcon.UriSource = new Uri("/Resources/Icons/edit.svg", UriKind.Relative);
+			SaveLearningAreaIcon.Source = "/Resources/Icons/edit.svg";
 		}
 	}
 }

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+             xmlns:controls="clr-namespace:Allied_Forms.Controls"
              mc:Ignorable="d"
              d:DesignHeight="600"
              d:DesignWidth="900"
@@ -132,12 +132,11 @@
                                 HorizontalAlignment="Right"
                                 ToolTip="Save School Settings"
                                 Click="SaveSchoolSettingsButton_Click">
-                            <Viewbox Width="18" Height="18">
-                                <svgc:SvgIcon x:Name="SaveSchoolSettingsIcon"
-                                    Fill="{DynamicResource Brush.PrimaryText}"
-                                    UriSource="/Resources/Icons/save.svg"
-                                    AppName="Allied Forms" />
-                            </Viewbox>
+                            <controls:ControlSvgIcon x:Name="SaveSchoolSettingsIcon"
+                                 Width="18"
+                                 Height="18"
+                                 Source="/Resources/Icons/save.svg"
+                                 Tint="{DynamicResource Brush.NavIcon}" />
                         </Button>
                     </Grid>
                 </ScrollViewer>
@@ -220,12 +219,11 @@
                                 HorizontalAlignment="Right"
                                 ToolTip="Save User Settings"
                                 Click="SaveUserSettingsButton_Click">
-                            <Viewbox Width="18" Height="18">
-                                <svgc:SvgIcon x:Name="SaveUserSettingsIcon"
-                                    Fill="{DynamicResource Brush.PrimaryText}"
-                      UriSource="/Resources/Icons/save.svg"
-                      AppName="Allied Forms" />
-                            </Viewbox>
+                            <controls:ControlSvgIcon x:Name="SaveUserSettingsIcon"
+                                 Width="18"
+                                 Height="18"
+                                 Source="/Resources/Icons/save.svg"
+                                 Tint="{DynamicResource Brush.NavIcon}" />
                         </Button>
                     </Grid>
                 </ScrollViewer>
@@ -308,12 +306,11 @@
                                             HorizontalAlignment="Left"
                                             ToolTip="Save Learning Area"
                                             Click="SaveLearningAreaButton_Click">
-                                        <Viewbox Width="18" Height="18">
-                                            <svgc:SvgIcon x:Name="SaveLearningAreaIcon"
-                                              Fill="{DynamicResource Brush.PrimaryText}"
-                                              UriSource="/Resources/Icons/save.svg"
-                                              AppName="Allied Forms" />
-                                        </Viewbox>
+                                        <controls:ControlSvgIcon x:Name="SaveLearningAreaIcon"
+                                             Width="18"
+                                             Height="18"
+                                             Source="/Resources/Icons/save.svg"
+                                             Tint="{DynamicResource Brush.NavIcon}" />
                                     </Button>
                                 </StackPanel>
                             </Grid>
@@ -364,11 +361,11 @@
                                                         Tag="{Binding}"
                                                         Click="EditLearningAreaButton_Click"
                                                         Style="{StaticResource IconButtonStyle}">
-                                                        <Viewbox Width="16" Height="16">
-                                                            <svgc:SvgIcon Fill="{DynamicResource Brush.PrimaryText}"
-                                                              UriSource="/Resources/Icons/edit.svg"
-                                                              AppName="Allied Forms" />
-                                                        </Viewbox>
+                                                        <controls:ControlSvgIcon x:Name="EditLearningAreaIcon"
+                                                            Width="16"
+                                                         Height="16"
+                                                         Source="/Resources/Icons/edit.svg"
+                                                         Tint="{DynamicResource Brush.PrimaryText}" />
                                                     </Button>
 
                                                     <Button Width="32"
@@ -378,11 +375,11 @@
                                                         Tag="{Binding}"
                                                         Click="DeleteLearningAreaButton_Click"
                                                         Style="{StaticResource IconButtonStyle}">
-                                                        <Viewbox Width="16" Height="16">
-                                                            <svgc:SvgIcon Fill="{DynamicResource Brush.PrimaryText}"
-                                                              UriSource="/Resources/Icons/del2.svg"
-                                                              AppName="Allied Forms" />
-                                                        </Viewbox>
+                                                        <controls:ControlSvgIcon
+                                                            Width="16"
+                                                         Height="16"
+                                                         Source="/Resources/Icons/delete.svg"
+                                                         Tint="{DynamicResource Brush.PrimaryText}" />
                                                     </Button>
                                                 </StackPanel>
                                             </DataTemplate>

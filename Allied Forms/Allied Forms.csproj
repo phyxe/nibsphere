@@ -49,13 +49,19 @@
     <None Remove="Resources\Fonts\Trirong\Trirong-SemiBoldItalic.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-Thin.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf" />
+    <None Remove="Resources\Icons\calendar.svg" />
+    <None Remove="Resources\Icons\dashboard.svg" />
     <None Remove="Resources\Icons\del2.svg" />
+    <None Remove="Resources\Icons\delete.svg" />
     <None Remove="Resources\Icons\document.svg" />
     <None Remove="Resources\Icons\edit.svg" />
     <None Remove="Resources\Icons\home.svg" />
-    <None Remove="Resources\Icons\navigation-left.svg" />
-    <None Remove="Resources\Icons\navigation-right.svg" />
+    <None Remove="Resources\Icons\modedark.svg" />
+    <None Remove="Resources\Icons\modelight.svg" />
+    <None Remove="Resources\Icons\navigation.svg" />
+    <None Remove="Resources\Icons\report.svg" />
     <None Remove="Resources\Icons\save.svg" />
+    <None Remove="Resources\Icons\setting.svg" />
     <None Remove="Resources\Icons\settings.svg" />
     <None Remove="Resources\Icons\student.svg" />
     <None Remove="Resources\Icons\themedark.svg" />
@@ -63,7 +69,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SharpVectors.Wpf" Version="1.8.5" />
     <PackageReference Include="SkiaSharp.Views.WPF" Version="3.119.2" />
     <PackageReference Include="Svg.Skia" Version="4.3.0" />
 	<PackageReference Include="OpenTK" Version="4.9.4" />
@@ -193,33 +198,39 @@
     <Resource Include="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Icons\del2.svg">
+    <Resource Include="Resources\Icons\calendar.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Icons\document.svg" />
+    <Resource Include="Resources\Icons\dashboard.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\delete.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Icons\edit.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Icons\home.svg">
+    <Resource Include="Resources\Icons\modedark.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Icons\navigation-left.svg">
+    <Resource Include="Resources\Icons\modelight.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Icons\navigation-right.svg">
+    <Resource Include="Resources\Icons\navigation.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\report.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\save.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Icons\settings.svg">
+    <Resource Include="Resources\Icons\setting.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\student.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Icons\themedark.svg" />
-    <Resource Include="Resources\Icons\themelight.svg" />
   </ItemGroup>
 
 </Project>
