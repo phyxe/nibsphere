@@ -88,6 +88,20 @@ namespace AFData.Database
                         UpdatedAt DATETIME2 NULL
                     );
                 END
+
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LearningArea')
+                BEGIN
+                    CREATE TABLE LearningArea
+                    (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+                        Category NVARCHAR(100) NOT NULL,
+                        Code NVARCHAR(50) NOT NULL,
+                        Description NVARCHAR(200) NOT NULL,
+                        Sort INT NOT NULL DEFAULT 0,
+                        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+                        UpdatedAt DATETIME2 NULL
+                    );
+                END
                 """;
 
 			using SqlConnection connection = _connectionFactory.CreateAppConnection();

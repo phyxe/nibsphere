@@ -14,6 +14,7 @@ namespace Allied_Forms.Views
 		private readonly AppUserProfileRepository _appUserProfileRepository;
 		private AppUserProfile? _appUserProfile;
 		private bool _isUserEditMode;
+		private readonly LearningAreaRepository _learningAreaRepository;
 
 		public SettingsView()
 		{
@@ -22,6 +23,7 @@ namespace Allied_Forms.Views
 			IAppPaths appPaths = App.AppPaths;
 			_schoolProfileRepository = new SchoolProfileRepository(appPaths);
 			_appUserProfileRepository = new AppUserProfileRepository(appPaths);
+			_learningAreaRepository = new LearningAreaRepository(appPaths);
 
 			Loaded += SettingsView_Loaded;
 		}
@@ -31,6 +33,7 @@ namespace Allied_Forms.Views
 			Loaded -= SettingsView_Loaded;
 			await LoadSchoolProfileAsync();
 			await LoadUserProfileAsync();
+			await LoadLearningAreasAsync();
 		}
 
 		private async Task LoadSchoolProfileAsync()
@@ -235,6 +238,96 @@ namespace Allied_Forms.Views
 		{
 			SaveUserSettingsButton.ToolTip = "Edit User Settings";
 			SaveUserSettingsIcon.UriSource = new Uri("/Resources/Icons/edit.svg", UriKind.Relative);
+		}
+
+		private async Task LoadLearningAreasAsync()
+		{
+			LearningAreasDataGrid.ItemsSource = await _learningAreaRepository.GetAllAsync();
+		}
+
+		private async void SaveLearningAreaButton_Click(object sender, RoutedEventArgs e)
+		{
+			string category = LearningAreaCategoryTextBox.Text.Trim();
+			string code = LearningAreaCodeTextBox.Text.Trim();
+			string description = LearningAreaDescriptionTextBox.Text.Trim();
+
+			if (string.IsNullOrWhiteSpace(category))
+			{
+				MessageBox.Show(
+					"Category is required.",
+					"Validation",
+					MessageBoxButton.OK,
+					MessageBoxImage.Warning);
+
+				LearningAreaCategoryTextBox.Focus();
+				return;
+			}
+
+			if (string.IsNullOrWhiteSpace(code))
+			{
+				MessageBox.Show(
+					"Code is required.",
+					"Validation",
+					MessageBoxButton.OK,
+					MessageBoxImage.Warning);
+
+				LearningAreaCodeTextBox.Focus();
+				return;
+			}
+
+			if (string.IsNullOrWhiteSpace(description))
+			{
+				MessageBox.Show(
+					"Description is required.",
+					"Validation",
+					MessageBoxButton.OK,
+					MessageBoxImage.Warning);
+
+				LearningAreaDescriptionTextBox.Focus();
+				return;
+			}
+
+			int sort = 0;
+			if (!string.IsNullOrWhiteSpace(LearningAreaSortTextBox.Text) &&
+				!int.TryParse(LearningAreaSortTextBox.Text.Trim(), out sort))
+			{
+				MessageBox.Show(
+					"Sort must be a valid whole number.",
+					"Validation",
+					MessageBoxButton.OK,
+					MessageBoxImage.Warning);
+
+				LearningAreaSortTextBox.Focus();
+				return;
+			}
+
+			LearningArea learningArea = new LearningArea
+			{
+				Category = category,
+				Code = code,
+				Description = description,
+				Sort = sort
+			};
+
+			await _learningAreaRepository.InsertAsync(learningArea);
+
+			await LoadLearningAreasAsync();
+			ClearLearningAreaEntryFields();
+
+			MessageBox.Show(
+				"Learning area saved successfully.",
+				"Settings Saved",
+				MessageBoxButton.OK,
+				MessageBoxImage.Information);
+		}
+
+		private void ClearLearningAreaEntryFields()
+		{
+			LearningAreaCategoryTextBox.Clear();
+			LearningAreaCodeTextBox.Clear();
+			LearningAreaDescriptionTextBox.Clear();
+			LearningAreaSortTextBox.Clear();
+			LearningAreaCategoryTextBox.Focus();
 		}
 	}
 }
