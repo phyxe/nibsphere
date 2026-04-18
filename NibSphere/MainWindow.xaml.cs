@@ -1,7 +1,7 @@
-﻿using Allied_Forms.Views;
+﻿using NibSphere.Views;
 using System.Windows;
 
-namespace Allied_Forms
+namespace NibSphere
 {
 	public partial class MainWindow : Window
 	{

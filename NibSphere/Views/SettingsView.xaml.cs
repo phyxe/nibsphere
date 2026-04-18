@@ -4,7 +4,7 @@ using AFData.Repositories;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Allied_Forms.Views
+namespace NibSphere.Views
 {
 	public partial class SettingsView : UserControl
 	{

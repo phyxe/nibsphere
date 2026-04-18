@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Resources;
 using System.Xml.Linq;
 
-namespace Allied_Forms.Controls
+namespace NibSphere.Controls
 {
 	public class ControlSvgIcon : UserControl
 	{

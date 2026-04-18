@@ -27,8 +27,8 @@ namespace AFData.Database
 
 		private async Task CreateDatabaseAsync()
 		{
-			string databaseName = "AlliedForms";
-			string logFilePath = Path.Combine(_appPaths.DataDirectory, "AlliedForms_log.ldf");
+			string databaseName = "NibSphere";
+			string logFilePath = Path.Combine(_appPaths.DataDirectory, "NibSphere_log.ldf");
 
 			string createDatabaseSql =
 				$"""

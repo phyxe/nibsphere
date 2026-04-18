@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Allied_Forms.Services
+namespace NibSphere.Services
 {
 	public static class ThemeManager
 	{

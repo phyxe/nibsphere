@@ -5,7 +5,7 @@ using AFData.Repositories;
 using Microsoft.Win32;
 using System.Windows;
 
-namespace Allied_Forms
+namespace NibSphere
 {
 	public partial class App : Application
 	{
