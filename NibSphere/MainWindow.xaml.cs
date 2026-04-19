@@ -8,14 +8,16 @@ namespace NibSphere
 	public partial class MainWindow : Window
 	{
 		private bool _isNavCollapsed = false;
+		private bool _isSchoolNavPopupOpen = false;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 			UpdateThemeUi();
 			UpdateWindowStateUi();
+			UpdateNavBrandUi();
 			UpdateNavToggleButtonUi();
-			UpdateNavToggleButtonUi();
+			UpdateSchoolNavUi();
 
 			SourceInitialized += MainWindow_SourceInitialized;
 		}
@@ -31,9 +33,12 @@ namespace NibSphere
 			DashboardNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 			StudentsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 			ReportsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+			SchoolYearNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+			SchoolNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 
 			UpdateNavBrandUi();
 			UpdateNavToggleButtonUi();
+			UpdateSchoolNavUi();
 		}
 
 		private void UserProfileViewNavButton_Click(object sender, RoutedEventArgs e)
@@ -214,6 +219,59 @@ namespace NibSphere
 						? "/Resources/Brand/nibsphere-mark.png"
 						: "/Resources/Brand/nibsphere-full.png",
 					UriKind.Relative));
+		}
+
+		private void SchoolNavButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (_isNavCollapsed)
+			{
+				return;
+			}
+
+			_isSchoolNavPopupOpen = !_isSchoolNavPopupOpen;
+			UpdateSchoolNavUi();
+		}
+
+		private void SchoolNavPopup_Closed(object sender, EventArgs e)
+		{
+			_isSchoolNavPopupOpen = false;
+			UpdateSchoolNavUi();
+		}
+
+		private void UpdateSchoolNavUi()
+		{
+			if (SchoolNavPopup == null || SchoolNavIndicatorText == null)
+			{
+				return;
+			}
+
+			if (_isNavCollapsed)
+			{
+				_isSchoolNavPopupOpen = false;
+				SchoolNavPopup.IsOpen = false;
+				SchoolNavIndicatorText.Visibility = Visibility.Collapsed;
+				return;
+			}
+
+			SchoolNavIndicatorText.Visibility = Visibility.Visible;
+			SchoolNavIndicatorText.Text = _isSchoolNavPopupOpen ? "▾" : "▸";
+			SchoolNavPopup.IsOpen = _isSchoolNavPopupOpen;
+		}
+
+		private void SchoolProfileSubNavButton_Click(object sender, RoutedEventArgs e)
+		{
+			_isSchoolNavPopupOpen = false;
+			UpdateSchoolNavUi();
+
+			MessageBox.Show("School Profile view will be added next.");
+		}
+
+		private void LearningAreasSubNavButton_Click(object sender, RoutedEventArgs e)
+		{
+			_isSchoolNavPopupOpen = false;
+			UpdateSchoolNavUi();
+
+			MessageBox.Show("Learning Areas view will be added next.");
 		}
 	}
 }

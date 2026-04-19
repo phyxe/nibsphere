@@ -90,6 +90,40 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="PopupMenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="PopupMenuButtonBorder"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="Center"
+                                      Margin="{TemplateBinding Padding}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PopupMenuButtonBorder"
+                                Property="Background"
+                                Value="{DynamicResource Brush.IconButtonHoverBackground}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="PopupMenuButtonBorder"
+                                Property="Background"
+                                Value="{DynamicResource Brush.IconButtonHoverBackground}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Border x:Name="WindowBorder"
@@ -106,9 +140,9 @@
 
             <!-- Title Bar -->
             <Border Grid.Row="0"
-        Background="{DynamicResource Brush.TitleBarBackground}"
-        BorderBrush="{DynamicResource Brush.Border}"
-        BorderThickness="0,0,0,1">
+                    Background="{DynamicResource Brush.TitleBarBackground}"
+                    BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="0,0,0,1">
                 <Grid Height="40">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -118,43 +152,74 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Margin="12,0,0,0"
-                   VerticalAlignment="Center"
-                   Foreground="{DynamicResource Brush.TitleBarForeground}"
-                   FontSize="14"
-                   FontWeight="SemiBold"
-                   Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Title}" />
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource Brush.TitleBarForeground}"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Text="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Title}" />
 
                     <Button Grid.Column="1"
-                Style="{StaticResource TitleBarButtonStyle}"
-                Click="MinimizeButton_Click">
+                        Style="{StaticResource TitleBarButtonStyle}"
+                        Click="MinimizeButton_Click">
                         <TextBlock Text="&#xE921;"
-                       FontFamily="Segoe MDL2 Assets"
-                       FontSize="10"
-                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="10"
+                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
                     </Button>
 
                     <Button Grid.Column="2"
-                Style="{StaticResource TitleBarButtonStyle}"
-                Click="MaximizeRestoreButton_Click">
+                        Style="{StaticResource TitleBarButtonStyle}"
+                        Click="MaximizeRestoreButton_Click">
                         <TextBlock x:Name="MaximizeRestoreGlyph"
-                       Text="&#xE922;"
-                       FontFamily="Segoe MDL2 Assets"
-                       FontSize="10"
-                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                            Text="&#xE922;"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="10"
+                            Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
                     </Button>
 
                     <Button Grid.Column="3"
-                Style="{StaticResource TitleBarCloseButtonStyle}"
-                Click="CloseButton_Click">
+                        Style="{StaticResource TitleBarCloseButtonStyle}"
+                        Click="CloseButton_Click">
                         <TextBlock Text="&#xE8BB;"
-                       FontFamily="Segoe MDL2 Assets"
-                       FontSize="10"
-                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="10"
+                           Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
                     </Button>
                 </Grid>
             </Border>
 
             <!-- Main Workspace -->
+            <Popup x:Name="SchoolNavPopup"
+                   PlacementTarget="{Binding ElementName=SchoolNavButton}"
+                   Placement="Right"
+                   HorizontalOffset="8"
+                   VerticalOffset="0"
+                   AllowsTransparency="True"
+                   PopupAnimation="Fade"
+                   StaysOpen="False"
+                   Closed="SchoolNavPopup_Closed">
+                <Border Background="{DynamicResource Brush.PopupBackground}"
+                    BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Padding="10"
+                    MinWidth="190">
+                    <StackPanel>
+                        <Button x:Name="SchoolProfileSubNavButton"
+                            Style="{StaticResource PopupMenuButtonStyle}"
+                            Click="SchoolProfileSubNavButton_Click">
+                            <TextBlock Text="School Profile" />
+                        </Button>
+
+                        <Button x:Name="LearningAreasSubNavButton"
+                            Margin="0,4,0,0"
+                            Style="{StaticResource PopupMenuButtonStyle}"
+                            Click="LearningAreasSubNavButton_Click">
+                            <TextBlock Text="Learning Areas" />
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </Popup>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="NavColumn" Width="220"/>
@@ -193,83 +258,83 @@
 
                         <!-- Row 2: Scrollable module nav -->
                         <ScrollViewer Grid.Row="1"
-                  VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled">
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
                             <StackPanel Margin="10,12,10,10">
 
                                 <Button x:Name="DashboardNavButton"
-                    Height="42"
-                    Margin="0,0,0,8"
-                    HorizontalContentAlignment="Left"
-                    Background="{DynamicResource Brush.NavItemActive}"
-                    BorderBrush="{DynamicResource Brush.NavItemActive}">
+                                    Height="42"
+                                    Margin="0,0,0,8"
+                                    HorizontalContentAlignment="Left"
+                                    Background="{DynamicResource Brush.NavItemActive}"
+                                    BorderBrush="{DynamicResource Brush.NavItemActive}">
                                     <StackPanel Orientation="Horizontal">
                                         <controls:ControlSvgIcon Width="18"
                                              Height="18"
                                              Source="/Resources/Icons/dashboard.svg"
                                              Tint="{DynamicResource Brush.NavIcon}" />
                                         <TextBlock x:Name="DashboardNavText"
-                               Text="Dashboard"
-                               Margin="12,0,0,0"
-                               Foreground="{DynamicResource Brush.NavIcon}"
-                               VerticalAlignment="Center"/>
+                                               Text="Dashboard"
+                                               Margin="12,0,0,0"
+                                               Foreground="{DynamicResource Brush.NavIcon}"
+                                               VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
 
                                 <Button x:Name="StudentsNavButton"
-                    Height="42"
-                    Margin="0,0,0,8"
-                    HorizontalContentAlignment="Left"
-                    Background="Transparent"
-                    BorderBrush="Transparent">
+                                    Height="42"
+                                    Margin="0,0,0,8"
+                                    HorizontalContentAlignment="Left"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent">
                                     <StackPanel Orientation="Horizontal">
                                         <controls:ControlSvgIcon Width="18"
                                              Height="18"
                                              Source="/Resources/Icons/student.svg"
                                              Tint="{DynamicResource Brush.NavIcon}" />
                                         <TextBlock x:Name="StudentsNavText"
-                               Text="Students"
-                               Margin="12,0,0,0"
-                               Foreground="{DynamicResource Brush.NavIcon}"
-                               VerticalAlignment="Center"/>
+                                           Text="Students"
+                                           Margin="12,0,0,0"
+                                           Foreground="{DynamicResource Brush.NavIcon}"
+                                           VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
 
                                 <Button x:Name="ReportsNavButton"
-                    Height="42"
-                    Margin="0,0,0,8"
-                    HorizontalContentAlignment="Left"
-                    Background="Transparent"
-                    BorderBrush="Transparent">
+                                    Height="42"
+                                    Margin="0,0,0,8"
+                                    HorizontalContentAlignment="Left"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent">
                                     <StackPanel Orientation="Horizontal">
                                         <controls:ControlSvgIcon Width="18"
                                              Height="18"
                                              Source="/Resources/Icons/report.svg"
                                              Tint="{DynamicResource Brush.NavIcon}" />
                                         <TextBlock x:Name="ReportsNavText"
-                               Text="Reports"
-                               Margin="12,0,0,0"
-                               Foreground="{DynamicResource Brush.NavIcon}"
-                               VerticalAlignment="Center"/>
+                                       Text="Reports"
+                                       Margin="12,0,0,0"
+                                       Foreground="{DynamicResource Brush.NavIcon}"
+                                       VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
 
                                 <Button x:Name="SchoolYearNavButton"
-                    Height="42"
-                    Margin="0,0,0,8"
-                    HorizontalContentAlignment="Left"
-                    Background="Transparent"
-                    BorderBrush="Transparent">
+                                    Height="42"
+                                    Margin="0,0,0,8"
+                                    HorizontalContentAlignment="Left"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent">
                                     <StackPanel Orientation="Horizontal">
                                         <controls:ControlSvgIcon Width="18"
                                              Height="18"
                                              Source="/Resources/Icons/calendar.svg"
                                              Tint="{DynamicResource Brush.NavIcon}" />
                                         <TextBlock x:Name="SchoolYearNavText"
-                               Text="School Year"
-                               Margin="12,0,0,0"
-                               Foreground="{DynamicResource Brush.NavIcon}"
-                               VerticalAlignment="Center"/>
+                                        Text="School Year"
+                                        Margin="12,0,0,0"
+                                        Foreground="{DynamicResource Brush.NavIcon}"
+                                        VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
                             </StackPanel>
@@ -277,27 +342,44 @@
 
                         <!-- Row 3: Sticky feature buttons -->
                         <Border Grid.Row="2"
-            BorderBrush="{DynamicResource Brush.NavItemHover}"
-            BorderThickness="0,1,0,0"
-            Padding="10,10,10,10">
+                            BorderBrush="{DynamicResource Brush.NavItemHover}"
+                            BorderThickness="0,1,0,0"
+                            Padding="10,10,10,10">
                             <StackPanel>
                                 <Button x:Name="SchoolNavButton"
-                    Height="42"
-                    HorizontalContentAlignment="Left"
-                    Background="Transparent"
-                    BorderBrush="Transparent"
-                    ToolTip="School">
-                                    <StackPanel Orientation="Horizontal">
-                                        <controls:ControlSvgIcon Width="18"
+                                    Height="42"
+                                    HorizontalContentAlignment="Stretch"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    ToolTip="School"
+                                    Click="SchoolNavButton_Click">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <controls:ControlSvgIcon Grid.Column="0"
+                                             Width="18"
                                              Height="18"
                                              Source="/Resources/Icons/school.svg"
                                              Tint="{DynamicResource Brush.NavIcon}" />
+
                                         <TextBlock x:Name="SchoolNavText"
-                               Text="School Information"
-                               Margin="12,0,0,0"
-                               Foreground="{DynamicResource Brush.NavIcon}"
-                               VerticalAlignment="Center"/>
-                                    </StackPanel>
+                                           Grid.Column="1"
+                                           Text="School Information"
+                                           Margin="12,0,0,0"
+                                           Foreground="{DynamicResource Brush.NavIcon}"
+                                           VerticalAlignment="Center"/>
+
+                                        <TextBlock x:Name="SchoolNavIndicatorText"
+                                           Grid.Column="2"
+                                           Text="▸"
+                                           Foreground="{DynamicResource Brush.NavIcon}"
+                                           VerticalAlignment="Center"
+                                           FontSize="12" />
+                                    </Grid>
                                 </Button>
                             </StackPanel>
                         </Border>
