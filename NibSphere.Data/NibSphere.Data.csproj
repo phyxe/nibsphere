@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AFCORE\AFCORE.csproj" />
+    <ProjectReference Include="..\NibSphere.Core\NibSphere.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

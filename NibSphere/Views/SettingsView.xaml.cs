@@ -1,6 +1,6 @@
-﻿using AFCore.Interfaces;
-using AFCore.Models;
-using AFData.Repositories;
+﻿using NibSphere.Core.Interfaces;
+using NibSphere.Core.Models;
+using NibSphere.Data.Repositories;
 using System.Windows;
 using System.Windows.Controls;
 

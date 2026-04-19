@@ -1,8 +1,8 @@
-﻿using AFCore.Interfaces;
+﻿using NibSphere.Core.Interfaces;
 using Microsoft.Data.SqlClient;
 using System.IO;
 
-namespace AFData.Database
+namespace NibSphere.Data.Database
 {
 	public class DatabaseInitializer
 	{

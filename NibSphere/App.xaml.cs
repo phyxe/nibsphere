@@ -1,7 +1,7 @@
-﻿using AFCore.Interfaces;
-using AFData.Database;
-using AFData.Infrastructure;
-using AFData.Repositories;
+﻿using NibSphere.Core.Interfaces;
+using NibSphere.Data.Database;
+using NibSphere.Data.Infrastructure;
+using NibSphere.Data.Repositories;
 using Microsoft.Win32;
 using System.Windows;
 

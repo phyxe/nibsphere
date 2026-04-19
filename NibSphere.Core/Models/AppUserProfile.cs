@@ -1,4 +1,4 @@
-﻿namespace AFCore.Models
+﻿namespace NibSphere.Core.Models
 {
 	public class AppUserProfile
 	{

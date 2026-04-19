@@ -1,6 +1,6 @@
-﻿using AFCore.Interfaces;
+﻿using NibSphere.Core.Interfaces;
 
-namespace AFData.Database
+namespace NibSphere.Data.Database
 {
 	public class DatabaseFileHelper
 	{

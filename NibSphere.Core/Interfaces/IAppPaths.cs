@@ -1,4 +1,4 @@
-﻿namespace AFCore.Interfaces
+﻿namespace NibSphere.Core.Interfaces
 {
 	public interface IAppPaths
 	{

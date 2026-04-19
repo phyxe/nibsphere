@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="AFCORE/AFCORE.csproj" />
-  <Project Path="AFDATA/AFDATA.csproj" />
+  <Project Path="NibSphere.Core/NibSphere.Core.csproj" />
+  <Project Path="NibSphere.Data/NibSphere.Data.csproj" />
   <Project Path="NibSphere/NibSphere.csproj" />
 </Solution>

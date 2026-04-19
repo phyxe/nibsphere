@@ -1,7 +1,7 @@
-﻿using AFCore.Interfaces;
+﻿using NibSphere.Core.Interfaces;
 using System.IO;
 
-namespace AFData.Infrastructure
+namespace NibSphere.Data.Infrastructure
 {
 	public class AppPaths : IAppPaths
 	{

@@ -1,9 +1,9 @@
-﻿using AFCore.Interfaces;
-using AFCore.Models;
-using AFData.Database;
+﻿using NibSphere.Core.Interfaces;
+using NibSphere.Core.Models;
+using NibSphere.Data.Database;
 using Microsoft.Data.SqlClient;
 
-namespace AFData.Repositories
+namespace NibSphere.Data.Repositories
 {
 	public class SchoolProfileRepository
 	{
