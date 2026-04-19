@@ -21,5 +21,10 @@ namespace NibSphere.Core.ReferenceData.Models
 
 		[JsonPropertyName("parent_kind")]
 		public string ParentKind { get; set; } = string.Empty;
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 }

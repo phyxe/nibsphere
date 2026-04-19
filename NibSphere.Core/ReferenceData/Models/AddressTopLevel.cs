@@ -5,5 +5,10 @@
 		public string Code { get; set; } = string.Empty;
 		public string Name { get; set; } = string.Empty;
 		public string Kind { get; set; } = string.Empty; // province or region
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 }
