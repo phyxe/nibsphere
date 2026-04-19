@@ -1,0 +1,506 @@
+﻿<Window x:Class="NibSphere.Views.LearningAreaLookupManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:NibSphere.Controls"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        mc:Ignorable="d"
+        Title="Manage Learning Area Lists"
+        Width="1040"
+        Height="680"
+        MinWidth="960"
+        MinHeight="620"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Background="{DynamicResource Brush.Background}">
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="40"
+                            ResizeBorderThickness="0"
+                            CornerRadius="0"
+                            GlassFrameThickness="0"
+                            UseAeroCaptionButtons="False" />
+    </shell:WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <Style x:Key="TitleBarButtonStyle" TargetType="Button">
+            <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+            <Setter Property="Width" Value="46" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{DynamicResource Brush.TitleBarForeground}" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.TitleBarButtonHoverBackground}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.TitleBarButtonHoverBackground}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TitleBarCloseButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource TitleBarButtonStyle}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.TitleBarCloseButtonHoverBackground}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.TitleBarCloseButtonHoverBackground}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border BorderBrush="{DynamicResource Brush.Border}"
+            BorderThickness="1"
+            Background="{DynamicResource Brush.Background}">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Background="{DynamicResource Brush.TitleBarBackground}"
+                    BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="0,0,0,1">
+                <Grid Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="46" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Margin="12,0,0,0"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource Brush.TitleBarForeground}"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Text="Manage Learning Area Lists" />
+
+                    <Button Grid.Column="1"
+                            Style="{StaticResource TitleBarCloseButtonStyle}"
+                            Click="CloseButton_Click">
+                        <TextBlock Text="&#xE8BB;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="10"
+                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                    </Button>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1"
+                  Margin="16">
+                <TabControl>
+                    <TabItem Header="Academic Groups">
+                        <Grid Margin="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="360" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Style="{StaticResource CardBorderStyle}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="12" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="8" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="20" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="12" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="8" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Bulk Add"
+                                               Style="{StaticResource TextBlock.SectionTitle}" />
+
+                                    <TextBlock Grid.Row="2"
+                                               Text="One line = one item"
+                                               Style="{StaticResource TextBlock.Secondary}" />
+
+                                    <TextBox x:Name="AcademicGroupBulkTextBox"
+                                             Grid.Row="4"
+                                             MinHeight="180"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             VerticalScrollBarVisibility="Auto" />
+
+                                    <StackPanel Grid.Row="6"
+                                                Orientation="Horizontal">
+                                        <Button x:Name="AddAcademicGroupsButton"
+                                                MinWidth="120"
+                                                Padding="14,8"
+                                                Click="AddAcademicGroupsButton_Click">
+                                            <TextBlock Text="Add Lines" />
+                                        </Button>
+
+                                        <Button x:Name="ClearAcademicGroupBulkButton"
+                                                MinWidth="90"
+                                                Padding="14,8"
+                                                Margin="8,0,0,0"
+                                                Click="ClearAcademicGroupBulkButton_Click">
+                                            <TextBlock Text="Clear" />
+                                        </Button>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="8"
+                                            Height="1"
+                                            Background="{DynamicResource Brush.Border}" />
+
+                                    <Grid Grid.Row="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="12" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="12" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="12" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Text="Edit Selected Item"
+                                                   Style="{StaticResource TextBlock.SectionTitle}" />
+
+                                        <StackPanel Grid.Row="2">
+                                            <TextBlock Text="Name"
+                                                       Margin="0,0,0,6"
+                                                       Style="{StaticResource TextBlock.Body}" />
+                                            <TextBox x:Name="AcademicGroupNameTextBox"
+                                                     MinHeight="36" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="4">
+                                            <TextBlock Text="Sort"
+                                                       Margin="0,0,0,6"
+                                                       Style="{StaticResource TextBlock.Body}" />
+                                            <TextBox x:Name="AcademicGroupSortTextBox"
+                                                     MinHeight="36" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="6"
+                                                    Orientation="Horizontal">
+                                            <Button x:Name="SaveAcademicGroupEditButton"
+                                                    MinWidth="120"
+                                                    Padding="14,8"
+                                                    Click="SaveAcademicGroupEditButton_Click">
+                                                <TextBlock Text="Save Update" />
+                                            </Button>
+
+                                            <Button x:Name="CancelAcademicGroupEditButton"
+                                                    MinWidth="100"
+                                                    Padding="14,8"
+                                                    Margin="8,0,0,0"
+                                                    Click="CancelAcademicGroupEditButton_Click">
+                                                <TextBlock Text="Cancel" />
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Column="2"
+                                    Style="{StaticResource CardBorderStyle}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="16" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Academic Group List"
+                                               Style="{StaticResource TextBlock.SectionTitle}" />
+
+                                    <DataGrid Grid.Row="2"
+                                              x:Name="AcademicGroupsDataGrid"
+                                              AutoGenerateColumns="False"
+                                              CanUserAddRows="False"
+                                              HeadersVisibility="Column"
+                                              IsReadOnly="True"
+                                              RowHeaderWidth="0"
+                                              MinHeight="420">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Name"
+                                                                Binding="{Binding Name}"
+                                                                Width="*" />
+
+                                            <DataGridTextColumn Header="Sort"
+                                                                Binding="{Binding Sort}"
+                                                                Width="90" />
+
+                                            <DataGridTemplateColumn Header="Action"
+                                                                    Width="110">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal"
+                                                                    HorizontalAlignment="Center">
+                                                            <Button Width="32"
+                                                                    Height="32"
+                                                                    Margin="0,0,8,0"
+                                                                    Padding="0"
+                                                                    ToolTip="Edit"
+                                                                    Tag="{Binding}"
+                                                                    Click="EditAcademicGroupButton_Click"
+                                                                    Style="{StaticResource IconButtonStyle}">
+                                                                <controls:ControlSvgIcon Width="16"
+                                                                                         Height="16"
+                                                                                         Source="/Resources/Icons/edit.svg"
+                                                                                         Tint="{DynamicResource Brush.PrimaryText}" />
+                                                            </Button>
+
+                                                            <Button Width="32"
+                                                                    Height="32"
+                                                                    Padding="0"
+                                                                    ToolTip="Delete"
+                                                                    Tag="{Binding}"
+                                                                    Click="DeleteAcademicGroupButton_Click"
+                                                                    Style="{StaticResource IconButtonStyle}">
+                                                                <controls:ControlSvgIcon Width="16"
+                                                                                         Height="16"
+                                                                                         Source="/Resources/Icons/delete.svg"
+                                                                                         Tint="{DynamicResource Brush.PrimaryText}" />
+                                                            </Button>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="Categories">
+                        <Grid Margin="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="360" />
+                                <ColumnDefinition Width="16" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Style="{StaticResource CardBorderStyle}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="12" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="8" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="20" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="12" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="8" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Bulk Add"
+                                               Style="{StaticResource TextBlock.SectionTitle}" />
+
+                                    <TextBlock Grid.Row="2"
+                                               Text="One line = one item"
+                                               Style="{StaticResource TextBlock.Secondary}" />
+
+                                    <TextBox x:Name="CategoryBulkTextBox"
+                                             Grid.Row="4"
+                                             MinHeight="180"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             VerticalScrollBarVisibility="Auto" />
+
+                                    <StackPanel Grid.Row="6"
+                                                Orientation="Horizontal">
+                                        <Button x:Name="AddCategoriesButton"
+                                                MinWidth="120"
+                                                Padding="14,8"
+                                                Click="AddCategoriesButton_Click">
+                                            <TextBlock Text="Add Lines" />
+                                        </Button>
+
+                                        <Button x:Name="ClearCategoryBulkButton"
+                                                MinWidth="90"
+                                                Padding="14,8"
+                                                Margin="8,0,0,0"
+                                                Click="ClearCategoryBulkButton_Click">
+                                            <TextBlock Text="Clear" />
+                                        </Button>
+                                    </StackPanel>
+
+                                    <Border Grid.Row="8"
+                                            Height="1"
+                                            Background="{DynamicResource Brush.Border}" />
+
+                                    <Grid Grid.Row="10">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="12" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="12" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="12" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Text="Edit Selected Item"
+                                                   Style="{StaticResource TextBlock.SectionTitle}" />
+
+                                        <StackPanel Grid.Row="2">
+                                            <TextBlock Text="Name"
+                                                       Margin="0,0,0,6"
+                                                       Style="{StaticResource TextBlock.Body}" />
+                                            <TextBox x:Name="CategoryNameTextBox"
+                                                     MinHeight="36" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="4">
+                                            <TextBlock Text="Sort"
+                                                       Margin="0,0,0,6"
+                                                       Style="{StaticResource TextBlock.Body}" />
+                                            <TextBox x:Name="CategorySortTextBox"
+                                                     MinHeight="36" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="6"
+                                                    Orientation="Horizontal">
+                                            <Button x:Name="SaveCategoryEditButton"
+                                                    MinWidth="120"
+                                                    Padding="14,8"
+                                                    Click="SaveCategoryEditButton_Click">
+                                                <TextBlock Text="Save Update" />
+                                            </Button>
+
+                                            <Button x:Name="CancelCategoryEditButton"
+                                                    MinWidth="100"
+                                                    Padding="14,8"
+                                                    Margin="8,0,0,0"
+                                                    Click="CancelCategoryEditButton_Click">
+                                                <TextBlock Text="Cancel" />
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Column="2"
+                                    Style="{StaticResource CardBorderStyle}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="16" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="Category List"
+                                               Style="{StaticResource TextBlock.SectionTitle}" />
+
+                                    <DataGrid Grid.Row="2"
+                                              x:Name="CategoriesDataGrid"
+                                              AutoGenerateColumns="False"
+                                              CanUserAddRows="False"
+                                              HeadersVisibility="Column"
+                                              IsReadOnly="True"
+                                              RowHeaderWidth="0"
+                                              MinHeight="420">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Name"
+                                                                Binding="{Binding Name}"
+                                                                Width="*" />
+
+                                            <DataGridTextColumn Header="Sort"
+                                                                Binding="{Binding Sort}"
+                                                                Width="90" />
+
+                                            <DataGridTemplateColumn Header="Action"
+                                                                    Width="110">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal"
+                                                                    HorizontalAlignment="Center">
+                                                            <Button Width="32"
+                                                                    Height="32"
+                                                                    Margin="0,0,8,0"
+                                                                    Padding="0"
+                                                                    ToolTip="Edit"
+                                                                    Tag="{Binding}"
+                                                                    Click="EditCategoryButton_Click"
+                                                                    Style="{StaticResource IconButtonStyle}">
+                                                                <controls:ControlSvgIcon Width="16"
+                                                                                         Height="16"
+                                                                                         Source="/Resources/Icons/edit.svg"
+                                                                                         Tint="{DynamicResource Brush.PrimaryText}" />
+                                                            </Button>
+
+                                                            <Button Width="32"
+                                                                    Height="32"
+                                                                    Padding="0"
+                                                                    ToolTip="Delete"
+                                                                    Tag="{Binding}"
+                                                                    Click="DeleteCategoryButton_Click"
+                                                                    Style="{StaticResource IconButtonStyle}">
+                                                                <controls:ControlSvgIcon Width="16"
+                                                                                         Height="16"
+                                                                                         Source="/Resources/Icons/delete.svg"
+                                                                                         Tint="{DynamicResource Brush.PrimaryText}" />
+                                                            </Button>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

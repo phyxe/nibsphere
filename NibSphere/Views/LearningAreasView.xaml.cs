@@ -225,13 +225,41 @@ namespace NibSphere.Views
 				MessageBoxImage.Information);
 		}
 
-		private void ManageListsButton_Click(object sender, RoutedEventArgs e)
+		private async void ManageListsButton_Click(object sender, RoutedEventArgs e)
 		{
-			MessageBox.Show(
-				"The lookup setup window for Academic Groups and Categories will be added next.",
-				"Coming Next",
-				MessageBoxButton.OK,
-				MessageBoxImage.Information);
+			int? selectedAcademicGroupId =
+				AcademicGroupComboBox.SelectedValue is int academicGroupId
+					? academicGroupId
+					: null;
+
+			int? selectedCategoryId =
+				CategoryComboBox.SelectedValue is int categoryId
+					? categoryId
+					: null;
+
+			LearningAreaLookupManagerWindow window = new LearningAreaLookupManagerWindow
+			{
+				Owner = Window.GetWindow(this)
+			};
+
+			bool? result = window.ShowDialog();
+
+			if (result != true)
+			{
+				return;
+			}
+
+			await LoadLookupListsAsync();
+
+			if (selectedAcademicGroupId.HasValue)
+			{
+				AcademicGroupComboBox.SelectedValue = selectedAcademicGroupId.Value;
+			}
+
+			if (selectedCategoryId.HasValue)
+			{
+				CategoryComboBox.SelectedValue = selectedCategoryId.Value;
+			}
 		}
 
 		private void ClearEntryForm()
