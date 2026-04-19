@@ -8,8 +8,8 @@
         mc:Ignorable="d"
         Title="Manage Learning Area Lists"
         Width="1040"
-        Height="680"
-        MinWidth="960"
+        Height="760"
+        MinWidth="980"
         MinHeight="620"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
@@ -19,7 +19,7 @@
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="40"
                             ResizeBorderThickness="0"
-                            CornerRadius="0"
+                            CornerRadius="5"
                             GlassFrameThickness="0"
                             UseAeroCaptionButtons="False" />
     </shell:WindowChrome.WindowChrome>
@@ -142,106 +142,109 @@
 
                             <Border Grid.Column="0"
                                     Style="{StaticResource CardBorderStyle}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="12" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="8" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="20" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="12" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="8" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="12" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="8" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="20" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="12" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="8" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-                                    <TextBlock Text="Bulk Add"
+                                        <TextBlock Text="Bulk Add"
                                                Style="{StaticResource TextBlock.SectionTitle}" />
 
-                                    <TextBlock Grid.Row="2"
+                                        <TextBlock Grid.Row="2"
                                                Text="One line = one item"
                                                Style="{StaticResource TextBlock.Secondary}" />
 
-                                    <TextBox x:Name="AcademicGroupBulkTextBox"
+                                        <TextBox x:Name="AcademicGroupBulkTextBox"
                                              Grid.Row="4"
                                              MinHeight="180"
                                              AcceptsReturn="True"
                                              TextWrapping="Wrap"
                                              VerticalScrollBarVisibility="Auto" />
 
-                                    <StackPanel Grid.Row="6"
+                                        <StackPanel Grid.Row="6"
                                                 Orientation="Horizontal">
-                                        <Button x:Name="AddAcademicGroupsButton"
+                                            <Button x:Name="AddAcademicGroupsButton"
                                                 MinWidth="120"
                                                 Padding="14,8"
                                                 Click="AddAcademicGroupsButton_Click">
-                                            <TextBlock Text="Add Lines" />
-                                        </Button>
+                                                <TextBlock Text="Add Lines" />
+                                            </Button>
 
-                                        <Button x:Name="ClearAcademicGroupBulkButton"
+                                            <Button x:Name="ClearAcademicGroupBulkButton"
                                                 MinWidth="90"
                                                 Padding="14,8"
                                                 Margin="8,0,0,0"
                                                 Click="ClearAcademicGroupBulkButton_Click">
-                                            <TextBlock Text="Clear" />
-                                        </Button>
-                                    </StackPanel>
+                                                <TextBlock Text="Clear" />
+                                            </Button>
+                                        </StackPanel>
 
-                                    <Border Grid.Row="8"
+                                        <Border Grid.Row="8"
                                             Height="1"
                                             Background="{DynamicResource Brush.Border}" />
 
-                                    <Grid Grid.Row="10">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="12" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="12" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="12" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="10">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
 
-                                        <TextBlock Text="Edit Selected Item"
+                                            <TextBlock Text="Edit Selected Item"
                                                    Style="{StaticResource TextBlock.SectionTitle}" />
 
-                                        <StackPanel Grid.Row="2">
-                                            <TextBlock Text="Name"
+                                            <StackPanel Grid.Row="2">
+                                                <TextBlock Text="Name"
                                                        Margin="0,0,0,6"
                                                        Style="{StaticResource TextBlock.Body}" />
-                                            <TextBox x:Name="AcademicGroupNameTextBox"
+                                                <TextBox x:Name="AcademicGroupNameTextBox"
                                                      MinHeight="36" />
-                                        </StackPanel>
+                                            </StackPanel>
 
-                                        <StackPanel Grid.Row="4">
-                                            <TextBlock Text="Sort"
+                                            <StackPanel Grid.Row="4">
+                                                <TextBlock Text="Sort"
                                                        Margin="0,0,0,6"
                                                        Style="{StaticResource TextBlock.Body}" />
-                                            <TextBox x:Name="AcademicGroupSortTextBox"
+                                                <TextBox x:Name="AcademicGroupSortTextBox"
                                                      MinHeight="36" />
-                                        </StackPanel>
+                                            </StackPanel>
 
-                                        <StackPanel Grid.Row="6"
+                                            <StackPanel Grid.Row="6"
                                                     Orientation="Horizontal">
-                                            <Button x:Name="SaveAcademicGroupEditButton"
+                                                <Button x:Name="SaveAcademicGroupEditButton"
                                                     MinWidth="120"
                                                     Padding="14,8"
                                                     Click="SaveAcademicGroupEditButton_Click">
-                                                <TextBlock Text="Save Update" />
-                                            </Button>
+                                                    <TextBlock Text="Save Update" />
+                                                </Button>
 
-                                            <Button x:Name="CancelAcademicGroupEditButton"
+                                                <Button x:Name="CancelAcademicGroupEditButton"
                                                     MinWidth="100"
                                                     Padding="14,8"
                                                     Margin="8,0,0,0"
                                                     Click="CancelAcademicGroupEditButton_Click">
-                                                <TextBlock Text="Cancel" />
-                                            </Button>
-                                        </StackPanel>
+                                                    <TextBlock Text="Cancel" />
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
+                                </ScrollViewer>
                             </Border>
 
                             <Border Grid.Column="2"
@@ -326,106 +329,109 @@
 
                             <Border Grid.Column="0"
                                     Style="{StaticResource CardBorderStyle}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="12" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="8" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="20" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="12" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="8" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="12" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="8" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="20" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="12" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="8" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
-                                    <TextBlock Text="Bulk Add"
+                                        <TextBlock Text="Bulk Add"
                                                Style="{StaticResource TextBlock.SectionTitle}" />
 
-                                    <TextBlock Grid.Row="2"
+                                        <TextBlock Grid.Row="2"
                                                Text="One line = one item"
                                                Style="{StaticResource TextBlock.Secondary}" />
 
-                                    <TextBox x:Name="CategoryBulkTextBox"
+                                        <TextBox x:Name="CategoryBulkTextBox"
                                              Grid.Row="4"
                                              MinHeight="180"
                                              AcceptsReturn="True"
                                              TextWrapping="Wrap"
                                              VerticalScrollBarVisibility="Auto" />
 
-                                    <StackPanel Grid.Row="6"
+                                        <StackPanel Grid.Row="6"
                                                 Orientation="Horizontal">
-                                        <Button x:Name="AddCategoriesButton"
+                                            <Button x:Name="AddCategoriesButton"
                                                 MinWidth="120"
                                                 Padding="14,8"
                                                 Click="AddCategoriesButton_Click">
-                                            <TextBlock Text="Add Lines" />
-                                        </Button>
+                                                <TextBlock Text="Add Lines" />
+                                            </Button>
 
-                                        <Button x:Name="ClearCategoryBulkButton"
+                                            <Button x:Name="ClearCategoryBulkButton"
                                                 MinWidth="90"
                                                 Padding="14,8"
                                                 Margin="8,0,0,0"
                                                 Click="ClearCategoryBulkButton_Click">
-                                            <TextBlock Text="Clear" />
-                                        </Button>
-                                    </StackPanel>
+                                                <TextBlock Text="Clear" />
+                                            </Button>
+                                        </StackPanel>
 
-                                    <Border Grid.Row="8"
+                                        <Border Grid.Row="8"
                                             Height="1"
                                             Background="{DynamicResource Brush.Border}" />
 
-                                    <Grid Grid.Row="10">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="12" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="12" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="12" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="10">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="12" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
 
-                                        <TextBlock Text="Edit Selected Item"
+                                            <TextBlock Text="Edit Selected Item"
                                                    Style="{StaticResource TextBlock.SectionTitle}" />
 
-                                        <StackPanel Grid.Row="2">
-                                            <TextBlock Text="Name"
+                                            <StackPanel Grid.Row="2">
+                                                <TextBlock Text="Name"
                                                        Margin="0,0,0,6"
                                                        Style="{StaticResource TextBlock.Body}" />
-                                            <TextBox x:Name="CategoryNameTextBox"
+                                                <TextBox x:Name="CategoryNameTextBox"
                                                      MinHeight="36" />
-                                        </StackPanel>
+                                            </StackPanel>
 
-                                        <StackPanel Grid.Row="4">
-                                            <TextBlock Text="Sort"
+                                            <StackPanel Grid.Row="4">
+                                                <TextBlock Text="Sort"
                                                        Margin="0,0,0,6"
                                                        Style="{StaticResource TextBlock.Body}" />
-                                            <TextBox x:Name="CategorySortTextBox"
+                                                <TextBox x:Name="CategorySortTextBox"
                                                      MinHeight="36" />
-                                        </StackPanel>
+                                            </StackPanel>
 
-                                        <StackPanel Grid.Row="6"
+                                            <StackPanel Grid.Row="6"
                                                     Orientation="Horizontal">
-                                            <Button x:Name="SaveCategoryEditButton"
+                                                <Button x:Name="SaveCategoryEditButton"
                                                     MinWidth="120"
                                                     Padding="14,8"
                                                     Click="SaveCategoryEditButton_Click">
-                                                <TextBlock Text="Save Update" />
-                                            </Button>
+                                                    <TextBlock Text="Save Update" />
+                                                </Button>
 
-                                            <Button x:Name="CancelCategoryEditButton"
+                                                <Button x:Name="CancelCategoryEditButton"
                                                     MinWidth="100"
                                                     Padding="14,8"
                                                     Margin="8,0,0,0"
                                                     Click="CancelCategoryEditButton_Click">
-                                                <TextBlock Text="Cancel" />
-                                            </Button>
-                                        </StackPanel>
+                                                    <TextBlock Text="Cancel" />
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
+                                </ScrollViewer>
                             </Border>
 
                             <Border Grid.Column="2"
