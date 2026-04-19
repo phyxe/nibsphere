@@ -271,7 +271,7 @@ namespace NibSphere
 			_isSchoolNavPopupOpen = false;
 			UpdateSchoolNavUi();
 
-			MessageBox.Show("Learning Areas view will be added next.");
+			MainContentHost.Content = new LearningAreasView();
 		}
 	}
 }

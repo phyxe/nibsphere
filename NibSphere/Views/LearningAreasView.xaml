@@ -1,0 +1,246 @@
+﻿<UserControl x:Class="NibSphere.Views.LearningAreasView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:NibSphere.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="760"
+             d:DesignWidth="1100"
+             Background="{DynamicResource Brush.Background}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Learning Areas"
+                       Style="{StaticResource TextBlock.Heading1}" />
+
+            <Border Grid.Row="2"
+                    Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="16"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="16"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="16"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Learning Area Entry"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource TextBlock.SectionTitle}" />
+
+                        <Button x:Name="ManageListsButton"
+                                Grid.Column="1"
+                                MinWidth="140"
+                                Padding="14,8"
+                                Margin="12,0,0,0"
+                                Click="ManageListsButton_Click"
+                                ToolTip="Manage Academic Groups and Categories">
+                            <TextBlock Text="Manage Lists" />
+                        </Button>
+                    </Grid>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.2*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="1.4*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Code"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <TextBox x:Name="CodeTextBox"
+                                     MinHeight="36" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Short Name"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <TextBox x:Name="ShortNameTextBox"
+                                     MinHeight="36" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Sort"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <TextBox x:Name="SortTextBox"
+                                     MinHeight="36" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Academic Group"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <ComboBox x:Name="AcademicGroupComboBox"
+                                      MinHeight="36"
+                                      DisplayMemberPath="Name"
+                                      SelectedValuePath="Id"
+                                      IsTextSearchEnabled="True" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Category"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <ComboBox x:Name="CategoryComboBox"
+                                      MinHeight="36"
+                                      DisplayMemberPath="Name"
+                                      SelectedValuePath="Id"
+                                      IsTextSearchEnabled="True" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Grid.Row="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="180"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Description"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <TextBox x:Name="DescriptionTextBox"
+                                     MinHeight="36" />
+                        </StackPanel>
+
+                        <Button x:Name="SaveLearningAreaButton"
+                                Grid.Column="2"
+                                Width="180"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Click="SaveLearningAreaButton_Click">
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center">
+                                <controls:ControlSvgIcon x:Name="SaveLearningAreaActionIcon"
+                                                         Width="16"
+                                                         Height="16"
+                                                         Margin="0,0,8,0"
+                                                         Source="/Resources/Icons/save.svg"
+                                                         Tint="White" />
+                                <TextBlock x:Name="SaveLearningAreaActionTextBlock"
+                                           VerticalAlignment="Center"
+                                           Foreground="White"
+                                           Text="Save Learning Area" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="4"
+                    Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="16"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Learning Area List"
+                               Style="{StaticResource TextBlock.SectionTitle}" />
+
+                    <DataGrid Grid.Row="2"
+                              x:Name="LearningAreasDataGrid"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column"
+                              IsReadOnly="True"
+                              RowHeaderWidth="0"
+                              MinHeight="260">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Code"
+                                                Binding="{Binding Code}"
+                                                Width="*" />
+
+                            <DataGridTextColumn Header="Short Name"
+                                                Binding="{Binding ShortName}"
+                                                Width="1.2*" />
+
+                            <DataGridTextColumn Header="Description"
+                                                Binding="{Binding Description}"
+                                                Width="2.5*" />
+
+                            <DataGridTextColumn Header="Academic Group"
+                                                Binding="{Binding AcademicGroupName}"
+                                                Width="1.3*" />
+
+                            <DataGridTextColumn Header="Category"
+                                                Binding="{Binding CategoryName}"
+                                                Width="1.3*" />
+
+                            <DataGridTemplateColumn Header="Action"
+                                                    Width="110">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal"
+                                                    HorizontalAlignment="Center">
+                                            <Button Width="32"
+                                                    Height="32"
+                                                    Margin="0,0,8,0"
+                                                    Padding="0"
+                                                    ToolTip="Edit"
+                                                    Tag="{Binding}"
+                                                    Click="EditLearningAreaButton_Click"
+                                                    Style="{StaticResource IconButtonStyle}">
+                                                <controls:ControlSvgIcon Width="16"
+                                                                         Height="16"
+                                                                         Source="/Resources/Icons/edit.svg"
+                                                                         Tint="{DynamicResource Brush.PrimaryText}" />
+                                            </Button>
+
+                                            <Button Width="32"
+                                                    Height="32"
+                                                    Padding="0"
+                                                    ToolTip="Delete"
+                                                    Tag="{Binding}"
+                                                    Click="DeleteLearningAreaButton_Click"
+                                                    Style="{StaticResource IconButtonStyle}">
+                                                <controls:ControlSvgIcon Width="16"
+                                                                         Height="16"
+                                                                         Source="/Resources/Icons/delete.svg"
+                                                                         Tint="{DynamicResource Brush.PrimaryText}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>
