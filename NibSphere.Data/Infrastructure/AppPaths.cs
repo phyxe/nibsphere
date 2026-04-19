@@ -13,6 +13,9 @@ namespace NibSphere.Data.Infrastructure
 		public string LogDirectory => Path.Combine(RootDirectory, "Logs");
 		public string ConfigDirectory => Path.Combine(RootDirectory, "Config");
 
+		public string ReferenceDataDirectory => Path.Combine(ConfigDirectory, "ReferenceData");
+		public string PhilippineAddressDataFilePath => Path.Combine(ReferenceDataDirectory, "ph-addresses.json");
+
 		public string StorageDirectory => Path.Combine(RootDirectory, "Storage");
 		public string ImagesDirectory => Path.Combine(StorageDirectory, "Images");
 		public string DocumentsDirectory => Path.Combine(StorageDirectory, "Documents");

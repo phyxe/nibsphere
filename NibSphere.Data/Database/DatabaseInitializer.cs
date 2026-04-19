@@ -61,13 +61,32 @@ namespace NibSphere.Data.Database
                     CREATE TABLE SchoolProfile
                     (
                         Id INT PRIMARY KEY IDENTITY(1,1),
+                        SchoolUid UNIQUEIDENTIFIER NULL,
+
                         SchoolName NVARCHAR(200) NOT NULL,
                         SchoolId NVARCHAR(100) NULL,
+                        SchoolAcronym NVARCHAR(50) NULL,
+
                         Region NVARCHAR(150) NULL,
                         Division NVARCHAR(150) NULL,
                         District NVARCHAR(150) NULL,
+
+                        ProvinceCode NVARCHAR(20) NULL,
+                        ProvinceName NVARCHAR(150) NULL,
+
+                        MunicipalityCityCode NVARCHAR(20) NULL,
+                        MunicipalityCityName NVARCHAR(150) NULL,
+
+                        BarangayCode NVARCHAR(20) NULL,
+                        BarangayName NVARCHAR(150) NULL,
+
+                        AddressLine NVARCHAR(300) NULL,
+
+                        SchoolLogoPath NVARCHAR(500) NULL,
+
                         SchoolHeadName NVARCHAR(150) NULL,
                         SchoolHeadPosition NVARCHAR(150) NULL,
+
                         CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
                         UpdatedAt DATETIME2 NULL
                     );

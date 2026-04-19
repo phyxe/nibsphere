@@ -9,6 +9,9 @@
 		string LogDirectory { get; }
 		string ConfigDirectory { get; }
 
+		string ReferenceDataDirectory { get; }
+		string PhilippineAddressDataFilePath { get; }
+
 		string StorageDirectory { get; }
 		string ImagesDirectory { get; }
 		string DocumentsDirectory { get; }

@@ -20,6 +20,7 @@ namespace NibSphere.Data.Infrastructure
 			Directory.CreateDirectory(_appPaths.ExportDirectory);
 			Directory.CreateDirectory(_appPaths.LogDirectory);
 			Directory.CreateDirectory(_appPaths.ConfigDirectory);
+			Directory.CreateDirectory(_appPaths.ReferenceDataDirectory);
 
 			Directory.CreateDirectory(_appPaths.StorageDirectory);
 			Directory.CreateDirectory(_appPaths.ImagesDirectory);
