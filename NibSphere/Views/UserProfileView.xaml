@@ -9,6 +9,54 @@
              d:DesignWidth="980"
              Background="{DynamicResource Brush.Background}">
 
+    <UserControl.Resources>
+        <Style x:Key="ProfileImageOverlayButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="14">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder"
+                                    Property="Background"
+                                    Value="{DynamicResource Brush.IconButtonHoverBackground}" />
+                                <Setter TargetName="ButtonBorder"
+                                    Property="BorderBrush"
+                                    Value="{DynamicResource Brush.PrimaryAccent}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder"
+                                    Property="Background"
+                                    Value="{DynamicResource Brush.IconButtonHoverBackground}" />
+                                <Setter TargetName="ButtonBorder"
+                                    Property="BorderBrush"
+                                    Value="{DynamicResource Brush.PrimaryAccent}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.6" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled">
         <Grid Margin="4">
@@ -27,22 +75,49 @@
                     Style="{StaticResource CardBorderStyle}">
                 <StackPanel HorizontalAlignment="Center">
                     <Grid Width="132"
-                          Height="132"
-                          Margin="0,4,0,12">
+      Height="132"
+      Margin="0,4,0,12">
                         <Ellipse x:Name="ProfileImageEllipse"
-                                 Width="132"
-                                 Height="132"
-                                 Stroke="{DynamicResource Brush.Border}"
-                                 StrokeThickness="1"
-                                 Fill="{DynamicResource Brush.SurfaceAlt}" />
+             Width="132"
+             Height="132"
+             Stroke="{DynamicResource Brush.Border}"
+             StrokeThickness="1"
+             Fill="{DynamicResource Brush.SurfaceAlt}" />
 
                         <TextBlock x:Name="ProfileInitialsTextBlock"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   FontSize="30"
-                                   FontWeight="SemiBold"
-                                   Style="{StaticResource TextBlock.Heading2}"
-                                   Text="IMG" />
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               FontSize="30"
+               FontWeight="SemiBold"
+               Style="{StaticResource TextBlock.Heading2}"
+               Text="IMG" />
+
+                        <StackPanel x:Name="ProfileImageButtonsPanel"
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="0,0,-4,-4">
+                            <Button x:Name="BrowseProfileImageButton"
+                Style="{StaticResource ProfileImageOverlayButtonStyle}"
+                Margin="0,0,6,0"
+                Click="BrowseProfileImageButton_Click"
+                ToolTip="Upload Image">
+                                <controls:ControlSvgIcon Width="14"
+                                     Height="14"
+                                     Source="/Resources/Icons/upload.svg"
+                                     Tint="{DynamicResource Brush.PrimaryText}" />
+                            </Button>
+
+                            <Button x:Name="RemoveProfileImageButton"
+                Style="{StaticResource ProfileImageOverlayButtonStyle}"
+                Click="RemoveProfileImageButton_Click"
+                ToolTip="Remove Image">
+                                <controls:ControlSvgIcon Width="14"
+                                     Height="14"
+                                     Source="/Resources/Icons/trash.svg"
+                                     Tint="{DynamicResource Brush.PrimaryText}" />
+                            </Button>
+                        </StackPanel>
                     </Grid>
 
                     <TextBlock x:Name="ProfileHeaderNameTextBlock"
@@ -57,36 +132,6 @@
                                TextAlignment="Center"
                                Style="{StaticResource TextBlock.Secondary}"
                                Text="" />
-
-                    <StackPanel x:Name="ProfileImageButtonsPanel"
-                                Orientation="Horizontal"
-                                HorizontalAlignment="Center"
-                                Margin="0,16,0,0">
-                        <Button x:Name="BrowseProfileImageButton"
-                                Padding="14,8"
-                                Margin="0,0,8,0"
-                                Click="BrowseProfileImageButton_Click"
-                                ToolTip="Upload Image">
-                            <controls:ControlSvgIcon
-                                Width="16"
-                                Height="16"
-                                Margin="0,0,8,0"
-                                Source="/Resources/Icons/upload.svg"
-                                Tint="White" />
-                        </Button>
-
-                        <Button x:Name="RemoveProfileImageButton"
-                                Padding="14,8"
-                                Click="RemoveProfileImageButton_Click"
-                                ToolTip="Remove Image">
-                            <controls:ControlSvgIcon
-                                Width="16"
-                                Height="16"
-                                Margin="0,0,8,0"
-                                Source="/Resources/Icons/trash.svg"
-                                Tint="White" />
-                        </Button>
-                    </StackPanel>
                 </StackPanel>
             </Border>
 
@@ -220,6 +265,7 @@
                         <TextBlock x:Name="ProfileImagePathStatusTextBlock"
                                    VerticalAlignment="Center"
                                    Style="{StaticResource TextBlock.Caption}"
+                                   Visibility="Collapsed"
                                    Text="" />
 
                         <Button Grid.Column="1"

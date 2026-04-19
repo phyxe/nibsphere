@@ -5,6 +5,7 @@ using NibSphere.Data.Repositories;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -402,21 +403,54 @@ namespace NibSphere.Views
 			textBox.IsReadOnly = !isEditable;
 			textBox.IsHitTestVisible = isEditable;
 			textBox.Focusable = isEditable;
-			textBox.CaretBrush = isEditable ? (Brush)FindResource("Brush.PrimaryText") : Brushes.Transparent;
-			textBox.Background = isEditable ? (Brush)FindResource("Brush.Surface") : Brushes.Transparent;
-			textBox.BorderBrush = isEditable ? (Brush)FindResource("Brush.Border") : Brushes.Transparent;
-			textBox.BorderThickness = isEditable ? new Thickness(1) : new Thickness(0);
-			textBox.Padding = isEditable ? new Thickness(10, 6, 10, 6) : new Thickness(0);
+
+			if (isEditable)
+			{
+				textBox.SetResourceReference(TextBox.BackgroundProperty, "Brush.Surface");
+				textBox.SetResourceReference(TextBox.BorderBrushProperty, "Brush.Border");
+				textBox.SetResourceReference(TextBox.ForegroundProperty, "Brush.PrimaryText");
+				textBox.SetResourceReference(TextBoxBase.CaretBrushProperty, "Brush.PrimaryText");
+
+				textBox.BorderThickness = new Thickness(1);
+				textBox.Padding = new Thickness(10, 6, 10, 6);
+			}
+			else
+			{
+				textBox.Background = Brushes.Transparent;
+				textBox.BorderBrush = Brushes.Transparent;
+				textBox.CaretBrush = Brushes.Transparent;
+
+				textBox.ClearValue(TextBox.ForegroundProperty);
+
+				textBox.BorderThickness = new Thickness(0);
+				textBox.Padding = new Thickness(0);
+			}
 		}
 
 		private void SetComboBoxMode(ComboBox comboBox, bool isEditable)
 		{
 			comboBox.IsHitTestVisible = isEditable;
 			comboBox.Focusable = isEditable;
-			comboBox.Background = isEditable ? (Brush)FindResource("Brush.Surface") : Brushes.Transparent;
-			comboBox.BorderBrush = isEditable ? (Brush)FindResource("Brush.Border") : Brushes.Transparent;
-			comboBox.BorderThickness = isEditable ? new Thickness(1) : new Thickness(0);
-			comboBox.Padding = isEditable ? new Thickness(10, 6, 10, 6) : new Thickness(0);
+
+			if (isEditable)
+			{
+				comboBox.SetResourceReference(ComboBox.BackgroundProperty, "Brush.Surface");
+				comboBox.SetResourceReference(ComboBox.BorderBrushProperty, "Brush.Border");
+				comboBox.SetResourceReference(ComboBox.ForegroundProperty, "Brush.PrimaryText");
+
+				comboBox.BorderThickness = new Thickness(1);
+				comboBox.Padding = new Thickness(10, 6, 10, 6);
+			}
+			else
+			{
+				comboBox.Background = Brushes.Transparent;
+				comboBox.BorderBrush = Brushes.Transparent;
+
+				comboBox.ClearValue(ComboBox.ForegroundProperty);
+
+				comboBox.BorderThickness = new Thickness(0);
+				comboBox.Padding = new Thickness(0);
+			}
 		}
 
 		private void UpdateProfileImageStatusText()
@@ -424,18 +458,26 @@ namespace NibSphere.Views
 			if (_removeProfileImage)
 			{
 				ProfileImagePathStatusTextBlock.Text = "Profile image will be removed on save.";
+				ProfileImagePathStatusTextBlock.Visibility = Visibility.Visible;
 				return;
 			}
 
 			if (!string.IsNullOrWhiteSpace(_pendingProfileImageSourcePath))
 			{
 				ProfileImagePathStatusTextBlock.Text = $"Selected image: {Path.GetFileName(_pendingProfileImageSourcePath)}";
+				ProfileImagePathStatusTextBlock.Visibility = Visibility.Visible;
 				return;
 			}
 
-			ProfileImagePathStatusTextBlock.Text = string.IsNullOrWhiteSpace(_appUserProfile?.ProfileImagePath)
-				? "No profile image selected."
-				: "Profile image selected.";
+			if (string.IsNullOrWhiteSpace(_appUserProfile?.ProfileImagePath))
+			{
+				ProfileImagePathStatusTextBlock.Text = "No profile image selected.";
+				ProfileImagePathStatusTextBlock.Visibility = Visibility.Visible;
+				return;
+			}
+
+			ProfileImagePathStatusTextBlock.Text = string.Empty;
+			ProfileImagePathStatusTextBlock.Visibility = Visibility.Collapsed;
 		}
 
 		private static string? NullIfWhiteSpace(string? value)

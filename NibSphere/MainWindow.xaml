@@ -196,7 +196,7 @@
 
                             <TextBlock x:Name="NavHeaderText"
 									   Grid.Column="1"
-									   Text="FEATURES"
+									   Text="NibSphere"
 									   Margin="10,0,0,0"
 									   VerticalAlignment="Center"
 									   Foreground="White"
