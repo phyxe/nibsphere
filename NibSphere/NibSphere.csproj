@@ -8,6 +8,21 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+	  <Product>NibSphere</Product>
+	  <Company>NibNexus</Company>
+	  <Authors>Phyxe</Authors>
+	  <Description>Stand-alone application tools for teachers.</Description>
+
+	  <Version>0.1.0</Version>
+	  <AssemblyVersion>0.1.0.0</AssemblyVersion>
+	  <FileVersion>0.1.0.0</FileVersion>
+	  <InformationalVersion>0.1.0-initial</InformationalVersion>
+
+	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	  <PublishSelfContained>true</PublishSelfContained>
+	  <PublishSingleFile>false</PublishSingleFile>
+	  <PublishTrimmed>false</PublishTrimmed>
+	  <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -50,6 +65,10 @@
     <None Remove="Resources\Fonts\Trirong\Trirong-SemiBoldItalic.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-Thin.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="favicon.ico" />
   </ItemGroup>
 
   <ItemGroup>
