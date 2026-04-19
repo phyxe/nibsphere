@@ -94,7 +94,6 @@ namespace NibSphere.Controls
 			}
 			catch
 			{
-				// Silent for now. We can add diagnostics later if needed.
 			}
 
 			_surface.InvalidateVisual();
@@ -157,6 +156,7 @@ namespace NibSphere.Controls
 				NormalizePaintAttribute(element, "stroke", hex);
 				NormalizeColorAttribute(element, hex);
 				NormalizeStyleAttribute(element, hex);
+				ApplyDefaultPaintIfNeeded(element, hex);
 			}
 
 			return doc.ToString(SaveOptions.DisableFormatting);
@@ -241,6 +241,44 @@ namespace NibSphere.Controls
 			}
 
 			styleAttr.Value = string.Join(";", rewritten);
+		}
+
+		private static void ApplyDefaultPaintIfNeeded(XElement element, string hex)
+		{
+			string localName = element.Name.LocalName;
+
+			if (!IsDrawableElement(localName))
+			{
+				return;
+			}
+
+			XAttribute? fillAttr = element.Attribute("fill");
+			XAttribute? strokeAttr = element.Attribute("stroke");
+			XAttribute? styleAttr = element.Attribute("style");
+
+			bool hasFill = fillAttr != null;
+			bool hasStroke = strokeAttr != null;
+			bool hasStyledFillOrStroke =
+				styleAttr != null &&
+				(styleAttr.Value.Contains("fill:", StringComparison.OrdinalIgnoreCase) ||
+				 styleAttr.Value.Contains("stroke:", StringComparison.OrdinalIgnoreCase));
+
+			if (hasFill || hasStroke || hasStyledFillOrStroke)
+			{
+				return;
+			}
+
+			element.SetAttributeValue("fill", hex);
+		}
+
+		private static bool IsDrawableElement(string localName)
+		{
+			return localName.Equals("path", StringComparison.OrdinalIgnoreCase) ||
+				   localName.Equals("circle", StringComparison.OrdinalIgnoreCase) ||
+				   localName.Equals("ellipse", StringComparison.OrdinalIgnoreCase) ||
+				   localName.Equals("polygon", StringComparison.OrdinalIgnoreCase) ||
+				   localName.Equals("polyline", StringComparison.OrdinalIgnoreCase) ||
+				   localName.Equals("rect", StringComparison.OrdinalIgnoreCase);
 		}
 	}
 }
