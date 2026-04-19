@@ -73,10 +73,14 @@
     <None Remove="Resources\Icons\trash.svg" />
     <None Remove="Resources\Icons\upload.svg" />
     <None Remove="Resources\Icons\userprofile.svg" />
+    <None Remove="Resources\ReferenceData\ph-addresses.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="favicon.ico" />
+    <Content Include="Resources\ReferenceData\ph-addresses.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -271,5 +275,11 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Resources\ReferenceData\ph-addresses.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
 </Project>

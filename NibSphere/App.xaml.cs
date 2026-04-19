@@ -1,8 +1,9 @@
-﻿using NibSphere.Core.Interfaces;
+﻿using Microsoft.Win32;
+using NibSphere.Core.Interfaces;
 using NibSphere.Data.Database;
 using NibSphere.Data.Infrastructure;
 using NibSphere.Data.Repositories;
-using Microsoft.Win32;
+using System.IO;
 using System.Windows;
 
 namespace NibSphere
@@ -20,6 +21,7 @@ namespace NibSphere
 
 			var storageInitializer = new AppStorageInitializer(AppPaths);
 			storageInitializer.EnsureDirectoriesExist();
+			EnsureReferenceDataFiles();
 
 			var databaseInitializer = new DatabaseInitializer(AppPaths);
 			await databaseInitializer.InitializeAsync();
@@ -89,6 +91,29 @@ namespace NibSphere
 			}
 
 			return false;
+		}
+
+		private static void EnsureReferenceDataFiles()
+		{
+			string sourcePath = Path.Combine(
+				AppContext.BaseDirectory,
+				"Resources",
+				"ReferenceData",
+				"ph-addresses.json");
+
+			string targetPath = AppPaths.PhilippineAddressDataFilePath;
+
+			if (!File.Exists(sourcePath))
+			{
+				return;
+			}
+
+			Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
+
+			if (!File.Exists(targetPath))
+			{
+				File.Copy(sourcePath, targetPath, overwrite: false);
+			}
 		}
 	}
 }
