@@ -105,7 +105,7 @@
             </Grid.RowDefinitions>
 
             <!-- Title Bar -->
-    <Border Grid.Row="0"
+            <Border Grid.Row="0"
         Background="{DynamicResource Brush.TitleBarBackground}"
         BorderBrush="{DynamicResource Brush.Border}"
         BorderThickness="0,0,0,1">
@@ -169,175 +169,221 @@
 
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="52"/>
+                            <RowDefinition Height="64"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Nav Header -->
-                        <Grid Grid.Row="0"
-							  Margin="10,8,10,8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="36"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                        <!-- Row 1: Brand -->
+                        <Border Grid.Row="0"
+                            BorderBrush="{DynamicResource Brush.NavItemHover}"
+                            BorderThickness="0,0,0,1"
+                            Padding="12,10,12,10">
+                            <Grid Grid.Row="0"
+                                Margin="12,8,12,8">
+                                <Image x:Name="NavBrandImage"
+                                   Height="28"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Stretch="Uniform"
+                                   Source="/Resources/Brand/nibsphere-full.png" />
+                            </Grid>
+                        </Border>
 
-                            <Button x:Name="NavToggleButton"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center"
-									Background="Transparent"
-                                    BorderBrush="Transparent"
-									Click="NavToggleButton_Click">
-                                <controls:ControlSvgIcon Width="18"
-                                     Height="18"
-                                     Source="/Resources/Icons/navigation.svg"
-                                     Tint="{DynamicResource Brush.NavIcon}" />
-                            </Button>
-
-                            <TextBlock x:Name="NavHeaderText"
-									   Grid.Column="1"
-									   Text="NibSphere"
-									   Margin="10,0,0,0"
-									   VerticalAlignment="Center"
-									   Foreground="White"
-									   Style="{StaticResource TextBlock.Body}"/>
-                        </Grid>
-
-                        <!-- Nav Items -->
+                        <!-- Row 2: Scrollable module nav -->
                         <ScrollViewer Grid.Row="1"
-									  VerticalScrollBarVisibility="Auto"
-									  HorizontalScrollBarVisibility="Disabled">
-                            <StackPanel Margin="10,4,10,10">
+                  VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Margin="10,12,10,10">
 
                                 <Button x:Name="DashboardNavButton"
-										Height="42"
-										Margin="0,0,0,8"
-										HorizontalContentAlignment="Left"
-										Background="{DynamicResource Brush.NavItemActive}"
-										BorderBrush="{DynamicResource Brush.NavItemActive}">
+                    Height="42"
+                    Margin="0,0,0,8"
+                    HorizontalContentAlignment="Left"
+                    Background="{DynamicResource Brush.NavItemActive}"
+                    BorderBrush="{DynamicResource Brush.NavItemActive}">
                                     <StackPanel Orientation="Horizontal">
                                         <controls:ControlSvgIcon Width="18"
-                                         Height="18"
-                                         Source="/Resources/Icons/dashboard.svg"
-                                         Tint="{DynamicResource Brush.NavIcon}" />
+                                             Height="18"
+                                             Source="/Resources/Icons/dashboard.svg"
+                                             Tint="{DynamicResource Brush.NavIcon}" />
                                         <TextBlock x:Name="DashboardNavText"
-												   Text="Dashboard"
-												   Margin="12,0,0,0"
-												   Foreground="{DynamicResource Brush.NavIcon}"
-												   VerticalAlignment="Center"/>
+                               Text="Dashboard"
+                               Margin="12,0,0,0"
+                               Foreground="{DynamicResource Brush.NavIcon}"
+                               VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
 
                                 <Button x:Name="StudentsNavButton"
-										Height="42"
-										Margin="0,0,0,8"
-										HorizontalContentAlignment="Left"
-										Background="Transparent"
-										BorderBrush="Transparent">
+                    Height="42"
+                    Margin="0,0,0,8"
+                    HorizontalContentAlignment="Left"
+                    Background="Transparent"
+                    BorderBrush="Transparent">
                                     <StackPanel Orientation="Horizontal">
                                         <controls:ControlSvgIcon Width="18"
                                              Height="18"
                                              Source="/Resources/Icons/student.svg"
                                              Tint="{DynamicResource Brush.NavIcon}" />
                                         <TextBlock x:Name="StudentsNavText"
-												   Text="Students"
-												   Margin="12,0,0,0"
-												   Foreground="{DynamicResource Brush.NavIcon}"
-												   VerticalAlignment="Center"/>
+                               Text="Students"
+                               Margin="12,0,0,0"
+                               Foreground="{DynamicResource Brush.NavIcon}"
+                               VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
 
                                 <Button x:Name="ReportsNavButton"
-										Height="42"
-										Margin="0,0,0,8"
-										HorizontalContentAlignment="Left"
-										Background="Transparent"
-										BorderBrush="Transparent">
+                    Height="42"
+                    Margin="0,0,0,8"
+                    HorizontalContentAlignment="Left"
+                    Background="Transparent"
+                    BorderBrush="Transparent">
                                     <StackPanel Orientation="Horizontal">
                                         <controls:ControlSvgIcon Width="18"
                                              Height="18"
                                              Source="/Resources/Icons/report.svg"
                                              Tint="{DynamicResource Brush.NavIcon}" />
                                         <TextBlock x:Name="ReportsNavText"
-												   Text="Reports"
-												   Margin="12,0,0,0"
-												   Foreground="{DynamicResource Brush.NavIcon}"
-												   VerticalAlignment="Center"/>
+                               Text="Reports"
+                               Margin="12,0,0,0"
+                               Foreground="{DynamicResource Brush.NavIcon}"
+                               VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </Button>
+
                                 <Button x:Name="SchoolYearNavButton"
-										Height="42"
-										Margin="0,0,0,8"
-										HorizontalContentAlignment="Left"
-										Background="Transparent"
-										BorderBrush="Transparent">
+                    Height="42"
+                    Margin="0,0,0,8"
+                    HorizontalContentAlignment="Left"
+                    Background="Transparent"
+                    BorderBrush="Transparent">
                                     <StackPanel Orientation="Horizontal">
                                         <controls:ControlSvgIcon Width="18"
                                              Height="18"
                                              Source="/Resources/Icons/calendar.svg"
                                              Tint="{DynamicResource Brush.NavIcon}" />
-                                        <TextBlock x:Name="SchoolYear"
-												   Text="School Year"
-												   Margin="12,0,0,0"
-												   Foreground="{DynamicResource Brush.NavIcon}"
-												   VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="SchoolYearNavText"
+                               Text="School Year"
+                               Margin="12,0,0,0"
+                               Foreground="{DynamicResource Brush.NavIcon}"
+                               VerticalAlignment="Center"/>
                                     </StackPanel>
-                                </Button>                                
+                                </Button>
                             </StackPanel>
                         </ScrollViewer>
-                        <!-- Nav Bottom Section -->
-                        <Border Grid.Row="2"
-                            BorderBrush="{DynamicResource Brush.NavItemHover}"
-                            BorderThickness="0,1,0,0"
-                            Padding="10">
 
+                        <!-- Row 3: Sticky feature buttons -->
+                        <Border Grid.Row="2"
+            BorderBrush="{DynamicResource Brush.NavItemHover}"
+            BorderThickness="0,1,0,0"
+            Padding="10,10,10,10">
+                            <StackPanel>
+                                <Button x:Name="SchoolNavButton"
+                    Height="42"
+                    HorizontalContentAlignment="Left"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    ToolTip="School">
+                                    <StackPanel Orientation="Horizontal">
+                                        <controls:ControlSvgIcon Width="18"
+                                             Height="18"
+                                             Source="/Resources/Icons/setting.svg"
+                                             Tint="{DynamicResource Brush.NavIcon}" />
+                                        <TextBlock x:Name="SchoolNavText"
+                               Text="School"
+                               Margin="12,0,0,0"
+                               Foreground="{DynamicResource Brush.NavIcon}"
+                               VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Row 4: Utilities -->
+                        <Border Grid.Row="3"
+            BorderBrush="{DynamicResource Brush.NavItemHover}"
+            BorderThickness="0,1,0,0"
+            Padding="10">
                             <Grid Height="42">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="42" />
                                     <ColumnDefinition Width="42" />
                                 </Grid.ColumnDefinitions>
-                                
+
                                 <Button x:Name="ThemeToggleNavButton"
-                                    Grid.Column="1"
-                                    Width="36"
-                                    Height="36"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Background="Transparent"
-                                    BorderBrush="Transparent"
-                                    Padding="0"
-                                    ToolTip="Toggle theme"
-                                    Click="ThemeToggleNavButton_Click">
+                    Grid.Column="1"
+                    Width="36"
+                    Height="36"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Padding="0"
+                    ToolTip="Toggle theme"
+                    Click="ThemeToggleNavButton_Click">
                                     <Viewbox Width="18" Height="18" Stretch="Uniform">
                                         <controls:ControlSvgIcon x:Name="ThemeToggleNavIcon"
-                                            Width="18"
-                                            Height="18"
-                                            Source="/Resources/Icons/modedark.svg"
-                                            Tint="{DynamicResource Brush.NavIcon}" />
+                                             Width="18"
+                                             Height="18"
+                                             Source="/Resources/Icons/modedark.svg"
+                                             Tint="{DynamicResource Brush.NavIcon}" />
                                     </Viewbox>
                                 </Button>
 
                                 <Button x:Name="UserProfileViewNavButton"
-                                    Grid.Column="0"
-                                    Width="36"
-                                    Height="36"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Background="Transparent"
-                                    BorderBrush="Transparent"
-                                    Padding="0"
-                                    ToolTip="Settings"
-                                    Click="UserProfileViewNavButton_Click">
+                    Grid.Column="0"
+                    Width="36"
+                    Height="36"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    Padding="0"
+                    ToolTip="Profile"
+                    Click="UserProfileViewNavButton_Click">
                                     <Viewbox Width="18" Height="18" Stretch="Uniform">
-                                        <controls:ControlSvgIcon Width="18"
-                                            Height="18"
-                                            Source="/Resources/Icons/userprofile.svg"
-                                            Tint="{DynamicResource Brush.NavIcon}" />
+                                        <controls:ControlSvgIcon x:Name="UserProfileViewNavIcon"
+                                             Width="18"
+                                             Height="18"
+                                             Source="/Resources/Icons/userprofile.svg"
+                                             Tint="{DynamicResource Brush.NavIcon}" />
                                     </Viewbox>
                                 </Button>
                             </Grid>
                         </Border>
                     </Grid>
+                </Border>
+
+
+                <!-- Left Navigation Collapse Button Area -->
+                <Border Grid.Column="0"
+                    Width="30"
+                    Height="30"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="0,16,-15,0"
+                    Panel.ZIndex="20"
+                    Background="{DynamicResource Brush.Surface}"
+                    BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="1"
+                    CornerRadius="15">
+                    <Button x:Name="NavToggleButton"
+                        Width="28"
+                        Height="28"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Padding="0"
+                        ToolTip="Collapse navigation"
+                        Click="NavToggleButton_Click">
+                        <controls:ControlSvgIcon x:Name="NavToggleButtonIcon"
+                                Width="16"
+                                 Height="16"
+                                 Source="/Resources/Icons/arrowleft.svg"
+                                 Tint="{DynamicResource Brush.PrimaryText}" />
+                    </Button>
                 </Border>
 
                 <!-- Content Area -->

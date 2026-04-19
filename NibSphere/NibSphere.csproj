@@ -26,6 +26,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Brand\nibsphere-full.png" />
+    <None Remove="Resources\Brand\nibsphere-mark.png" />
     <None Remove="Resources\Fonts\Alegreya\Alegreya-Italic-VariableFont_wght.ttf" />
     <None Remove="Resources\Fonts\Alegreya\Alegreya-VariableFont_wght.ttf" />
     <None Remove="Resources\Fonts\Alegreya\static\Alegreya-Black.ttf" />
@@ -65,6 +67,8 @@
     <None Remove="Resources\Fonts\Trirong\Trirong-SemiBoldItalic.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-Thin.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf" />
+    <None Remove="Resources\Icons\arrowleft.svg" />
+    <None Remove="Resources\Icons\arrowright.svg" />
     <None Remove="Resources\Icons\trash.svg" />
     <None Remove="Resources\Icons\upload.svg" />
     <None Remove="Resources\Icons\userprofile.svg" />
@@ -72,6 +76,21 @@
 
   <ItemGroup>
     <Content Include="favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Brand\nibsphere-full.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Brand\nibsphere-mark.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\arrowleft.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\arrowright.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

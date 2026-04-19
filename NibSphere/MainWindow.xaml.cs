@@ -14,6 +14,8 @@ namespace NibSphere
 			InitializeComponent();
 			UpdateThemeUi();
 			UpdateWindowStateUi();
+			UpdateNavToggleButtonUi();
+			UpdateNavToggleButtonUi();
 
 			SourceInitialized += MainWindow_SourceInitialized;
 		}
@@ -26,10 +28,12 @@ namespace NibSphere
 				? new GridLength(72)
 				: new GridLength(220);
 
-			NavHeaderText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 			DashboardNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 			StudentsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 			ReportsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+
+			UpdateNavBrandUi();
+			UpdateNavToggleButtonUi();
 		}
 
 		private void UserProfileViewNavButton_Click(object sender, RoutedEventArgs e)
@@ -179,6 +183,37 @@ namespace NibSphere
 			public RECT rcMonitor = new RECT();
 			public RECT rcWork = new RECT();
 			public int dwFlags;
+		}
+
+		private void UpdateNavToggleButtonUi()
+		{
+			if (NavToggleButtonIcon == null || NavToggleButton == null)
+			{
+				return;
+			}
+
+			NavToggleButtonIcon.Source = _isNavCollapsed
+				? "/Resources/Icons/arrowright.svg"
+				: "/Resources/Icons/arrowleft.svg";
+
+			NavToggleButton.ToolTip = _isNavCollapsed
+				? "Expand navigation"
+				: "Collapse navigation";
+		}
+
+		private void UpdateNavBrandUi()
+		{
+			if (NavBrandImage == null)
+			{
+				return;
+			}
+
+			NavBrandImage.Source = new System.Windows.Media.Imaging.BitmapImage(
+				new Uri(
+					_isNavCollapsed
+						? "/Resources/Brand/nibsphere-mark.png"
+						: "/Resources/Brand/nibsphere-full.png",
+					UriKind.Relative));
 		}
 	}
 }
