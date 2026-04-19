@@ -16,6 +16,7 @@
 		string ImagesDirectory { get; }
 		string DocumentsDirectory { get; }
 		string UserProfileImagesDirectory { get; }
+		string SchoolLogoImagesDirectory { get; }
 		string ModuleImagesDirectory { get; }
 		string ModuleDocumentsDirectory { get; }
 

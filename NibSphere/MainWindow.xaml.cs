@@ -263,7 +263,7 @@ namespace NibSphere
 			_isSchoolNavPopupOpen = false;
 			UpdateSchoolNavUi();
 
-			MessageBox.Show("School Profile view will be added next.");
+			MainContentHost.Content = new SchoolProfileView();
 		}
 
 		private void LearningAreasSubNavButton_Click(object sender, RoutedEventArgs e)

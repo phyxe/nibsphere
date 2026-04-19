@@ -19,7 +19,9 @@ namespace NibSphere.Data.Infrastructure
 		public string StorageDirectory => Path.Combine(RootDirectory, "Storage");
 		public string ImagesDirectory => Path.Combine(StorageDirectory, "Images");
 		public string DocumentsDirectory => Path.Combine(StorageDirectory, "Documents");
+
 		public string UserProfileImagesDirectory => Path.Combine(ImagesDirectory, "UserProfiles");
+		public string SchoolLogoImagesDirectory => Path.Combine(ImagesDirectory, "SchoolLogos");
 		public string ModuleImagesDirectory => Path.Combine(ImagesDirectory, "Modules");
 		public string ModuleDocumentsDirectory => Path.Combine(DocumentsDirectory, "Modules");
 
