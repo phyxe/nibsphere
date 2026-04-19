@@ -65,6 +65,8 @@
     <None Remove="Resources\Fonts\Trirong\Trirong-SemiBoldItalic.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-Thin.ttf" />
     <None Remove="Resources\Fonts\Trirong\Trirong-ThinItalic.ttf" />
+    <None Remove="Resources\Icons\trash.svg" />
+    <None Remove="Resources\Icons\upload.svg" />
     <None Remove="Resources\Icons\userprofile.svg" />
   </ItemGroup>
 
@@ -234,6 +236,12 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\student.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\trash.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Icons\upload.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\userprofile.svg">
