@@ -103,26 +103,59 @@ namespace NibSphere.Views
 
 			try
 			{
+				TopLevelComboBox.SelectedItem = null;
+				MunicipalityCityComboBox.ItemsSource = null;
+				MunicipalityCityComboBox.SelectedItem = null;
+				BarangayComboBox.ItemsSource = null;
+				BarangayComboBox.SelectedItem = null;
+
+				AddressTopLevel? selectedTopLevel = null;
+				AddressLocality? selectedLocality = null;
+
+				IReadOnlyList<AddressTopLevel> topLevels = await _philippineAddressRepository.GetTopLevelsAsync();
+
 				if (!string.IsNullOrWhiteSpace(_schoolProfile.ProvinceCode))
 				{
-					TopLevelComboBox.SelectedValue = _schoolProfile.ProvinceCode;
-					await LoadLocalitiesForSelectedTopLevelAsync(false);
+					selectedTopLevel = topLevels.FirstOrDefault(x =>
+						string.Equals(x.Code, _schoolProfile.ProvinceCode, StringComparison.OrdinalIgnoreCase));
+
+					TopLevelComboBox.SelectedItem = selectedTopLevel;
 				}
 
-				if (!string.IsNullOrWhiteSpace(_schoolProfile.MunicipalityCityCode))
+				if (selectedTopLevel != null)
 				{
-					MunicipalityCityComboBox.SelectedValue = _schoolProfile.MunicipalityCityCode;
-					await LoadBarangaysForSelectedLocalityAsync(false);
+					IReadOnlyList<AddressLocality> localities =
+						await _philippineAddressRepository.GetLocalitiesByTopLevelCodeAsync(selectedTopLevel.Code);
+
+					MunicipalityCityComboBox.ItemsSource = localities;
+
+					if (!string.IsNullOrWhiteSpace(_schoolProfile.MunicipalityCityCode))
+					{
+						selectedLocality = localities.FirstOrDefault(x =>
+							string.Equals(x.Code, _schoolProfile.MunicipalityCityCode, StringComparison.OrdinalIgnoreCase));
+
+						MunicipalityCityComboBox.SelectedItem = selectedLocality;
+					}
 				}
 
-				if (!string.IsNullOrWhiteSpace(_schoolProfile.BarangayCode))
+				if (selectedLocality != null)
 				{
-					BarangayComboBox.SelectedValue = _schoolProfile.BarangayCode;
+					IReadOnlyList<AddressBarangay> barangays =
+						await _philippineAddressRepository.GetBarangaysByLocalityCodeAsync(selectedLocality.Code);
+
+					BarangayComboBox.ItemsSource = barangays;
+
+					if (!string.IsNullOrWhiteSpace(_schoolProfile.BarangayCode))
+					{
+						BarangayComboBox.SelectedItem = barangays.FirstOrDefault(x =>
+							string.Equals(x.Code, _schoolProfile.BarangayCode, StringComparison.OrdinalIgnoreCase));
+					}
 				}
 			}
 			finally
 			{
 				_isAddressSelectionLoading = false;
+				UpdateAddressComboState();
 			}
 		}
 
@@ -133,7 +166,17 @@ namespace NibSphere.Views
 				return;
 			}
 
-			await LoadLocalitiesForSelectedTopLevelAsync(true);
+			_isAddressSelectionLoading = true;
+
+			try
+			{
+				await LoadLocalitiesForSelectedTopLevelAsync(true);
+			}
+			finally
+			{
+				_isAddressSelectionLoading = false;
+				UpdateAddressComboState();
+			}
 		}
 
 		private async void MunicipalityCityComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -143,7 +186,17 @@ namespace NibSphere.Views
 				return;
 			}
 
-			await LoadBarangaysForSelectedLocalityAsync(true);
+			_isAddressSelectionLoading = true;
+
+			try
+			{
+				await LoadBarangaysForSelectedLocalityAsync(true);
+			}
+			finally
+			{
+				_isAddressSelectionLoading = false;
+				UpdateAddressComboState();
+			}
 		}
 
 		private async Task LoadLocalitiesForSelectedTopLevelAsync(bool clearChildSelections)
@@ -159,6 +212,7 @@ namespace NibSphere.Views
 					BarangayComboBox.SelectedItem = null;
 				}
 
+				UpdateAddressComboState();
 				return;
 			}
 
@@ -173,6 +227,8 @@ namespace NibSphere.Views
 				BarangayComboBox.ItemsSource = null;
 				BarangayComboBox.SelectedItem = null;
 			}
+
+			UpdateAddressComboState();
 		}
 
 		private async Task LoadBarangaysForSelectedLocalityAsync(bool clearBarangaySelection)
@@ -186,6 +242,7 @@ namespace NibSphere.Views
 					BarangayComboBox.SelectedItem = null;
 				}
 
+				UpdateAddressComboState();
 				return;
 			}
 
@@ -198,6 +255,8 @@ namespace NibSphere.Views
 			{
 				BarangayComboBox.SelectedItem = null;
 			}
+
+			UpdateAddressComboState();
 		}
 
 		private async void SaveSchoolProfileButton_Click(object sender, RoutedEventArgs e)
@@ -521,6 +580,7 @@ namespace NibSphere.Views
 				? "/Resources/Icons/save.svg"
 				: "/Resources/Icons/edit.svg";
 			SaveSchoolProfileButton.ToolTip = _isEditMode ? "Save School Profile" : "Edit School Profile";
+			UpdateAddressComboState();
 		}
 
 		private void SetTextBoxMode(TextBox textBox, bool isEditable)
@@ -608,6 +668,15 @@ namespace NibSphere.Views
 		private static string? NullIfWhiteSpace(string? value)
 		{
 			return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+		}
+
+		private void UpdateAddressComboState()
+		{
+			bool canEdit = _isEditMode;
+
+			TopLevelComboBox.IsEnabled = canEdit;
+			MunicipalityCityComboBox.IsEnabled = canEdit && TopLevelComboBox.SelectedItem is AddressTopLevel;
+			BarangayComboBox.IsEnabled = canEdit && MunicipalityCityComboBox.SelectedItem is AddressLocality;
 		}
 	}
 }

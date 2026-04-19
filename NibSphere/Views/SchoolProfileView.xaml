@@ -247,6 +247,7 @@
                                       MinHeight="36"
                                       DisplayMemberPath="Name"
                                       SelectedValuePath="Code"
+                                      IsTextSearchEnabled="True"
                                       SelectionChanged="TopLevelComboBox_SelectionChanged" />
                         </StackPanel>
 
@@ -258,6 +259,7 @@
                                       MinHeight="36"
                                       DisplayMemberPath="Name"
                                       SelectedValuePath="Code"
+                                      IsTextSearchEnabled="True"
                                       SelectionChanged="MunicipalityCityComboBox_SelectionChanged" />
                         </StackPanel>
 
@@ -268,7 +270,8 @@
                             <ComboBox x:Name="BarangayComboBox"
                                       MinHeight="36"
                                       DisplayMemberPath="Name"
-                                      SelectedValuePath="Code" />
+                                      SelectedValuePath="Code"
+                                      IsTextSearchEnabled="True" />
                         </StackPanel>
                     </Grid>
 
