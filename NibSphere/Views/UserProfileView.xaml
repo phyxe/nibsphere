@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:NibSphere.Controls"
              mc:Ignorable="d"
              d:DesignHeight="700"
              d:DesignWidth="980"
@@ -69,8 +68,7 @@
                                Style="{StaticResource TextBlock.Secondary}"
                                Text="" />
 
-                    <StackPanel x:Name="ProfileImageButtonsPanel"
-                                Orientation="Horizontal"
+                    <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Margin="0,16,0,0">
                         <Button x:Name="BrowseProfileImageButton"
@@ -105,6 +103,7 @@
                     <TextBlock Text="Profile Information"
                                Style="{StaticResource TextBlock.SectionTitle}" />
 
+                    <!-- Name row -->
                     <Grid Grid.Row="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*"/>
@@ -153,6 +152,7 @@
                         </StackPanel>
                     </Grid>
 
+                    <!-- Contact row -->
                     <Grid Grid.Row="4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1.2*"/>
@@ -188,6 +188,7 @@
                         </StackPanel>
                     </Grid>
 
+                    <!-- Theme row -->
                     <Grid Grid.Row="6">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="240"/>
@@ -221,23 +222,10 @@
 
                         <Button Grid.Column="1"
                                 x:Name="SaveProfileButton"
-                                Width="160"
+                                Content="Save Profile"
+                                Width="140"
                                 HorizontalAlignment="Right"
-                                Click="SaveProfileButton_Click">
-                            <StackPanel Orientation="Horizontal"
-                                        HorizontalAlignment="Center">
-                                <controls:ControlSvgIcon x:Name="SaveProfileActionIcon"
-                                                         Width="16"
-                                                         Height="16"
-                                                         Margin="0,0,8,0"
-                                                         Source="/Resources/Icons/save.svg"
-                                                         Tint="White" />
-                                <TextBlock x:Name="SaveProfileActionTextBlock"
-                                           VerticalAlignment="Center"
-                                           Foreground="White"
-                                           Text="Save Profile" />
-                            </StackPanel>
-                        </Button>
+                                Click="SaveProfileButton_Click" />
                     </Grid>
                 </Grid>
             </Border>

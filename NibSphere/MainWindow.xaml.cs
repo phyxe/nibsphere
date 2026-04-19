@@ -2,21 +2,18 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Media;
 
 namespace NibSphere
 {
 	public partial class MainWindow : Window
 	{
 		private bool _isNavCollapsed = false;
-		private bool _isUserProfileNavSelected = false;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 			UpdateThemeUi();
 			UpdateWindowStateUi();
-			UpdateBottomNavUi();
 
 			SourceInitialized += MainWindow_SourceInitialized;
 		}
@@ -38,15 +35,12 @@ namespace NibSphere
 		private void UserProfileViewNavButton_Click(object sender, RoutedEventArgs e)
 		{
 			MainContentHost.Content = new UserProfileView();
-			_isUserProfileNavSelected = true;
-			UpdateBottomNavUi();
 		}
 
 		private void ThemeToggleNavButton_Click(object sender, RoutedEventArgs e)
 		{
 			App.ToggleTheme();
 			UpdateThemeUi();
-			UpdateBottomNavUi();
 		}
 
 		private void UpdateThemeUi()
@@ -62,19 +56,6 @@ namespace NibSphere
 				ThemeStatusTextBlock.Text = "Theme: Light";
 				ThemeToggleNavButton.ToolTip = "Switch to Dark Theme";
 				ThemeToggleNavIcon.Source = "/Resources/Icons/modedark.svg";
-			}
-		}
-
-		private void UpdateBottomNavUi()
-		{
-			Brush activeBrush = (Brush)FindResource("Brush.NavItemActive");
-
-			UserProfileViewNavButton.Background = _isUserProfileNavSelected ? activeBrush : Brushes.Transparent;
-			UserProfileViewNavButton.BorderBrush = _isUserProfileNavSelected ? activeBrush : Brushes.Transparent;
-
-			if (UserProfileViewNavIcon != null)
-			{
-				UserProfileViewNavIcon.Tint = (Brush)FindResource("Brush.NavIcon");
 			}
 		}
 

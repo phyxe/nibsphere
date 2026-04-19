@@ -318,19 +318,18 @@
                                 </Button>
 
                                 <Button x:Name="UserProfileViewNavButton"
-                                        Grid.Column="0"
-                                        Width="36"
-                                        Height="36"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Background="Transparent"
-                                        BorderBrush="Transparent"
-                                        Padding="0"
-                                        ToolTip="Profile"
-                                        Click="UserProfileViewNavButton_Click">
+                                    Grid.Column="0"
+                                    Width="36"
+                                    Height="36"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    Padding="0"
+                                    ToolTip="Settings"
+                                    Click="UserProfileViewNavButton_Click">
                                     <Viewbox Width="18" Height="18" Stretch="Uniform">
-                                        <controls:ControlSvgIcon x:Name="UserProfileViewNavIcon"
-                                            Width="18"
+                                        <controls:ControlSvgIcon Width="18"
                                             Height="18"
                                             Source="/Resources/Icons/userprofile.svg"
                                             Tint="{DynamicResource Brush.NavIcon}" />
