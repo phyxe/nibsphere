@@ -8,6 +8,14 @@
 		string ExportDirectory { get; }
 		string LogDirectory { get; }
 		string ConfigDirectory { get; }
+
+		string StorageDirectory { get; }
+		string ImagesDirectory { get; }
+		string DocumentsDirectory { get; }
+		string UserProfileImagesDirectory { get; }
+		string ModuleImagesDirectory { get; }
+		string ModuleDocumentsDirectory { get; }
+
 		string DatabaseFilePath { get; }
 	}
 }

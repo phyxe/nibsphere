@@ -1,7 +1,7 @@
-﻿using NibSphere.Core.Interfaces;
+﻿using Microsoft.Data.SqlClient;
+using NibSphere.Core.Interfaces;
 using NibSphere.Core.Models;
 using NibSphere.Data.Database;
-using Microsoft.Data.SqlClient;
 
 namespace NibSphere.Data.Repositories
 {
@@ -20,10 +20,17 @@ namespace NibSphere.Data.Repositories
 				"""
                 SELECT TOP 1
                     Id,
+                    UserUid,
+                    AppInstanceUid,
+                    FirstName,
+                    LastName,
+                    MiddleName,
+                    ExtensionName,
                     FullName,
                     PositionTitle,
                     EmailAddress,
                     ContactNumber,
+                    ProfileImagePath,
                     SignaturePath,
                     ThemePreference,
                     IsPrimary
@@ -46,10 +53,17 @@ namespace NibSphere.Data.Repositories
 			return new AppUserProfile
 			{
 				Id = reader.GetInt32(reader.GetOrdinal("Id")),
+				UserUid = reader["UserUid"] == DBNull.Value ? null : reader.GetGuid(reader.GetOrdinal("UserUid")),
+				AppInstanceUid = reader["AppInstanceUid"] == DBNull.Value ? null : reader.GetGuid(reader.GetOrdinal("AppInstanceUid")),
+				FirstName = reader["FirstName"] as string,
+				LastName = reader["LastName"] as string,
+				MiddleName = reader["MiddleName"] as string,
+				ExtensionName = reader["ExtensionName"] as string,
 				FullName = reader.GetString(reader.GetOrdinal("FullName")),
 				PositionTitle = reader["PositionTitle"] as string,
 				EmailAddress = reader["EmailAddress"] as string,
 				ContactNumber = reader["ContactNumber"] as string,
+				ProfileImagePath = reader["ProfileImagePath"] as string,
 				SignaturePath = reader["SignaturePath"] as string,
 				ThemePreference = reader["ThemePreference"] as string,
 				IsPrimary = reader.GetBoolean(reader.GetOrdinal("IsPrimary"))
@@ -62,20 +76,34 @@ namespace NibSphere.Data.Repositories
 				"""
                 INSERT INTO AppUserProfile
                 (
+                    UserUid,
+                    AppInstanceUid,
+                    FirstName,
+                    LastName,
+                    MiddleName,
+                    ExtensionName,
                     FullName,
                     PositionTitle,
                     EmailAddress,
                     ContactNumber,
+                    ProfileImagePath,
                     SignaturePath,
                     ThemePreference,
                     IsPrimary
                 )
                 VALUES
                 (
+                    @UserUid,
+                    @AppInstanceUid,
+                    @FirstName,
+                    @LastName,
+                    @MiddleName,
+                    @ExtensionName,
                     @FullName,
                     @PositionTitle,
                     @EmailAddress,
                     @ContactNumber,
+                    @ProfileImagePath,
                     @SignaturePath,
                     @ThemePreference,
                     @IsPrimary
@@ -83,6 +111,8 @@ namespace NibSphere.Data.Repositories
 
                 SELECT CAST(SCOPE_IDENTITY() AS INT);
                 """;
+
+			PrepareUserProfileForSave(userProfile);
 
 			using SqlConnection connection = _connectionFactory.CreateAppConnection();
 			await connection.OpenAsync();
@@ -100,16 +130,25 @@ namespace NibSphere.Data.Repositories
 				"""
                 UPDATE AppUserProfile
                 SET
+                    UserUid = @UserUid,
+                    AppInstanceUid = @AppInstanceUid,
+                    FirstName = @FirstName,
+                    LastName = @LastName,
+                    MiddleName = @MiddleName,
+                    ExtensionName = @ExtensionName,
                     FullName = @FullName,
                     PositionTitle = @PositionTitle,
                     EmailAddress = @EmailAddress,
                     ContactNumber = @ContactNumber,
+                    ProfileImagePath = @ProfileImagePath,
                     SignaturePath = @SignaturePath,
                     ThemePreference = @ThemePreference,
                     IsPrimary = @IsPrimary,
                     UpdatedAt = GETDATE()
                 WHERE Id = @Id;
                 """;
+
+			PrepareUserProfileForSave(userProfile);
 
 			using SqlConnection connection = _connectionFactory.CreateAppConnection();
 			await connection.OpenAsync();
@@ -121,15 +160,56 @@ namespace NibSphere.Data.Repositories
 			await command.ExecuteNonQueryAsync();
 		}
 
+		private static void PrepareUserProfileForSave(AppUserProfile userProfile)
+		{
+			if (userProfile.UserUid == null || userProfile.UserUid == Guid.Empty)
+			{
+				userProfile.UserUid = Guid.NewGuid();
+			}
+
+			if (userProfile.AppInstanceUid == null || userProfile.AppInstanceUid == Guid.Empty)
+			{
+				userProfile.AppInstanceUid = Guid.NewGuid();
+			}
+
+			userProfile.FirstName = Normalize(userProfile.FirstName);
+			userProfile.LastName = Normalize(userProfile.LastName);
+			userProfile.MiddleName = Normalize(userProfile.MiddleName);
+			userProfile.ExtensionName = Normalize(userProfile.ExtensionName);
+			userProfile.PositionTitle = Normalize(userProfile.PositionTitle);
+			userProfile.EmailAddress = Normalize(userProfile.EmailAddress);
+			userProfile.ContactNumber = Normalize(userProfile.ContactNumber);
+			userProfile.ProfileImagePath = Normalize(userProfile.ProfileImagePath);
+			userProfile.SignaturePath = Normalize(userProfile.SignaturePath);
+			userProfile.ThemePreference = Normalize(userProfile.ThemePreference);
+
+			string computedFullName = userProfile.BuildFullName();
+			userProfile.FullName = string.IsNullOrWhiteSpace(computedFullName)
+				? string.Empty
+				: computedFullName;
+		}
+
 		private static void AddParameters(SqlCommand command, AppUserProfile userProfile)
 		{
+			command.Parameters.AddWithValue("@UserUid", (object?)userProfile.UserUid ?? DBNull.Value);
+			command.Parameters.AddWithValue("@AppInstanceUid", (object?)userProfile.AppInstanceUid ?? DBNull.Value);
+			command.Parameters.AddWithValue("@FirstName", (object?)userProfile.FirstName ?? DBNull.Value);
+			command.Parameters.AddWithValue("@LastName", (object?)userProfile.LastName ?? DBNull.Value);
+			command.Parameters.AddWithValue("@MiddleName", (object?)userProfile.MiddleName ?? DBNull.Value);
+			command.Parameters.AddWithValue("@ExtensionName", (object?)userProfile.ExtensionName ?? DBNull.Value);
 			command.Parameters.AddWithValue("@FullName", userProfile.FullName);
 			command.Parameters.AddWithValue("@PositionTitle", (object?)userProfile.PositionTitle ?? DBNull.Value);
 			command.Parameters.AddWithValue("@EmailAddress", (object?)userProfile.EmailAddress ?? DBNull.Value);
 			command.Parameters.AddWithValue("@ContactNumber", (object?)userProfile.ContactNumber ?? DBNull.Value);
+			command.Parameters.AddWithValue("@ProfileImagePath", (object?)userProfile.ProfileImagePath ?? DBNull.Value);
 			command.Parameters.AddWithValue("@SignaturePath", (object?)userProfile.SignaturePath ?? DBNull.Value);
 			command.Parameters.AddWithValue("@ThemePreference", (object?)userProfile.ThemePreference ?? DBNull.Value);
 			command.Parameters.AddWithValue("@IsPrimary", userProfile.IsPrimary);
+		}
+
+		private static string? Normalize(string? value)
+		{
+			return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 		}
 	}
 }

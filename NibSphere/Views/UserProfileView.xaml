@@ -1,0 +1,234 @@
+﻿<UserControl x:Class="NibSphere.Views.UserProfileView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="700"
+             d:DesignWidth="980"
+             Background="{DynamicResource Brush.Background}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="User Profile"
+                       Style="{StaticResource TextBlock.Heading1}" />
+
+            <Border Grid.Row="2"
+                    Style="{StaticResource CardBorderStyle}">
+                <StackPanel HorizontalAlignment="Center">
+                    <Grid Width="132"
+                          Height="132"
+                          Margin="0,4,0,12">
+                        <Ellipse x:Name="ProfileImageEllipse"
+                                 Width="132"
+                                 Height="132"
+                                 Stroke="{DynamicResource Brush.Border}"
+                                 StrokeThickness="1"
+                                 Fill="{DynamicResource Brush.SurfaceAlt}" />
+
+                        <TextBlock x:Name="ProfileInitialsTextBlock"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="30"
+                                   FontWeight="SemiBold"
+                                   Style="{StaticResource TextBlock.Heading2}"
+                                   Text="U" />
+
+                        <Border HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Background="{DynamicResource Brush.Surface}"
+                                BorderBrush="{DynamicResource Brush.Border}"
+                                BorderThickness="1"
+                                CornerRadius="18"
+                                Padding="8,4">
+                            <TextBlock Text="IMAGE"
+                                       Style="{StaticResource TextBlock.Caption}" />
+                        </Border>
+                    </Grid>
+
+                    <TextBlock x:Name="ProfileHeaderNameTextBlock"
+                               Text="USER PROFILE"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               Style="{StaticResource TextBlock.Heading2}" />
+
+                    <TextBlock x:Name="ProfileHeaderPositionTextBlock"
+                               Margin="0,2,0,0"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               Style="{StaticResource TextBlock.Secondary}"
+                               Text="" />
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,16,0,0">
+                        <Button x:Name="BrowseProfileImageButton"
+                                Content="Choose Image"
+                                Padding="14,8"
+                                Margin="0,0,8,0"
+                                Click="BrowseProfileImageButton_Click" />
+
+                        <Button x:Name="RemoveProfileImageButton"
+                                Content="Remove"
+                                Padding="14,8"
+                                Click="RemoveProfileImageButton_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="4"
+                    Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Profile Information"
+                               Style="{StaticResource TextBlock.SectionTitle}" />
+
+                    <!-- Name row -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="1.2*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="First Name"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <TextBox x:Name="FirstNameTextBox"
+                                     MinHeight="36"
+                                     TextChanged="ProfileFields_TextChanged" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Middle Name"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <TextBox x:Name="MiddleNameTextBox"
+                                     MinHeight="36"
+                                     TextChanged="ProfileFields_TextChanged" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Last Name"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <TextBox x:Name="LastNameTextBox"
+                                     MinHeight="36"
+                                     TextChanged="ProfileFields_TextChanged" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="6">
+                            <TextBlock Text="Extension"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <TextBox x:Name="ExtensionNameTextBox"
+                                     MinHeight="36"
+                                     TextChanged="ProfileFields_TextChanged" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Contact row -->
+                    <Grid Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.2*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="1.1*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="1.7*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Position Title"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <TextBox x:Name="PositionTitleTextBox"
+                                     MinHeight="36"
+                                     TextChanged="ProfileFields_TextChanged" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Contact Number"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <TextBox x:Name="ContactNumberTextBox"
+                                     MinHeight="36" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Email Address"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <TextBox x:Name="EmailAddressTextBox"
+                                     MinHeight="36" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Theme row -->
+                    <Grid Grid.Row="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="240"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Theme Preference"
+                                       Margin="0,0,0,6"
+                                       Style="{StaticResource TextBlock.Body}" />
+                            <ComboBox x:Name="ThemePreferenceComboBox"
+                                      MinHeight="36"
+                                      SelectedIndex="0">
+                                <ComboBoxItem Content="System" />
+                                <ComboBoxItem Content="Light" />
+                                <ComboBoxItem Content="Dark" />
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Grid.Row="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock x:Name="ProfileImagePathStatusTextBlock"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource TextBlock.Caption}"
+                                   Text="" />
+
+                        <Button Grid.Column="1"
+                                x:Name="SaveProfileButton"
+                                Content="Save Profile"
+                                Width="140"
+                                HorizontalAlignment="Right"
+                                Click="SaveProfileButton_Click" />
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

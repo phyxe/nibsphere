@@ -1,5 +1,5 @@
-﻿using NibSphere.Core.Interfaces;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
+using NibSphere.Core.Interfaces;
 using System.IO;
 
 namespace NibSphere.Data.Database
@@ -78,10 +78,17 @@ namespace NibSphere.Data.Database
                     CREATE TABLE AppUserProfile
                     (
                         Id INT PRIMARY KEY IDENTITY(1,1),
+                        UserUid UNIQUEIDENTIFIER NULL,
+                        AppInstanceUid UNIQUEIDENTIFIER NULL,
+                        FirstName NVARCHAR(100) NULL,
+                        LastName NVARCHAR(100) NULL,
+                        MiddleName NVARCHAR(100) NULL,
+                        ExtensionName NVARCHAR(50) NULL,
                         FullName NVARCHAR(150) NOT NULL,
                         PositionTitle NVARCHAR(150) NULL,
                         EmailAddress NVARCHAR(150) NULL,
                         ContactNumber NVARCHAR(50) NULL,
+                        ProfileImagePath NVARCHAR(500) NULL,
                         SignaturePath NVARCHAR(500) NULL,
                         ThemePreference NVARCHAR(20) NULL,
                         IsPrimary BIT NOT NULL DEFAULT 1,

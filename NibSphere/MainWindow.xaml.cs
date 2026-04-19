@@ -32,9 +32,9 @@ namespace NibSphere
 			ReportsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 		}
 
-		private void BottomSettingsNavButton_Click(object sender, RoutedEventArgs e)
+		private void UserProfileViewNavButton_Click(object sender, RoutedEventArgs e)
 		{
-			MainContentHost.Content = new SettingsView();
+			MainContentHost.Content = new UserProfileView();
 		}
 
 		private void ThemeToggleNavButton_Click(object sender, RoutedEventArgs e)

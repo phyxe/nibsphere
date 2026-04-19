@@ -317,7 +317,7 @@
                                     </Viewbox>
                                 </Button>
 
-                                <Button x:Name="BottomSettingsNavButton"
+                                <Button x:Name="UserProfileViewNavButton"
                                     Grid.Column="0"
                                     Width="36"
                                     Height="36"
@@ -327,11 +327,11 @@
                                     BorderBrush="Transparent"
                                     Padding="0"
                                     ToolTip="Settings"
-                                    Click="BottomSettingsNavButton_Click">
+                                    Click="UserProfileViewNavButton_Click">
                                     <Viewbox Width="18" Height="18" Stretch="Uniform">
                                         <controls:ControlSvgIcon Width="18"
                                             Height="18"
-                                            Source="/Resources/Icons/setting.svg"
+                                            Source="/Resources/Icons/userprofile.svg"
                                             Tint="{DynamicResource Brush.NavIcon}" />
                                     </Viewbox>
                                 </Button>
