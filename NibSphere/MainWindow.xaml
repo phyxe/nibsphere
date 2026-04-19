@@ -290,10 +290,10 @@
                                     <StackPanel Orientation="Horizontal">
                                         <controls:ControlSvgIcon Width="18"
                                              Height="18"
-                                             Source="/Resources/Icons/setting.svg"
+                                             Source="/Resources/Icons/school.svg"
                                              Tint="{DynamicResource Brush.NavIcon}" />
                                         <TextBlock x:Name="SchoolNavText"
-                               Text="School"
+                               Text="School Information"
                                Margin="12,0,0,0"
                                Foreground="{DynamicResource Brush.NavIcon}"
                                VerticalAlignment="Center"/>
