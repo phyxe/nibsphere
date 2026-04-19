@@ -1,7 +1,7 @@
-﻿using NibSphere.Core.Interfaces;
+﻿using Microsoft.Data.SqlClient;
+using NibSphere.Core.Interfaces;
 using NibSphere.Core.Models;
 using NibSphere.Data.Database;
-using Microsoft.Data.SqlClient;
 
 namespace NibSphere.Data.Repositories
 {
@@ -19,13 +19,26 @@ namespace NibSphere.Data.Repositories
 			const string sql =
 				"""
                 SELECT
-                    Id,
-                    Category,
-                    Code,
-                    Description,
-                    Sort
-                FROM LearningArea
-                ORDER BY Sort, Description, Id;
+                    la.Id,
+                    la.Category,
+                    la.Code,
+                    la.ShortName,
+                    la.Description,
+                    la.AcademicGroupId,
+                    ag.Name AS AcademicGroupName,
+                    la.CategoryId,
+                    lac.Name AS CategoryName,
+                    la.Sort
+                FROM LearningArea la
+                LEFT JOIN AcademicGroup ag
+                    ON la.AcademicGroupId = ag.Id
+                LEFT JOIN LearningAreaCategory lac
+                    ON la.CategoryId = lac.Id
+                ORDER BY
+                    la.Sort,
+                    COALESCE(NULLIF(la.ShortName, ''), la.Description),
+                    la.Description,
+                    la.Id;
                 """;
 
 			List<LearningArea> items = new();
@@ -41,9 +54,18 @@ namespace NibSphere.Data.Repositories
 				items.Add(new LearningArea
 				{
 					Id = reader.GetInt32(reader.GetOrdinal("Id")),
-					Category = reader.GetString(reader.GetOrdinal("Category")),
+					Category = reader["Category"] as string ?? string.Empty,
 					Code = reader.GetString(reader.GetOrdinal("Code")),
+					ShortName = reader["ShortName"] as string ?? string.Empty,
 					Description = reader.GetString(reader.GetOrdinal("Description")),
+					AcademicGroupId = reader["AcademicGroupId"] == DBNull.Value
+						? null
+						: reader.GetInt32(reader.GetOrdinal("AcademicGroupId")),
+					AcademicGroupName = reader["AcademicGroupName"] as string ?? string.Empty,
+					CategoryId = reader["CategoryId"] == DBNull.Value
+						? null
+						: reader.GetInt32(reader.GetOrdinal("CategoryId")),
+					CategoryName = reader["CategoryName"] as string ?? string.Empty,
 					Sort = reader.GetInt32(reader.GetOrdinal("Sort"))
 				});
 			}
@@ -59,19 +81,27 @@ namespace NibSphere.Data.Repositories
                 (
                     Category,
                     Code,
+                    ShortName,
                     Description,
+                    AcademicGroupId,
+                    CategoryId,
                     Sort
                 )
                 VALUES
                 (
                     @Category,
                     @Code,
+                    @ShortName,
                     @Description,
+                    @AcademicGroupId,
+                    @CategoryId,
                     @Sort
                 );
 
                 SELECT CAST(SCOPE_IDENTITY() AS INT);
                 """;
+
+			PrepareLearningAreaForSave(learningArea);
 
 			using SqlConnection connection = _connectionFactory.CreateAppConnection();
 			await connection.OpenAsync();
@@ -91,11 +121,16 @@ namespace NibSphere.Data.Repositories
                 SET
                     Category = @Category,
                     Code = @Code,
+                    ShortName = @ShortName,
                     Description = @Description,
+                    AcademicGroupId = @AcademicGroupId,
+                    CategoryId = @CategoryId,
                     Sort = @Sort,
                     UpdatedAt = GETDATE()
                 WHERE Id = @Id;
                 """;
+
+			PrepareLearningAreaForSave(learningArea);
 
 			using SqlConnection connection = _connectionFactory.CreateAppConnection();
 			await connection.OpenAsync();
@@ -124,12 +159,41 @@ namespace NibSphere.Data.Repositories
 			await command.ExecuteNonQueryAsync();
 		}
 
+		private static void PrepareLearningAreaForSave(LearningArea learningArea)
+		{
+			learningArea.Code = NormalizeRequired(learningArea.Code);
+			learningArea.ShortName = Normalize(learningArea.ShortName) ?? string.Empty;
+			learningArea.Description = NormalizeRequired(learningArea.Description);
+
+			// Keep the legacy text Category column populated for backward compatibility.
+			// Prefer the existing text value, then fall back to CategoryName if present.
+			learningArea.Category = Normalize(learningArea.Category)
+				?? Normalize(learningArea.CategoryName)
+				?? string.Empty;
+
+			learningArea.AcademicGroupName = Normalize(learningArea.AcademicGroupName) ?? string.Empty;
+			learningArea.CategoryName = Normalize(learningArea.CategoryName) ?? string.Empty;
+		}
+
 		private static void AddParameters(SqlCommand command, LearningArea learningArea)
 		{
 			command.Parameters.AddWithValue("@Category", learningArea.Category);
 			command.Parameters.AddWithValue("@Code", learningArea.Code);
+			command.Parameters.AddWithValue("@ShortName", (object?)Normalize(learningArea.ShortName) ?? DBNull.Value);
 			command.Parameters.AddWithValue("@Description", learningArea.Description);
+			command.Parameters.AddWithValue("@AcademicGroupId", (object?)learningArea.AcademicGroupId ?? DBNull.Value);
+			command.Parameters.AddWithValue("@CategoryId", (object?)learningArea.CategoryId ?? DBNull.Value);
 			command.Parameters.AddWithValue("@Sort", learningArea.Sort);
+		}
+
+		private static string? Normalize(string? value)
+		{
+			return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+		}
+
+		private static string NormalizeRequired(string value)
+		{
+			return string.IsNullOrWhiteSpace(value) ? string.Empty : value.Trim();
 		}
 	}
 }

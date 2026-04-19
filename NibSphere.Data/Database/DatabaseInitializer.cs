@@ -116,18 +116,92 @@ namespace NibSphere.Data.Database
                     );
                 END
 
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'AcademicGroup')
+                BEGIN
+                    CREATE TABLE AcademicGroup
+                    (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+                        Name NVARCHAR(100) NOT NULL,
+                        Sort INT NOT NULL DEFAULT 0,
+                        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+                        UpdatedAt DATETIME2 NULL
+                    );
+                END
+
+                IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LearningAreaCategory')
+                BEGIN
+                    CREATE TABLE LearningAreaCategory
+                    (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+                        Name NVARCHAR(100) NOT NULL,
+                        Sort INT NOT NULL DEFAULT 0,
+                        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+                        UpdatedAt DATETIME2 NULL
+                    );
+                END
+
                 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'LearningArea')
                 BEGIN
                     CREATE TABLE LearningArea
                     (
                         Id INT PRIMARY KEY IDENTITY(1,1),
+
                         Category NVARCHAR(100) NOT NULL,
                         Code NVARCHAR(50) NOT NULL,
+                        ShortName NVARCHAR(100) NULL,
                         Description NVARCHAR(200) NOT NULL,
+
+                        AcademicGroupId INT NULL,
+                        CategoryId INT NULL,
+
                         Sort INT NOT NULL DEFAULT 0,
                         CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
                         UpdatedAt DATETIME2 NULL
                     );
+                END
+
+                IF COL_LENGTH('LearningArea', 'ShortName') IS NULL
+                BEGIN
+                    ALTER TABLE LearningArea
+                    ADD ShortName NVARCHAR(100) NULL;
+                END
+
+                IF COL_LENGTH('LearningArea', 'AcademicGroupId') IS NULL
+                BEGIN
+                    ALTER TABLE LearningArea
+                    ADD AcademicGroupId INT NULL;
+                END
+
+                IF COL_LENGTH('LearningArea', 'CategoryId') IS NULL
+                BEGIN
+                    ALTER TABLE LearningArea
+                    ADD CategoryId INT NULL;
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_LearningArea_AcademicGroup'
+                )
+                BEGIN
+                    ALTER TABLE LearningArea
+                    ADD CONSTRAINT FK_LearningArea_AcademicGroup
+                        FOREIGN KEY (AcademicGroupId)
+                        REFERENCES AcademicGroup(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_LearningArea_LearningAreaCategory'
+                )
+                BEGIN
+                    ALTER TABLE LearningArea
+                    ADD CONSTRAINT FK_LearningArea_LearningAreaCategory
+                        FOREIGN KEY (CategoryId)
+                        REFERENCES LearningAreaCategory(Id);
                 END
                 """;
 
