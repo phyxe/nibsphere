@@ -18,6 +18,7 @@ namespace NibSphere.Views
 		private AppUserProfile? _appUserProfile;
 		private string? _pendingProfileImageSourcePath;
 		private bool _removeProfileImage;
+		private bool _isEditMode;
 
 		public UserProfileView()
 		{
@@ -46,11 +47,19 @@ namespace NibSphere.Views
 					IsPrimary = true,
 					ThemePreference = "System"
 				};
+
+				_isEditMode = true;
+			}
+			else
+			{
+				_isEditMode = false;
 			}
 
 			PopulateFields();
 			UpdateHeaderPreview();
 			UpdateProfileImagePreview();
+			UpdateProfileImageStatusText();
+			ApplyEditModeUi();
 		}
 
 		private void PopulateFields()
@@ -69,14 +78,17 @@ namespace NibSphere.Views
 			EmailAddressTextBox.Text = _appUserProfile.EmailAddress ?? string.Empty;
 
 			SetThemePreferenceSelection(_appUserProfile.ThemePreference);
-
-			ProfileImagePathStatusTextBlock.Text = string.IsNullOrWhiteSpace(_appUserProfile.ProfileImagePath)
-				? "No profile image selected."
-				: _appUserProfile.ProfileImagePath;
 		}
 
 		private async void SaveProfileButton_Click(object sender, RoutedEventArgs e)
 		{
+			if (!_isEditMode)
+			{
+				_isEditMode = true;
+				ApplyEditModeUi();
+				return;
+			}
+
 			if (_appUserProfile == null)
 			{
 				_appUserProfile = new AppUserProfile();
@@ -133,13 +145,12 @@ namespace NibSphere.Views
 
 			_pendingProfileImageSourcePath = null;
 			_removeProfileImage = false;
+			_isEditMode = false;
 
 			UpdateHeaderPreview();
 			UpdateProfileImagePreview();
-
-			ProfileImagePathStatusTextBlock.Text = string.IsNullOrWhiteSpace(_appUserProfile.ProfileImagePath)
-				? "No profile image selected."
-				: _appUserProfile.ProfileImagePath;
+			UpdateProfileImageStatusText();
+			ApplyEditModeUi();
 
 			MessageBox.Show(
 				"User profile saved successfully.",
@@ -167,7 +178,7 @@ namespace NibSphere.Views
 			_pendingProfileImageSourcePath = dialog.FileName;
 			_removeProfileImage = false;
 
-			ProfileImagePathStatusTextBlock.Text = Path.GetFileName(dialog.FileName);
+			ProfileImagePathStatusTextBlock.Text = $"Selected image: {Path.GetFileName(dialog.FileName)}";
 			UpdateProfileImagePreview();
 		}
 
@@ -189,6 +200,7 @@ namespace NibSphere.Views
 		private void UpdateHeaderPreview()
 		{
 			string displayName = BuildDisplayNameFromFields();
+
 			ProfileHeaderNameTextBlock.Text = string.IsNullOrWhiteSpace(displayName)
 				? "USER PROFILE"
 				: displayName.ToUpperInvariant();
@@ -307,24 +319,15 @@ namespace NibSphere.Views
 
 		private string BuildDisplayNameFromFields()
 		{
-			string[] parts =
+			AppUserProfile preview = new AppUserProfile
 			{
-				FirstNameTextBox.Text.Trim(),
-				MiddleNameTextBox.Text.Trim(),
-				LastNameTextBox.Text.Trim()
+				FirstName = NullIfWhiteSpace(FirstNameTextBox.Text),
+				MiddleName = NullIfWhiteSpace(MiddleNameTextBox.Text),
+				LastName = NullIfWhiteSpace(LastNameTextBox.Text),
+				ExtensionName = NullIfWhiteSpace(ExtensionNameTextBox.Text)
 			};
 
-			string fullName = string.Join(" ", parts.Where(part => !string.IsNullOrWhiteSpace(part)));
-
-			string extension = ExtensionNameTextBox.Text.Trim();
-			if (!string.IsNullOrWhiteSpace(extension))
-			{
-				fullName = string.IsNullOrWhiteSpace(fullName)
-					? extension
-					: $"{fullName} {extension}";
-			}
-
-			return fullName.Trim();
+			return preview.BuildFullName();
 		}
 
 		private string BuildInitials()
@@ -372,6 +375,67 @@ namespace NibSphere.Views
 			}
 
 			ThemePreferenceComboBox.SelectedIndex = 0;
+		}
+
+		private void ApplyEditModeUi()
+		{
+			SetTextBoxMode(FirstNameTextBox, _isEditMode);
+			SetTextBoxMode(MiddleNameTextBox, _isEditMode);
+			SetTextBoxMode(LastNameTextBox, _isEditMode);
+			SetTextBoxMode(ExtensionNameTextBox, _isEditMode);
+			SetTextBoxMode(PositionTitleTextBox, _isEditMode);
+			SetTextBoxMode(ContactNumberTextBox, _isEditMode);
+			SetTextBoxMode(EmailAddressTextBox, _isEditMode);
+			SetComboBoxMode(ThemePreferenceComboBox, _isEditMode);
+
+			ProfileImageButtonsPanel.Visibility = _isEditMode ? Visibility.Visible : Visibility.Collapsed;
+
+			SaveProfileActionTextBlock.Text = _isEditMode ? "Save Profile" : "Edit Profile";
+			SaveProfileActionIcon.Source = _isEditMode
+				? "/Resources/Icons/save.svg"
+				: "/Resources/Icons/edit.svg";
+			SaveProfileButton.ToolTip = _isEditMode ? "Save Profile" : "Edit Profile";
+		}
+
+		private void SetTextBoxMode(TextBox textBox, bool isEditable)
+		{
+			textBox.IsReadOnly = !isEditable;
+			textBox.IsHitTestVisible = isEditable;
+			textBox.Focusable = isEditable;
+			textBox.CaretBrush = isEditable ? (Brush)FindResource("Brush.PrimaryText") : Brushes.Transparent;
+			textBox.Background = isEditable ? (Brush)FindResource("Brush.Surface") : Brushes.Transparent;
+			textBox.BorderBrush = isEditable ? (Brush)FindResource("Brush.Border") : Brushes.Transparent;
+			textBox.BorderThickness = isEditable ? new Thickness(1) : new Thickness(0);
+			textBox.Padding = isEditable ? new Thickness(10, 6, 10, 6) : new Thickness(0);
+		}
+
+		private void SetComboBoxMode(ComboBox comboBox, bool isEditable)
+		{
+			comboBox.IsHitTestVisible = isEditable;
+			comboBox.Focusable = isEditable;
+			comboBox.Background = isEditable ? (Brush)FindResource("Brush.Surface") : Brushes.Transparent;
+			comboBox.BorderBrush = isEditable ? (Brush)FindResource("Brush.Border") : Brushes.Transparent;
+			comboBox.BorderThickness = isEditable ? new Thickness(1) : new Thickness(0);
+			comboBox.Padding = isEditable ? new Thickness(10, 6, 10, 6) : new Thickness(0);
+		}
+
+		private void UpdateProfileImageStatusText()
+		{
+			if (_removeProfileImage)
+			{
+				ProfileImagePathStatusTextBlock.Text = "Profile image will be removed on save.";
+				return;
+			}
+
+			if (!string.IsNullOrWhiteSpace(_pendingProfileImageSourcePath))
+			{
+				ProfileImagePathStatusTextBlock.Text = $"Selected image: {Path.GetFileName(_pendingProfileImageSourcePath)}";
+				return;
+			}
+
+			ProfileImagePathStatusTextBlock.Text = string.IsNullOrWhiteSpace(_appUserProfile?.ProfileImagePath)
+				? "No profile image selected."
+				: "Profile image selected.";
 		}
 
 		private static string? NullIfWhiteSpace(string? value)

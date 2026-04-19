@@ -25,33 +25,38 @@
 
 		public string BuildFullName()
 		{
-			List<string> parts = new();
+			string? firstName = Normalize(FirstName);
+			string? middleName = Normalize(MiddleName);
+			string? lastName = Normalize(LastName);
+			string? extensionName = Normalize(ExtensionName);
 
-			if (!string.IsNullOrWhiteSpace(FirstName))
+			List<string> mainParts = new();
+
+			if (!string.IsNullOrWhiteSpace(firstName))
 			{
-				parts.Add(FirstName.Trim());
+				mainParts.Add(firstName);
 			}
 
-			if (!string.IsNullOrWhiteSpace(MiddleName))
+			if (!string.IsNullOrWhiteSpace(middleName))
 			{
-				parts.Add(MiddleName.Trim());
+				mainParts.Add($"{char.ToUpperInvariant(middleName[0])}.");
 			}
 
-			if (!string.IsNullOrWhiteSpace(LastName))
+			if (!string.IsNullOrWhiteSpace(lastName))
 			{
-				parts.Add(LastName.Trim());
+				mainParts.Add(lastName);
 			}
 
-			string fullName = string.Join(" ", parts);
+			string fullName = string.Join(" ", mainParts).Trim();
 
-			if (!string.IsNullOrWhiteSpace(ExtensionName))
+			if (!string.IsNullOrWhiteSpace(extensionName))
 			{
 				fullName = string.IsNullOrWhiteSpace(fullName)
-					? ExtensionName.Trim()
-					: $"{fullName} {ExtensionName.Trim()}";
+					? extensionName
+					: $"{fullName}, {extensionName}";
 			}
 
-			return fullName.Trim();
+			return fullName;
 		}
 
 		public string GetDisplayFullName()
@@ -62,6 +67,11 @@
 			}
 
 			return BuildFullName();
+		}
+
+		private static string? Normalize(string? value)
+		{
+			return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 		}
 	}
 }
