@@ -1,4 +1,5 @@
 ﻿using NibSphere.Core.Modules;
+using NibSphere.Modules.Learners.Views;
 
 namespace NibSphere.Modules.Learners
 {

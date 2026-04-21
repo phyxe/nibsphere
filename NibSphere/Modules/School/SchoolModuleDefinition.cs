@@ -9,7 +9,7 @@ namespace NibSphere.Modules.School
 
 		public string DisplayName => "School";
 
-		public int SortOrder => 100;
+		public int SortOrder => 999;
 
 		public IReadOnlyList<ModuleNavItemDefinition> NavigationItems =>
 			new[]
