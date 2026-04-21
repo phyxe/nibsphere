@@ -70,6 +70,7 @@
     <None Remove="Resources\Icons\arrowleft.svg" />
     <None Remove="Resources\Icons\arrowright.svg" />
     <None Remove="Resources\Icons\school.svg" />
+    <None Remove="Resources\Icons\student.svg" />
     <None Remove="Resources\Icons\trash.svg" />
     <None Remove="Resources\Icons\upload.svg" />
     <None Remove="Resources\Icons\userprofile.svg" />
@@ -261,9 +262,7 @@
     <Resource Include="Resources\Icons\setting.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Icons\student.svg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Resources\Icons\student.svg" />
     <Resource Include="Resources\Icons\trash.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

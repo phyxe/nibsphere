@@ -281,7 +281,7 @@
                                     </StackPanel>
                                 </Button>
 
-                                <Button x:Name="StudentsNavButton"
+                                <Button x:Name="LearnerNavButton"
                                     Height="42"
                                     Margin="0,0,0,8"
                                     HorizontalContentAlignment="Left"
@@ -292,8 +292,8 @@
                                              Height="18"
                                              Source="/Resources/Icons/student.svg"
                                              Tint="{DynamicResource Brush.NavIcon}" />
-                                        <TextBlock x:Name="StudentsNavText"
-                                           Text="Students"
+                                        <TextBlock x:Name="LearnerNavText"
+                                           Text="Learners"
                                            Margin="12,0,0,0"
                                            Foreground="{DynamicResource Brush.NavIcon}"
                                            VerticalAlignment="Center"/>

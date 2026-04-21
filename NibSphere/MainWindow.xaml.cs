@@ -31,7 +31,7 @@ namespace NibSphere
 				: new GridLength(220);
 
 			DashboardNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-			StudentsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
+			LearnerNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 			ReportsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 			SchoolYearNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
 			SchoolNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
