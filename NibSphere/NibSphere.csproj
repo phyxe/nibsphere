@@ -108,7 +108,6 @@
   <ItemGroup>
     <ProjectReference Include="..\NibSphere.Core\NibSphere.Core.csproj" />
     <ProjectReference Include="..\NibSphere.Data\NibSphere.Data.csproj" />
-    <ProjectReference Include="..\NibSphere.Data\NibSphere.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
