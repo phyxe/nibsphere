@@ -26,6 +26,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Modules\Learners\Resources\Icons\addstudent.svg" />
+    <None Remove="Modules\Learners\Resources\Icons\delete.svg" />
+    <None Remove="Modules\Learners\Resources\Icons\edit.svg" />
+    <None Remove="Modules\Learners\Resources\Icons\student.svg" />
     <None Remove="Resources\Brand\nibsphere-full.png" />
     <None Remove="Resources\Brand\nibsphere-mark.png" />
     <None Remove="Resources\Fonts\Alegreya\Alegreya-Italic-VariableFont_wght.ttf" />
@@ -85,6 +89,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Modules\Learners\Resources\Icons\addstudent.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Modules\Learners\Resources\Icons\delete.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Modules\Learners\Resources\Icons\edit.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Modules\Learners\Resources\Icons\student.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Brand\nibsphere-full.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
@@ -278,10 +294,6 @@
 		<Content Include="Resources\ReferenceData\ph-addresses.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Modules\Learners\Resources\Icons\" />
 	</ItemGroup>
 
 </Project>

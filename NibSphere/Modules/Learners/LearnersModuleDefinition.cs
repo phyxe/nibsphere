@@ -17,7 +17,7 @@ namespace NibSphere.Modules.Learners
 				{
 					ItemKey = "learners",
 					Title = "Learners",
-					IconPath = "/Resources/Icons/student.svg",
+					IconPath = "/Modules/Learners/Resources/Icons/student.svg",
 					SortOrder = 200,
 					ContentFactory = static () => new LearnersListView()
 				}

@@ -51,7 +51,7 @@
                             Click="AddLearnerButton_Click">
                         <controls:ControlSvgIcon Width="16"
                                                  Height="16"
-                                                 Source="/Resources/Icons/student.svg"
+                                                 Source="/Modules/Learners/Resources/Icons/addstudent.svg"
                                                  Tint="{DynamicResource Brush.PrimaryText}" />
                     </Button>
 
@@ -66,7 +66,7 @@
                             Click="LearnerSettingsButton_Click">
                         <controls:ControlSvgIcon Width="16"
                                                  Height="16"
-                                                 Source="/Resources/Icons/setting.svg"
+                                                 Source="/Modules/Learners/Resources/Icons/setting.svg"
                                                  Tint="{DynamicResource Brush.PrimaryText}" />
                     </Button>
                 </Grid>
@@ -111,7 +111,7 @@
                                                 Style="{StaticResource IconButtonStyle}">
                                             <controls:ControlSvgIcon Width="16"
                                                                      Height="16"
-                                                                     Source="/Resources/Icons/edit.svg"
+                                                                     Source="/Modules/Learners/Resources/Icons/edit.svg"
                                                                      Tint="{DynamicResource Brush.PrimaryText}" />
                                         </Button>
 
@@ -124,7 +124,7 @@
                                                 Style="{StaticResource IconButtonStyle}">
                                             <controls:ControlSvgIcon Width="16"
                                                                      Height="16"
-                                                                     Source="/Resources/Icons/delete.svg"
+                                                                     Source="/Modules/Learners/Resources/Icons/delete.svg"
                                                                      Tint="{DynamicResource Brush.PrimaryText}" />
                                         </Button>
                                     </StackPanel>
