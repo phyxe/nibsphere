@@ -1,25 +1,275 @@
-﻿using NibSphere.Views;
+﻿using NibSphere.Controls;
+using NibSphere.Shell.Navigation;
+using NibSphere.Views;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace NibSphere
 {
 	public partial class MainWindow : Window
 	{
+		private readonly ShellNavigationService _navigationService;
+		private readonly Dictionary<string, NavigationVisual> _navigationVisuals =
+			new(StringComparer.OrdinalIgnoreCase);
+
 		private bool _isNavCollapsed = false;
-		private bool _isSchoolNavPopupOpen = false;
 
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			_navigationService = new ShellNavigationService(App.ModulesCatalog);
+
+			BuildModuleNavigationUi();
+			ActivateDefaultNavigationItem();
+
 			UpdateThemeUi();
 			UpdateWindowStateUi();
 			UpdateNavBrandUi();
 			UpdateNavToggleButtonUi();
-			UpdateSchoolNavUi();
+			RefreshModuleNavigationLayout();
+			RefreshModuleNavigationVisuals();
 
 			SourceInitialized += MainWindow_SourceInitialized;
+		}
+
+		private void ActivateDefaultNavigationItem()
+		{
+			object? content = _navigationService.ActivateDefault();
+
+			if (content != null)
+			{
+				MainContentHost.Content = content;
+			}
+
+			RefreshModuleNavigationVisuals();
+		}
+
+		private void BuildModuleNavigationUi()
+		{
+			ModuleNavigationHost.Children.Clear();
+			_navigationVisuals.Clear();
+
+			foreach (ShellNavigationItem item in _navigationService.RootItems)
+			{
+				ModuleNavigationHost.Children.Add(CreateNavigationNode(item, 0));
+			}
+		}
+
+		private FrameworkElement CreateNavigationNode(ShellNavigationItem item, int depth)
+		{
+			StackPanel container = new()
+			{
+				Margin = new Thickness(0, 0, 0, item.Parent == null ? 8 : 4)
+			};
+
+			Button button = CreateNavigationButton(
+				item,
+				depth,
+				out TextBlock titleText,
+				out TextBlock? indicatorText);
+
+			container.Children.Add(button);
+
+			StackPanel? childHost = null;
+
+			if (item.HasChildren)
+			{
+				childHost = new StackPanel
+				{
+					Margin = new Thickness(0, 4, 0, 0)
+				};
+
+				foreach (ShellNavigationItem child in item.Children)
+				{
+					childHost.Children.Add(CreateNavigationNode(child, depth + 1));
+				}
+
+				container.Children.Add(childHost);
+			}
+
+			_navigationVisuals[item.ItemKey] = new NavigationVisual
+			{
+				Item = item,
+				Button = button,
+				TitleText = titleText,
+				IndicatorText = indicatorText,
+				ChildrenHost = childHost
+			};
+
+			return container;
+		}
+
+		private Button CreateNavigationButton(
+			ShellNavigationItem item,
+			int depth,
+			out TextBlock titleText,
+			out TextBlock? indicatorText)
+		{
+			Button button = new()
+			{
+				Height = 42,
+				HorizontalContentAlignment = HorizontalAlignment.Stretch,
+				Background = Brushes.Transparent,
+				BorderBrush = Brushes.Transparent,
+				BorderThickness = new Thickness(1),
+				Padding = new Thickness(0),
+				FocusVisualStyle = null,
+				ToolTip = item.Title,
+				Tag = item
+			};
+
+			button.Click += NavigationItemButton_Click;
+
+			Grid layout = new()
+			{
+				Margin = new Thickness(depth * 16, 0, 0, 0)
+			};
+
+			layout.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+			layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+			layout.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+			if (!string.IsNullOrWhiteSpace(item.IconPath))
+			{
+				ControlSvgIcon icon = new()
+				{
+					Width = 18,
+					Height = 18,
+					Source = item.IconPath,
+					VerticalAlignment = VerticalAlignment.Center
+				};
+
+				icon.SetResourceReference(ControlSvgIcon.TintProperty, "Brush.NavIcon");
+
+				Grid.SetColumn(icon, 0);
+				layout.Children.Add(icon);
+			}
+
+			titleText = new TextBlock
+			{
+				Text = item.Title,
+				VerticalAlignment = VerticalAlignment.Center,
+				TextTrimming = TextTrimming.CharacterEllipsis,
+				Margin = string.IsNullOrWhiteSpace(item.IconPath)
+					? new Thickness(depth > 0 ? 8 : 0, 0, 0, 0)
+					: new Thickness(12, 0, 0, 0)
+			};
+
+			titleText.SetResourceReference(TextBlock.ForegroundProperty, "Brush.NavIcon");
+
+			Grid.SetColumn(titleText, 1);
+			layout.Children.Add(titleText);
+
+			if (item.HasChildren)
+			{
+				indicatorText = new TextBlock
+				{
+					Text = item.IsExpanded ? "▾" : "▸",
+					FontSize = 12,
+					VerticalAlignment = VerticalAlignment.Center
+				};
+
+				indicatorText.SetResourceReference(TextBlock.ForegroundProperty, "Brush.NavIcon");
+
+				Grid.SetColumn(indicatorText, 2);
+				layout.Children.Add(indicatorText);
+			}
+			else
+			{
+				indicatorText = null;
+			}
+
+			button.Content = layout;
+
+			return button;
+		}
+
+		private void NavigationItemButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is not Button button ||
+				button.Tag is not ShellNavigationItem item)
+			{
+				return;
+			}
+
+			if (_isNavCollapsed && item.HasChildren && !item.CanActivate)
+			{
+				return;
+			}
+
+			object? content = _navigationService.Activate(item);
+
+			if (content != null)
+			{
+				MainContentHost.Content = content;
+			}
+
+			RefreshModuleNavigationLayout();
+			RefreshModuleNavigationVisuals();
+		}
+
+		private void RefreshModuleNavigationLayout()
+		{
+			foreach (NavigationVisual visual in _navigationVisuals.Values)
+			{
+				visual.TitleText.Visibility = _isNavCollapsed
+					? Visibility.Collapsed
+					: Visibility.Visible;
+
+				if (visual.IndicatorText != null)
+				{
+					visual.IndicatorText.Visibility =
+						(!_isNavCollapsed && visual.Item.HasChildren)
+							? Visibility.Visible
+							: Visibility.Collapsed;
+
+					visual.IndicatorText.Text = visual.Item.IsExpanded ? "▾" : "▸";
+				}
+
+				if (visual.ChildrenHost != null)
+				{
+					visual.ChildrenHost.Visibility =
+						(!_isNavCollapsed && visual.Item.IsExpanded)
+							? Visibility.Visible
+							: Visibility.Collapsed;
+				}
+			}
+		}
+
+		private void RefreshModuleNavigationVisuals()
+		{
+			foreach (NavigationVisual visual in _navigationVisuals.Values)
+			{
+				bool isHighlighted = visual.Item.IsActive || visual.Item.HasActiveChild;
+
+				if (isHighlighted)
+				{
+					visual.Button.SetResourceReference(Button.BackgroundProperty, "Brush.NavItemActive");
+					visual.Button.SetResourceReference(Button.BorderBrushProperty, "Brush.NavItemActive");
+				}
+				else
+				{
+					visual.Button.Background = Brushes.Transparent;
+					visual.Button.BorderBrush = Brushes.Transparent;
+				}
+
+				visual.TitleText.FontWeight = visual.Item.IsActive
+					? FontWeights.SemiBold
+					: FontWeights.Normal;
+
+				if (visual.IndicatorText != null)
+				{
+					visual.IndicatorText.FontWeight =
+						(visual.Item.IsActive || visual.Item.HasActiveChild)
+							? FontWeights.SemiBold
+							: FontWeights.Normal;
+				}
+			}
 		}
 
 		private void NavToggleButton_Click(object sender, RoutedEventArgs e)
@@ -30,20 +280,17 @@ namespace NibSphere
 				? new GridLength(72)
 				: new GridLength(220);
 
-			DashboardNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-			LearnerNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-			ReportsNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-			SchoolYearNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-			SchoolNavText.Visibility = _isNavCollapsed ? Visibility.Collapsed : Visibility.Visible;
-
 			UpdateNavBrandUi();
 			UpdateNavToggleButtonUi();
-			UpdateSchoolNavUi();
+			RefreshModuleNavigationLayout();
+			RefreshModuleNavigationVisuals();
 		}
 
 		private void UserProfileViewNavButton_Click(object sender, RoutedEventArgs e)
 		{
+			_navigationService.ClearActiveState();
 			MainContentHost.Content = new UserProfileView();
+			RefreshModuleNavigationVisuals();
 		}
 
 		private void ThemeToggleNavButton_Click(object sender, RoutedEventArgs e)
@@ -132,7 +379,7 @@ namespace NibSphere
 
 			if (monitor != IntPtr.Zero)
 			{
-				MONITORINFO monitorInfo = new MONITORINFO();
+				MONITORINFO monitorInfo = new();
 				GetMonitorInfo(monitor, monitorInfo);
 
 				RECT workArea = monitorInfo.rcWork;
@@ -185,8 +432,8 @@ namespace NibSphere
 		private class MONITORINFO
 		{
 			public int cbSize = Marshal.SizeOf(typeof(MONITORINFO));
-			public RECT rcMonitor = new RECT();
-			public RECT rcWork = new RECT();
+			public RECT rcMonitor = new();
+			public RECT rcWork = new();
 			public int dwFlags;
 		}
 
@@ -213,7 +460,7 @@ namespace NibSphere
 				return;
 			}
 
-			NavBrandImage.Source = new System.Windows.Media.Imaging.BitmapImage(
+			NavBrandImage.Source = new BitmapImage(
 				new Uri(
 					_isNavCollapsed
 						? "/Resources/Brand/nibsphere-mark.png"
@@ -221,57 +468,13 @@ namespace NibSphere
 					UriKind.Relative));
 		}
 
-		private void SchoolNavButton_Click(object sender, RoutedEventArgs e)
+		private sealed class NavigationVisual
 		{
-			if (_isNavCollapsed)
-			{
-				return;
-			}
-
-			_isSchoolNavPopupOpen = !_isSchoolNavPopupOpen;
-			UpdateSchoolNavUi();
-		}
-
-		private void SchoolNavPopup_Closed(object sender, EventArgs e)
-		{
-			_isSchoolNavPopupOpen = false;
-			UpdateSchoolNavUi();
-		}
-
-		private void UpdateSchoolNavUi()
-		{
-			if (SchoolNavPopup == null || SchoolNavIndicatorText == null)
-			{
-				return;
-			}
-
-			if (_isNavCollapsed)
-			{
-				_isSchoolNavPopupOpen = false;
-				SchoolNavPopup.IsOpen = false;
-				SchoolNavIndicatorText.Visibility = Visibility.Collapsed;
-				return;
-			}
-
-			SchoolNavIndicatorText.Visibility = Visibility.Visible;
-			SchoolNavIndicatorText.Text = _isSchoolNavPopupOpen ? "▾" : "▸";
-			SchoolNavPopup.IsOpen = _isSchoolNavPopupOpen;
-		}
-
-		private void SchoolProfileSubNavButton_Click(object sender, RoutedEventArgs e)
-		{
-			_isSchoolNavPopupOpen = false;
-			UpdateSchoolNavUi();
-
-			MainContentHost.Content = new SchoolProfileView();
-		}
-
-		private void LearningAreasSubNavButton_Click(object sender, RoutedEventArgs e)
-		{
-			_isSchoolNavPopupOpen = false;
-			UpdateSchoolNavUi();
-
-			MainContentHost.Content = new LearningAreasView();
+			public required ShellNavigationItem Item { get; init; }
+			public required Button Button { get; init; }
+			public required TextBlock TitleText { get; init; }
+			public TextBlock? IndicatorText { get; init; }
+			public StackPanel? ChildrenHost { get; init; }
 		}
 	}
 }

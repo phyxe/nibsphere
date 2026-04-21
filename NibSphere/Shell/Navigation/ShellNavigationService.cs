@@ -268,5 +268,10 @@ namespace NibSphere.Shell.Navigation
 				CollapseRecursive(child);
 			}
 		}
+
+		public void ClearActiveState()
+		{
+			ClearState();
+		}
 	}
 }

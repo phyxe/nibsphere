@@ -17,7 +17,6 @@ namespace NibSphere
 
 		protected override async void OnStartup(StartupEventArgs e)
 		{
-			base.OnStartup(e);
 
 			AppPaths = new AppPaths();
 			ModulesCatalog = ModuleCatalog.CreateDefault();
@@ -33,6 +32,8 @@ namespace NibSphere
 
 			bool useDarkTheme = await ResolveInitialThemeAsync();
 			ApplyTheme(useDarkTheme);
+
+			base.OnStartup(e);
 		}
 
 		public static void ApplyTheme(bool useDarkTheme)
