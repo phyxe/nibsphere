@@ -1,0 +1,139 @@
+﻿<UserControl x:Class="NibSphere.Modules.Learners.Views.LearnersListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:NibSphere.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="760"
+             d:DesignWidth="1100"
+             Background="{DynamicResource Brush.Background}">
+
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Learners"
+                   Style="{StaticResource TextBlock.Heading1}" />
+
+        <Border Grid.Row="2"
+                Style="{StaticResource CardBorderStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Command strip -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Learner List"
+                               VerticalAlignment="Center"
+                               Style="{StaticResource TextBlock.SectionTitle}" />
+
+                    <Button x:Name="AddLearnerButton"
+                            Grid.Column="1"
+                            Width="36"
+                            Height="36"
+                            Margin="12,0,0,0"
+                            Padding="0"
+                            ToolTip="Add Learner"
+                            Style="{StaticResource IconButtonStyle}"
+                            Click="AddLearnerButton_Click">
+                        <controls:ControlSvgIcon Width="16"
+                                                 Height="16"
+                                                 Source="/Resources/Icons/student.svg"
+                                                 Tint="{DynamicResource Brush.PrimaryText}" />
+                    </Button>
+
+                    <Button x:Name="LearnerSettingsButton"
+                            Grid.Column="2"
+                            Width="36"
+                            Height="36"
+                            Margin="8,0,0,0"
+                            Padding="0"
+                            ToolTip="Learner Settings"
+                            Style="{StaticResource IconButtonStyle}"
+                            Click="LearnerSettingsButton_Click">
+                        <controls:ControlSvgIcon Width="16"
+                                                 Height="16"
+                                                 Source="/Resources/Icons/setting.svg"
+                                                 Tint="{DynamicResource Brush.PrimaryText}" />
+                    </Button>
+                </Grid>
+
+                <!-- Table -->
+                <DataGrid Grid.Row="2"
+                          x:Name="LearnersDataGrid"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False"
+                          HeadersVisibility="Column"
+                          IsReadOnly="True"
+                          RowHeaderWidth="0"
+                          MinHeight="260"
+                          MaxHeight="520"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                          ScrollViewer.CanContentScroll="True"
+                          EnableRowVirtualization="True"
+                          EnableColumnVirtualization="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="LRN"
+                                            Binding="{Binding Lrn}"
+                                            Width="1.2*" />
+
+                        <DataGridTextColumn Header="Full Name"
+                                            Binding="{Binding FullNameDisplay}"
+                                            Width="2.8*" />
+
+                        <DataGridTemplateColumn Header="Action"
+                                                Width="110">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Center">
+                                        <Button Width="32"
+                                                Height="32"
+                                                Margin="0,0,8,0"
+                                                Padding="0"
+                                                ToolTip="Edit"
+                                                Tag="{Binding}"
+                                                Click="EditLearnerButton_Click"
+                                                Style="{StaticResource IconButtonStyle}">
+                                            <controls:ControlSvgIcon Width="16"
+                                                                     Height="16"
+                                                                     Source="/Resources/Icons/edit.svg"
+                                                                     Tint="{DynamicResource Brush.PrimaryText}" />
+                                        </Button>
+
+                                        <Button Width="32"
+                                                Height="32"
+                                                Padding="0"
+                                                ToolTip="Delete"
+                                                Tag="{Binding}"
+                                                Click="DeleteLearnerButton_Click"
+                                                Style="{StaticResource IconButtonStyle}">
+                                            <controls:ControlSvgIcon Width="16"
+                                                                     Height="16"
+                                                                     Source="/Resources/Icons/delete.svg"
+                                                                     Tint="{DynamicResource Brush.PrimaryText}" />
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
