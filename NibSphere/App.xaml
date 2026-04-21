@@ -1,16 +1,124 @@
-﻿<Application x:Class="NibSphere.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:NibSphere"
-             StartupUri="MainWindow.xaml">
-    <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/ThemeKeys.xaml" />
-                <ResourceDictionary Source="Resources/FontResources.xaml" />
-                <ResourceDictionary Source="Themes/LightTheme.xaml" />
-                <ResourceDictionary Source="Styles/ControlStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Application.Resources>
-</Application>
+﻿using Microsoft.Win32;
+using NibSphere.Core.Interfaces;
+using NibSphere.Data.Database;
+using NibSphere.Data.Infrastructure;
+using NibSphere.Data.Repositories;
+using NibSphere.Modules;
+using System.IO;
+using System.Windows;
+
+namespace NibSphere
+{
+	public partial class App : Application
+	{
+		public static IAppPaths AppPaths { get; private set; } = null!;
+		public static ModuleCatalog ModulesCatalog { get; private set; } = null!;
+		public static bool IsDarkTheme { get; private set; }
+
+		protected override async void OnStartup(StartupEventArgs e)
+		{
+			base.OnStartup(e);
+
+			AppPaths = new AppPaths();
+			ModulesCatalog = ModuleCatalog.CreateDefault();
+
+			var storageInitializer = new AppStorageInitializer(AppPaths);
+			storageInitializer.EnsureDirectoriesExist();
+			EnsureReferenceDataFiles();
+
+			var databaseInitializer = new DatabaseInitializer(AppPaths);
+			await databaseInitializer.InitializeAsync();
+
+			await ModulesCatalog.InitializeDatabasesAsync(AppPaths);
+
+			bool useDarkTheme = await ResolveInitialThemeAsync();
+			ApplyTheme(useDarkTheme);
+		}
+
+		public static void ApplyTheme(bool useDarkTheme)
+		{
+			ResourceDictionary themeDictionary = new ResourceDictionary
+			{
+				Source = new Uri(
+					useDarkTheme
+						? "Themes/DarkTheme.xaml"
+						: "Themes/LightTheme.xaml",
+					UriKind.Relative)
+			};
+
+			var mergedDictionaries = Current.Resources.MergedDictionaries;
+
+			if (mergedDictionaries.Count > 2)
+			{
+				mergedDictionaries[2] = themeDictionary;
+			}
+
+			IsDarkTheme = useDarkTheme;
+		}
+
+		public static void ToggleTheme()
+		{
+			ApplyTheme(!IsDarkTheme);
+		}
+
+		private static async Task<bool>ResolveInitialThemeAsync()
+		{
+			var repository = new AppUserProfileRepository(AppPaths);
+			var userProfile = await repository.GetPrimaryUserProfileAsync();
+
+			string? preference = userProfile?.ThemePreference;
+
+			if (string.Equals(preference, "Dark", StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+
+			if (string.Equals(preference, "Light", StringComparison.OrdinalIgnoreCase))
+			{
+				return false;
+			}
+
+			return IsSystemDarkMode();
+		}
+
+		private static bool IsSystemDarkMode()
+		{
+			const string personalizeKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+			const string appsUseLightTheme = "AppsUseLightTheme";
+
+			using RegistryKey? key = Registry.CurrentUser.OpenSubKey(personalizeKeyPath);
+
+			object? value = key?.GetValue(appsUseLightTheme);
+
+			if (value is int intValue)
+			{
+				return intValue == 0;
+			}
+
+			return false;
+		}
+
+		private static void EnsureReferenceDataFiles()
+		{
+			string sourcePath = Path.Combine(
+				AppContext.BaseDirectory,
+				"Resources",
+				"ReferenceData",
+				"ph-addresses.json");
+
+			string targetPath = AppPaths.PhilippineAddressDataFilePath;
+
+			if (!File.Exists(sourcePath))
+			{
+				return;
+			}
+
+			Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
+
+			if (!File.Exists(targetPath))
+			{
+				File.Copy(sourcePath, targetPath, overwrite: false);
+			}
+		}
+	}
+}
