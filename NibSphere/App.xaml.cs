@@ -3,6 +3,7 @@ using NibSphere.Core.Interfaces;
 using NibSphere.Data.Database;
 using NibSphere.Data.Infrastructure;
 using NibSphere.Data.Repositories;
+using NibSphere.Modules;
 using System.IO;
 using System.Windows;
 
@@ -11,6 +12,7 @@ namespace NibSphere
 	public partial class App : Application
 	{
 		public static IAppPaths AppPaths { get; private set; } = null!;
+		public static ModuleCatalog ModulesCatalog { get; private set; } = null!;
 		public static bool IsDarkTheme { get; private set; }
 
 		protected override async void OnStartup(StartupEventArgs e)
@@ -18,6 +20,7 @@ namespace NibSphere
 			base.OnStartup(e);
 
 			AppPaths = new AppPaths();
+			ModulesCatalog = ModuleCatalog.CreateDefault();
 
 			var storageInitializer = new AppStorageInitializer(AppPaths);
 			storageInitializer.EnsureDirectoriesExist();
@@ -25,6 +28,8 @@ namespace NibSphere
 
 			var databaseInitializer = new DatabaseInitializer(AppPaths);
 			await databaseInitializer.InitializeAsync();
+
+			await ModulesCatalog.InitializeDatabasesAsync(AppPaths);
 
 			bool useDarkTheme = await ResolveInitialThemeAsync();
 			ApplyTheme(useDarkTheme);
