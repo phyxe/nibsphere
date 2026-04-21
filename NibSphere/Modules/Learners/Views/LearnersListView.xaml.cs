@@ -1,6 +1,7 @@
 ﻿using NibSphere.Core.Interfaces;
 using NibSphere.Core.Modules.Learners.Models;
 using NibSphere.Data.Modules.Learners.Repositories;
+using NibSphere.Modules.Learners.Windows;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -49,13 +50,19 @@ namespace NibSphere.Modules.Learners.Views
 				MessageBoxImage.Information);
 		}
 
-		private void LearnerSettingsButton_Click(object sender, RoutedEventArgs e)
+		private async void LearnerSettingsButton_Click(object sender, RoutedEventArgs e)
 		{
-			MessageBox.Show(
-				"Learner Settings is not implemented yet.",
-				"Learners",
-				MessageBoxButton.OK,
-				MessageBoxImage.Information);
+			LearnersSettingsWindow window = new LearnersSettingsWindow
+			{
+				Owner = Window.GetWindow(this)
+			};
+
+			bool? result = window.ShowDialog();
+
+			if (result == true)
+			{
+				await LoadLearnersAsync();
+			}
 		}
 
 		private void EditLearnerButton_Click(object sender, RoutedEventArgs e)
