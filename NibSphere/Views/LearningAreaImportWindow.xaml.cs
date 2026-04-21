@@ -34,6 +34,7 @@ namespace NibSphere.Views
 			MappingsDataGrid.ItemsSource = _mappingRows;
 
 			WizardTabControl.SelectedIndex = 0;
+			UpdateStepVisibility();
 			UpdateNavigationUi();
 		}
 
@@ -69,6 +70,7 @@ namespace NibSphere.Views
 				_finalizeResult = null;
 				ClearSimulationUi();
 				ClearFinalizeUi();
+				UpdateStepVisibility();
 				UpdateNavigationUi();
 			}
 			catch (Exception ex)
@@ -98,6 +100,7 @@ namespace NibSphere.Views
 			_finalizeResult = null;
 			ClearSimulationUi();
 			ClearFinalizeUi();
+			UpdateStepVisibility();
 			UpdateNavigationUi();
 		}
 
@@ -139,6 +142,7 @@ namespace NibSphere.Views
 					break;
 			}
 
+			UpdateStepVisibility();
 			UpdateNavigationUi();
 		}
 
@@ -147,6 +151,7 @@ namespace NibSphere.Views
 			if (WizardTabControl.SelectedIndex > 0)
 			{
 				WizardTabControl.SelectedIndex--;
+				UpdateStepVisibility();
 				UpdateNavigationUi();
 			}
 		}
@@ -392,6 +397,46 @@ namespace NibSphere.Views
 					break;
 				default:
 					NextButton.Content = "Next";
+					break;
+			}
+		}
+
+		private void UpdateStepVisibility()
+		{
+			if (SourceFileTab == null ||
+				FieldMappingTab == null ||
+				SimulateTab == null ||
+				FinalizeTab == null)
+			{
+				return;
+			}
+
+			SourceFileTab.Visibility = Visibility.Collapsed;
+			FieldMappingTab.Visibility = Visibility.Collapsed;
+			SimulateTab.Visibility = Visibility.Collapsed;
+			FinalizeTab.Visibility = Visibility.Collapsed;
+
+			switch (WizardTabControl.SelectedIndex)
+			{
+				case 0:
+					SourceFileTab.Visibility = Visibility.Visible;
+					break;
+
+				case 1:
+					FieldMappingTab.Visibility = Visibility.Visible;
+					break;
+
+				case 2:
+					SimulateTab.Visibility = Visibility.Visible;
+					break;
+
+				case 3:
+					FinalizeTab.Visibility = Visibility.Visible;
+					break;
+
+				default:
+					SourceFileTab.Visibility = Visibility.Visible;
+					WizardTabControl.SelectedIndex = 0;
 					break;
 			}
 		}

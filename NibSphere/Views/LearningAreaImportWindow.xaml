@@ -26,7 +26,7 @@
 
         <TabControl x:Name="WizardTabControl"
                     Grid.Row="2">
-            <TabItem Header="1. Source File">
+            <TabItem x:Name="SourceFileTab"  Header="1. Source File">
                 <Border Margin="4"
                         Style="{StaticResource CardBorderStyle}">
                     <Grid>
@@ -97,7 +97,7 @@
                 </Border>
             </TabItem>
 
-            <TabItem Header="2. Field Mapping">
+            <TabItem x:Name="FieldMappingTab" Header="2. Field Mapping">
                 <Border Margin="4"
                         Style="{StaticResource CardBorderStyle}">
                     <Grid>
@@ -142,7 +142,7 @@
                 </Border>
             </TabItem>
 
-            <TabItem Header="3. Simulate">
+            <TabItem x:Name="SimulateTab" Header="3. Simulate">
                 <Border Margin="4"
                         Style="{StaticResource CardBorderStyle}">
                     <Grid>
@@ -200,7 +200,7 @@
                 </Border>
             </TabItem>
 
-            <TabItem Header="4. Finalize">
+            <TabItem  x:Name="FinalizeTab" Header="4. Finalize">
                 <Border Margin="4"
                         Style="{StaticResource CardBorderStyle}">
                     <Grid>
