@@ -25,7 +25,6 @@ namespace NibSphere
 			_navigationService = new ShellNavigationService(App.ModulesCatalog);
 
 			BuildModuleNavigationUi();
-			ActivateDefaultNavigationItem();
 
 			UpdateThemeUi();
 			UpdateWindowStateUi();
@@ -96,9 +95,11 @@ namespace NibSphere
 			{
 				Item = item,
 				Button = button,
+				LayoutRoot = (Grid)button.Content,
 				TitleText = titleText,
 				IndicatorText = indicatorText,
-				ChildrenHost = childHost
+				ChildrenHost = childHost,
+				Depth = depth
 			};
 
 			return container;
@@ -117,7 +118,7 @@ namespace NibSphere
 				Background = Brushes.Transparent,
 				BorderBrush = Brushes.Transparent,
 				BorderThickness = new Thickness(1),
-				Padding = new Thickness(0),
+				Padding = GetNavigationButtonPadding(depth),
 				FocusVisualStyle = null,
 				ToolTip = item.Title,
 				Tag = item
@@ -127,21 +128,25 @@ namespace NibSphere
 
 			Grid layout = new()
 			{
-				Margin = new Thickness(depth * 16, 0, 0, 0)
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				VerticalAlignment = VerticalAlignment.Center
 			};
 
 			layout.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 			layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 			layout.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
+			ControlSvgIcon? icon = null;
+
 			if (!string.IsNullOrWhiteSpace(item.IconPath))
 			{
-				ControlSvgIcon icon = new()
+				icon = new ControlSvgIcon
 				{
 					Width = 18,
 					Height = 18,
 					Source = item.IconPath,
-					VerticalAlignment = VerticalAlignment.Center
+					VerticalAlignment = VerticalAlignment.Center,
+					HorizontalAlignment = HorizontalAlignment.Center
 				};
 
 				icon.SetResourceReference(ControlSvgIcon.TintProperty, "Brush.NavIcon");
@@ -156,11 +161,17 @@ namespace NibSphere
 				VerticalAlignment = VerticalAlignment.Center,
 				TextTrimming = TextTrimming.CharacterEllipsis,
 				Margin = string.IsNullOrWhiteSpace(item.IconPath)
-					? new Thickness(depth > 0 ? 8 : 0, 0, 0, 0)
-					: new Thickness(12, 0, 0, 0)
+					? new Thickness(0)
+					: new Thickness(12, 0, 0, 0),
+				FontSize = depth == 0 ? 13 : 12
 			};
 
 			titleText.SetResourceReference(TextBlock.ForegroundProperty, "Brush.NavIcon");
+
+			if (depth > 0)
+			{
+				titleText.SetResourceReference(TextBlock.FontFamilyProperty, "Font.Palanquin");
+			}
 
 			Grid.SetColumn(titleText, 1);
 			layout.Children.Add(titleText);
@@ -171,7 +182,8 @@ namespace NibSphere
 				{
 					Text = item.IsExpanded ? "▾" : "▸",
 					FontSize = 12,
-					VerticalAlignment = VerticalAlignment.Center
+					VerticalAlignment = VerticalAlignment.Center,
+					Margin = new Thickness(10, 0, 0, 0)
 				};
 
 				indicatorText.SetResourceReference(TextBlock.ForegroundProperty, "Brush.NavIcon");
@@ -217,14 +229,28 @@ namespace NibSphere
 		{
 			foreach (NavigationVisual visual in _navigationVisuals.Values)
 			{
-				visual.TitleText.Visibility = _isNavCollapsed
+				bool isCollapsed = _isNavCollapsed;
+
+				visual.Button.HorizontalContentAlignment = isCollapsed
+					? HorizontalAlignment.Center
+					: HorizontalAlignment.Stretch;
+
+				visual.Button.Padding = isCollapsed
+					? new Thickness(0)
+					: GetNavigationButtonPadding(visual.Depth);
+
+				visual.LayoutRoot.HorizontalAlignment = isCollapsed
+					? HorizontalAlignment.Center
+					: HorizontalAlignment.Stretch;
+
+				visual.TitleText.Visibility = isCollapsed
 					? Visibility.Collapsed
 					: Visibility.Visible;
 
 				if (visual.IndicatorText != null)
 				{
 					visual.IndicatorText.Visibility =
-						(!_isNavCollapsed && visual.Item.HasChildren)
+						(!isCollapsed && visual.Item.HasChildren)
 							? Visibility.Visible
 							: Visibility.Collapsed;
 
@@ -234,7 +260,7 @@ namespace NibSphere
 				if (visual.ChildrenHost != null)
 				{
 					visual.ChildrenHost.Visibility =
-						(!_isNavCollapsed && visual.Item.IsExpanded)
+						(!isCollapsed && visual.Item.IsExpanded)
 							? Visibility.Visible
 							: Visibility.Collapsed;
 				}
@@ -472,9 +498,18 @@ namespace NibSphere
 		{
 			public required ShellNavigationItem Item { get; init; }
 			public required Button Button { get; init; }
+			public required Grid LayoutRoot { get; init; }
 			public required TextBlock TitleText { get; init; }
 			public TextBlock? IndicatorText { get; init; }
 			public StackPanel? ChildrenHost { get; init; }
+			public int Depth { get; init; }
+		}
+
+		private static Thickness GetNavigationButtonPadding(int depth)
+		{
+			return depth == 0
+				? new Thickness(16, 0, 14, 0)
+				: new Thickness(34 + ((depth - 1) * 12), 0, 14, 0);
 		}
 	}
 }
