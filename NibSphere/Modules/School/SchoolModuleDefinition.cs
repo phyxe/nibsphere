@@ -19,7 +19,7 @@ namespace NibSphere.Modules.School
 					ItemKey = "school",
 					Title = "School Information",
 					IconPath = "/Resources/Icons/school.svg",
-					SortOrder = 100,
+					SortOrder = 999,
 					Children = new[]
 					{
 						new ModuleNavItemDefinition
