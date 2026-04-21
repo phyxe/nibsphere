@@ -190,7 +190,13 @@
                               HeadersVisibility="Column"
                               IsReadOnly="True"
                               RowHeaderWidth="0"
-                              MinHeight="260">
+                              MinHeight="260"
+                                MaxHeight="420"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                        ScrollViewer.CanContentScroll="True"
+                        EnableRowVirtualization="True"
+                        EnableColumnVirtualization="True">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Code"
                                                 Binding="{Binding Code}"
