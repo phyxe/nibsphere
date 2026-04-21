@@ -38,21 +38,32 @@
 
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Text="Learning Area Entry"
-                                   VerticalAlignment="Center"
-                                   Style="{StaticResource TextBlock.SectionTitle}" />
+               VerticalAlignment="Center"
+               Style="{StaticResource TextBlock.SectionTitle}" />
+
+                        <Button x:Name="ImportLearningAreasButton"
+            Grid.Column="1"
+            MinWidth="120"
+            Padding="14,8"
+            Margin="12,0,0,0"
+            Click="ImportLearningAreasButton_Click"
+            ToolTip="Import Learning Areas">
+                            <TextBlock Text="Import" />
+                        </Button>
 
                         <Button x:Name="ManageListsButton"
-                                Grid.Column="1"
-                                MinWidth="140"
-                                Padding="14,8"
-                                Margin="12,0,0,0"
-                                Click="ManageListsButton_Click"
-                                ToolTip="Manage Academic Groups and Categories">
+            Grid.Column="2"
+            MinWidth="140"
+            Padding="14,8"
+            Margin="12,0,0,0"
+            Click="ManageListsButton_Click"
+            ToolTip="Manage Academic Groups and Categories">
                             <TextBlock Text="Manage Lists" />
                         </Button>
                     </Grid>

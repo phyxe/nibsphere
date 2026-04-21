@@ -290,5 +290,21 @@ namespace NibSphere.Views
 			SaveLearningAreaActionIcon.Source = "/Resources/Icons/edit.svg";
 			SaveLearningAreaButton.ToolTip = "Update Learning Area";
 		}
+
+		private async void ImportLearningAreasButton_Click(object sender, RoutedEventArgs e)
+		{
+			LearningAreaImportWindow window = new LearningAreaImportWindow
+			{
+				Owner = Window.GetWindow(this)
+			};
+
+			bool? result = window.ShowDialog();
+
+			if (result == true)
+			{
+				await LoadLookupListsAsync();
+				await LoadLearningAreasAsync();
+			}
+		}
 	}
 }
