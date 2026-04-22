@@ -354,7 +354,7 @@
                                     <ColumnDefinition Width="1.2*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <StackPanel Grid.Column="0">
+                                <StackPanel Grid.Column="6">
                                     <TextBlock Text="House/Street/Sitio/Purok"
                    Margin="0,0,0,6"
                    Style="{StaticResource TextBlock.Body}" />
@@ -362,8 +362,8 @@
                  MinHeight="36" />
                                 </StackPanel>
 
-                                <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Top Level"
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Province"
                    Margin="0,0,0,6"
                    Style="{StaticResource TextBlock.Body}" />
                                     <ComboBox x:Name="ProvinceComboBox"
@@ -375,7 +375,7 @@
                   ItemsSource="{Binding ProvinceOptions}" />
                                 </StackPanel>
 
-                                <StackPanel Grid.Column="4">
+                                <StackPanel Grid.Column="2">
                                     <TextBlock Text="Municipality/City"
                    Margin="0,0,0,6"
                    Style="{StaticResource TextBlock.Body}" />
@@ -388,7 +388,7 @@
                   ItemsSource="{Binding MunicipalityOptions}" />
                                 </StackPanel>
 
-                                <StackPanel Grid.Column="6">
+                                <StackPanel Grid.Column="4">
                                     <TextBlock Text="Barangay"
                    Margin="0,0,0,6"
                    Style="{StaticResource TextBlock.Body}" />

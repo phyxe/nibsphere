@@ -21,6 +21,9 @@ namespace NibSphere.Modules.Learners.Windows
 		private ImportTableDocument? _document;
 		private ImportTableSheet? _selectedSheet;
 		private LearnersImportColumnMap? _learnerColumnMap;
+		private LearnersImportPreview? _preview;
+
+		private LearnersImportResult? _importResult;
 
 		private int _currentStepIndex;
 
@@ -60,6 +63,8 @@ namespace NibSphere.Modules.Learners.Windows
 				_document = await _learnersImportService.ReadAsync(dialog.FileName);
 				_selectedSheet = null;
 				_learnerColumnMap = null;
+				_preview = null;
+				_importResult = null;
 
 				SelectedFilePathTextBox.Text = dialog.FileName;
 				DetectedFileTypeTextBox.Text = _document.FileKind.ToString();
@@ -69,6 +74,8 @@ namespace NibSphere.Modules.Learners.Windows
 
 				UpdateSourceInfo();
 				BuildLearnerSuggestedMappings();
+				ClearPreviewUi();
+				ClearResultUi();
 
 				_currentStepIndex = 0;
 				UpdateStepUi();
@@ -87,9 +94,13 @@ namespace NibSphere.Modules.Learners.Windows
 		{
 			_selectedSheet = SheetComboBox.SelectedItem as ImportTableSheet;
 			_learnerColumnMap = null;
+			_preview = null;
+			_importResult = null;
 
 			UpdateSourceInfo();
 			BuildLearnerSuggestedMappings();
+			ClearPreviewUi();
+			ClearResultUi();
 		}
 
 		private void PreviousButton_Click(object sender, RoutedEventArgs e)
@@ -103,7 +114,7 @@ namespace NibSphere.Modules.Learners.Windows
 			UpdateStepUi();
 		}
 
-		private void NextButton_Click(object sender, RoutedEventArgs e)
+		private async void NextButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (_currentStepIndex == 0)
 			{
@@ -126,11 +137,38 @@ namespace NibSphere.Modules.Learners.Windows
 
 				_learnerColumnMap = BuildLearnerColumnMapFromUi();
 
-				MessageBox.Show(
-					"Learner field mapping is ready. The next slice will use this mapping to build the import preview.",
-					"Import Learners",
-					MessageBoxButton.OK,
-					MessageBoxImage.Information);
+				bool previewBuilt = await BuildPreviewAsync();
+
+				if (!previewBuilt)
+				{
+					return;
+				}
+
+				_importResult = null;
+				ClearResultUi();
+
+				_currentStepIndex = 2;
+				UpdateStepUi();
+				return;
+			}
+
+			if (_currentStepIndex == 2)
+			{
+				bool imported = await RunImportAsync();
+
+				if (!imported)
+				{
+					return;
+				}
+
+				_currentStepIndex = 3;
+				UpdateStepUi();
+				return;
+			}
+
+			if (_currentStepIndex == 3)
+			{
+				DialogResult = true;
 			}
 		}
 
@@ -185,6 +223,129 @@ namespace NibSphere.Modules.Learners.Windows
 			}
 
 			return true;
+		}
+
+		private async Task<bool> BuildPreviewAsync()
+		{
+			if (_document == null || _selectedSheet == null || _learnerColumnMap == null)
+			{
+				return false;
+			}
+
+			try
+			{
+				_preview = await _learnersImportService.BuildPreviewAsync(
+					_document,
+					_selectedSheet.Name,
+					_learnerColumnMap,
+					null);
+
+				PopulatePreviewUi();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				_preview = null;
+				ClearPreviewUi();
+
+				MessageBox.Show(
+					$"Failed to build import preview.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+					"Import Preview",
+					MessageBoxButton.OK,
+					MessageBoxImage.Error);
+
+				return false;
+			}
+		}
+
+		private async Task<bool> RunImportAsync()
+		{
+			if (_preview == null)
+			{
+				return false;
+			}
+
+			try
+			{
+				_importResult = await _learnersImportService.ImportAsync(_preview);
+
+				PopulateResultUi();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				_importResult = null;
+				ClearResultUi();
+
+				MessageBox.Show(
+					$"Failed to import learners.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+					"Import Learners",
+					MessageBoxButton.OK,
+					MessageBoxImage.Error);
+
+				return false;
+			}
+		}
+
+		private void PopulateResultUi()
+		{
+			if (_importResult == null)
+			{
+				ClearResultUi();
+				return;
+			}
+
+			ResultSummaryTextBox.Text =
+				$"Imported Learners: {_importResult.ImportedLearnerCount}{Environment.NewLine}" +
+				$"Imported Custodians: {_importResult.ImportedCustodianCount}{Environment.NewLine}" +
+				$"Skipped Rows: {_importResult.SkippedRowCount}{Environment.NewLine}" +
+				$"Duplicate Skipped Rows: {_importResult.DuplicateSkippedCount}{Environment.NewLine}" +
+				$"Skipped Custodian Blocks: {_importResult.SkippedCustodianBlockCount}";
+
+			ResultMessagesTextBox.Text = _importResult.Messages.Count == 0
+				? "Import finished."
+				: string.Join(Environment.NewLine, _importResult.Messages);
+		}
+
+		private void ClearResultUi()
+		{
+			ResultSummaryTextBox.Clear();
+			ResultMessagesTextBox.Clear();
+		}
+
+		private void PopulatePreviewUi()
+		{
+			if (_preview == null)
+			{
+				ClearPreviewUi();
+				return;
+			}
+
+			PreviewSummaryTextBox.Text =
+				$"Total Rows: {_preview.TotalRowCount}{Environment.NewLine}" +
+				$"Ready To Import: {_preview.ReadyToImportCount}{Environment.NewLine}" +
+				$"Rows With Errors: {_preview.ErrorRowCount}{Environment.NewLine}" +
+				$"Rows With Potential Duplicates: {_preview.DuplicateRowCount}{Environment.NewLine}" +
+				$"Skipped Custodian Blocks: {_preview.SkippedCustodianBlockCount}";
+
+			PreviewRowsDataGrid.ItemsSource = _preview.Rows
+				.Select(x => new PreviewRowItem
+				{
+					SourceRowNumber = x.SourceRowNumber,
+					Lrn = x.RowData?.Learner.Lrn ?? string.Empty,
+					LearnerName = x.RowData?.Learner.BuildFullName() ?? string.Empty,
+					CanImportText = x.CanImport ? "Yes" : "No",
+					DuplicateText = x.HasPotentialDuplicate ? "Yes" : "No",
+					Errors = x.Errors.Count == 0 ? string.Empty : string.Join(" | ", x.Errors),
+					Warnings = x.Warnings.Count == 0 ? string.Empty : string.Join(" | ", x.Warnings)
+				})
+				.ToList();
+		}
+
+		private void ClearPreviewUi()
+		{
+			PreviewSummaryTextBox.Clear();
+			PreviewRowsDataGrid.ItemsSource = null;
 		}
 
 		private void UpdateSourceInfo()
@@ -320,20 +481,61 @@ namespace NibSphere.Modules.Learners.Windows
 
 				SourceStepPanel.Visibility = Visibility.Visible;
 				MappingStepPanel.Visibility = Visibility.Collapsed;
+				PreviewStepPanel.Visibility = Visibility.Collapsed;
+				ResultStepPanel.Visibility = Visibility.Collapsed;
 
 				PreviousButton.Visibility = Visibility.Collapsed;
+				CloseActionButton.Content = "Close";
+				NextButton.Visibility = Visibility.Visible;
 				NextButton.Content = "Next";
 				return;
 			}
 
+			if (_currentStepIndex == 1)
+			{
+				StepTitleTextBlock.Text = "Import Learners";
+				StepDescriptionTextBlock.Text = "Step 2: map learner fields to the source columns.";
+
+				SourceStepPanel.Visibility = Visibility.Collapsed;
+				MappingStepPanel.Visibility = Visibility.Visible;
+				PreviewStepPanel.Visibility = Visibility.Collapsed;
+				ResultStepPanel.Visibility = Visibility.Collapsed;
+
+				PreviousButton.Visibility = Visibility.Visible;
+				CloseActionButton.Content = "Close";
+				NextButton.Visibility = Visibility.Visible;
+				NextButton.Content = "Preview";
+				return;
+			}
+
+			if (_currentStepIndex == 2)
+			{
+				StepTitleTextBlock.Text = "Import Learners";
+				StepDescriptionTextBlock.Text = "Step 3: review the learner import preview before importing.";
+
+				SourceStepPanel.Visibility = Visibility.Collapsed;
+				MappingStepPanel.Visibility = Visibility.Collapsed;
+				PreviewStepPanel.Visibility = Visibility.Visible;
+				ResultStepPanel.Visibility = Visibility.Collapsed;
+
+				PreviousButton.Visibility = Visibility.Visible;
+				CloseActionButton.Content = "Close";
+				NextButton.Visibility = Visibility.Visible;
+				NextButton.Content = "Import";
+				return;
+			}
+
 			StepTitleTextBlock.Text = "Import Learners";
-			StepDescriptionTextBlock.Text = "Step 2: map learner fields to the source columns.";
+			StepDescriptionTextBlock.Text = "Step 4: import completed.";
 
 			SourceStepPanel.Visibility = Visibility.Collapsed;
-			MappingStepPanel.Visibility = Visibility.Visible;
+			MappingStepPanel.Visibility = Visibility.Collapsed;
+			PreviewStepPanel.Visibility = Visibility.Collapsed;
+			ResultStepPanel.Visibility = Visibility.Visible;
 
-			PreviousButton.Visibility = Visibility.Visible;
-			NextButton.Content = "Continue";
+			PreviousButton.Visibility = Visibility.Collapsed;
+			CloseActionButton.Content = "Done";
+			NextButton.Visibility = Visibility.Collapsed;
 		}
 
 		private void MinimizeButton_Click(object sender, RoutedEventArgs e)
@@ -496,6 +698,23 @@ namespace NibSphere.Modules.Learners.Windows
 			{
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+
+		private sealed class PreviewRowItem
+		{
+			public int SourceRowNumber { get; init; }
+
+			public string Lrn { get; init; } = string.Empty;
+
+			public string LearnerName { get; init; } = string.Empty;
+
+			public string CanImportText { get; init; } = string.Empty;
+
+			public string DuplicateText { get; init; } = string.Empty;
+
+			public string Errors { get; init; } = string.Empty;
+
+			public string Warnings { get; init; } = string.Empty;
 		}
 	}
 }

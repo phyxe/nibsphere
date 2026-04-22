@@ -303,30 +303,129 @@
                             </DataGrid>
                         </Grid>
                     </Border>
+
+                    <Border x:Name="PreviewStepPanel"
+        Visibility="Collapsed"
+        Style="{StaticResource CardBorderStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="12" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="12" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Import Preview"
+                   Style="{StaticResource TextBlock.SectionTitle}" />
+
+                            <TextBox x:Name="PreviewSummaryTextBox"
+                 Grid.Row="2"
+                 IsReadOnly="True"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 VerticalScrollBarVisibility="Auto"
+                 MinHeight="90" />
+
+                            <DataGrid x:Name="PreviewRowsDataGrid"
+                  Grid.Row="4"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  HeadersVisibility="Column"
+                  IsReadOnly="True"
+                  RowHeaderWidth="0"
+                  MinHeight="280"
+                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Row"
+                                    Binding="{Binding SourceRowNumber}"
+                                    Width="80" />
+
+                                    <DataGridTextColumn Header="LRN"
+                                    Binding="{Binding Lrn}"
+                                    Width="140" />
+
+                                    <DataGridTextColumn Header="Learner"
+                                    Binding="{Binding LearnerName}"
+                                    Width="2*" />
+
+                                    <DataGridTextColumn Header="Can Import"
+                                    Binding="{Binding CanImportText}"
+                                    Width="100" />
+
+                                    <DataGridTextColumn Header="Duplicate"
+                                    Binding="{Binding DuplicateText}"
+                                    Width="100" />
+
+                                    <DataGridTextColumn Header="Errors"
+                                    Binding="{Binding Errors}"
+                                    Width="2.5*" />
+
+                                    <DataGridTextColumn Header="Warnings"
+                                    Binding="{Binding Warnings}"
+                                    Width="2.5*" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Border>
+
+                    <Border x:Name="ResultStepPanel"
+        Visibility="Collapsed"
+        Style="{StaticResource CardBorderStyle}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="12" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="12" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Import Result"
+                   Style="{StaticResource TextBlock.SectionTitle}" />
+
+                            <TextBox x:Name="ResultSummaryTextBox"
+                 Grid.Row="2"
+                 IsReadOnly="True"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 VerticalScrollBarVisibility="Auto"
+                 MinHeight="90" />
+
+                            <TextBox x:Name="ResultMessagesTextBox"
+                 Grid.Row="4"
+                 IsReadOnly="True"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 VerticalScrollBarVisibility="Auto" />
+                        </Grid>
+                    </Border>
                 </Grid>
 
                 <StackPanel Grid.Row="6"
-                Orientation="Horizontal"
-                HorizontalAlignment="Right">
+            Orientation="Horizontal"
+            HorizontalAlignment="Right">
                     <Button x:Name="PreviousButton"
-                Width="100"
-                Height="36"
-                Margin="0,0,8,0"
-                Content="Previous"
-                Visibility="Collapsed"
-                Click="PreviousButton_Click" />
+            Width="100"
+            Height="36"
+            Margin="0,0,8,0"
+            Content="Previous"
+            Visibility="Collapsed"
+            Click="PreviousButton_Click" />
 
-                    <Button Width="100"
-                Height="36"
-                Margin="0,0,8,0"
-                Content="Close"
-                Click="CloseButton_Click" />
+                    <Button x:Name="CloseActionButton"
+            Width="100"
+            Height="36"
+            Margin="0,0,8,0"
+            Content="Close"
+            Click="CloseButton_Click" />
 
                     <Button x:Name="NextButton"
-                Width="100"
-                Height="36"
-                Content="Next"
-                Click="NextButton_Click" />
+            Width="100"
+            Height="36"
+            Content="Next"
+            Click="NextButton_Click" />
                 </StackPanel>
             </Grid>
         </Grid>
