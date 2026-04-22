@@ -69,7 +69,10 @@ namespace NibSphere.Modules.Learners.Windows
 				SelectedFilePathTextBox.Text = dialog.FileName;
 				DetectedFileTypeTextBox.Text = _document.FileKind.ToString();
 
-				SheetComboBox.ItemsSource = _document.Sheets;
+				SheetComboBox.ItemsSource = _document.Sheets
+					.Select(x => x.Name)
+					.ToList();
+
 				SheetComboBox.SelectedIndex = _document.Sheets.Count > 0 ? 0 : -1;
 
 				UpdateSourceInfo();
@@ -92,7 +95,16 @@ namespace NibSphere.Modules.Learners.Windows
 
 		private void SheetComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
 		{
-			_selectedSheet = SheetComboBox.SelectedItem as ImportTableSheet;
+			if (_document == null || SheetComboBox.SelectedItem is not string sheetName)
+			{
+				_selectedSheet = null;
+			}
+			else
+			{
+				_selectedSheet = _document.Sheets.FirstOrDefault(x =>
+					string.Equals(x.Name, sheetName, StringComparison.OrdinalIgnoreCase));
+			}
+
 			_learnerColumnMap = null;
 			_preview = null;
 			_importResult = null;
@@ -552,6 +564,12 @@ namespace NibSphere.Modules.Learners.Windows
 
 		private void CloseButton_Click(object sender, RoutedEventArgs e)
 		{
+			if (_currentStepIndex == 3 && _importResult != null)
+			{
+				DialogResult = true;
+				return;
+			}
+
 			Close();
 		}
 

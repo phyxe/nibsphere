@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Import Learners"
         Width="920"
-        Height="640"
+        Height="660"
         MinWidth="820"
         MinHeight="560"
         WindowStartupLocation="CenterOwner"
@@ -151,7 +151,7 @@
             </Border>
 
             <Grid Grid.Row="1"
-      Margin="16">
+                    Margin="16">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="8" />
@@ -404,28 +404,28 @@
                 </Grid>
 
                 <StackPanel Grid.Row="6"
-            Orientation="Horizontal"
-            HorizontalAlignment="Right">
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
                     <Button x:Name="PreviousButton"
-            Width="100"
-            Height="36"
-            Margin="0,0,8,0"
-            Content="Previous"
-            Visibility="Collapsed"
-            Click="PreviousButton_Click" />
+                        Width="100"
+                        Height="36"
+                        Margin="0,0,8,0"
+                        Content="Previous"
+                        Visibility="Collapsed"
+                        Click="PreviousButton_Click" />
 
                     <Button x:Name="CloseActionButton"
-            Width="100"
-            Height="36"
-            Margin="0,0,8,0"
-            Content="Close"
-            Click="CloseButton_Click" />
+                        Width="100"
+                        Height="36"
+                        Margin="0,0,8,0"
+                        Content="Close"
+                        Click="CloseButton_Click" />
 
                     <Button x:Name="NextButton"
-            Width="100"
-            Height="36"
-            Content="Next"
-            Click="NextButton_Click" />
+                        Width="100"
+                        Height="36"
+                        Content="Next"
+                        Click="NextButton_Click" />
                 </StackPanel>
             </Grid>
         </Grid>
