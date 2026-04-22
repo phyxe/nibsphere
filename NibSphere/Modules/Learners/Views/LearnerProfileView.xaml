@@ -1,0 +1,613 @@
+﻿<UserControl x:Class="NibSphere.Modules.Learners.Views.LearnerProfileView"
+             x:Name="RootControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:NibSphere.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="760"
+             d:DesignWidth="1100"
+             Background="{DynamicResource Brush.Background}">
+
+    <UserControl.Resources>
+        <Style x:Key="ProfileImageOverlayButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background" Value="{DynamicResource Brush.Surface}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="14">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.IconButtonHoverBackground}" />
+                                <Setter TargetName="ButtonBorder"
+                                        Property="BorderBrush"
+                                        Value="{DynamicResource Brush.PrimaryAccent}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.IconButtonHoverBackground}" />
+                                <Setter TargetName="ButtonBorder"
+                                        Property="BorderBrush"
+                                        Value="{DynamicResource Brush.PrimaryAccent}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.6" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock x:Name="ProfilePageTitleTextBlock"
+                       Text="Learner Profile"
+                       Style="{StaticResource TextBlock.Heading1}" />
+
+            <Border Grid.Row="2"
+                    Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160" />
+                        <ColumnDefinition Width="24" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="220" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Width="132"
+                          Height="132"
+                          Margin="0,4,0,0">
+                        <Ellipse x:Name="ProfileImageEllipse"
+                                 Width="132"
+                                 Height="132"
+                                 Stroke="{DynamicResource Brush.Border}"
+                                 StrokeThickness="1"
+                                 Fill="{DynamicResource Brush.SurfaceAlt}" />
+
+                        <TextBlock x:Name="ProfileInitialsTextBlock"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="30"
+                                   FontWeight="SemiBold"
+                                   Style="{StaticResource TextBlock.Heading2}"
+                                   Text="LP" />
+
+                        <StackPanel x:Name="ProfileImageButtonsPanel"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Margin="0,0,-4,-4">
+                            <Button x:Name="BrowseProfileImageButton"
+                                    Style="{StaticResource ProfileImageOverlayButtonStyle}"
+                                    Margin="0,0,6,0"
+                                    Click="BrowseProfileImageButton_Click"
+                                    ToolTip="Upload Image">
+                                <controls:ControlSvgIcon Width="14"
+                                     Height="14"
+                                     Source="/Modules/Learners/Resources/Icons/upload.svg"
+                                     Tint="{DynamicResource Brush.PrimaryText}" />
+                            </Button>
+
+                            <Button x:Name="RemoveProfileImageButton"
+                                    Style="{StaticResource ProfileImageOverlayButtonStyle}"
+                                    Click="RemoveProfileImageButton_Click"
+                                    ToolTip="Remove Image">
+                                <controls:ControlSvgIcon Width="14"
+                                     Height="14"
+                                     Source="/Modules/Learners/Resources/Icons/delete.svg"
+                                     Tint="{DynamicResource Brush.PrimaryText}" />
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Grid.Column="2"
+                                VerticalAlignment="Center">
+                        <TextBlock x:Name="ProfileHeaderNameTextBlock"
+                                   Text="LEARNER PROFILE"
+                                   Style="{StaticResource TextBlock.Heading2}" />
+
+                        <TextBlock x:Name="ProfileHeaderMetaTextBlock"
+                                   Margin="0,4,0,0"
+                                   Style="{StaticResource TextBlock.Secondary}"
+                                   Text="LRN: -" />
+
+                        <TextBlock x:Name="ProfileImageStatusTextBlock"
+                                   Margin="0,10,0,0"
+                                   Style="{StaticResource TextBlock.Caption}"
+                                   Text=""
+                                   Visibility="Collapsed" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="3"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top">
+                        <Button x:Name="BackProfileButton"
+                                MinWidth="160"
+                                Padding="14,8"
+                                Click="BackProfileButton_Click">
+                            <TextBlock Text="Back to Learners" />
+                        </Button>
+
+                        <Button x:Name="CancelEditButton"
+                                MinWidth="160"
+                                Padding="14,8"
+                                Margin="0,8,0,0"
+                                Click="CancelEditButton_Click"
+                                Visibility="Collapsed">
+                            <TextBlock Text="Cancel" />
+                        </Button>
+
+                        <Button x:Name="SaveProfileButton"
+                                MinWidth="160"
+                                Padding="14,8"
+                                Margin="0,8,0,0"
+                                Click="SaveProfileButton_Click">
+                            <TextBlock x:Name="SaveProfileActionTextBlock"
+                                       Text="Save Learner" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="4"
+                    Style="{StaticResource CardBorderStyle}">
+                <TabControl>
+                    <TabItem Header="Personal Information">
+                        <Grid Margin="4">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Learner Personal Information"
+                                       Style="{StaticResource TextBlock.SectionTitle}" />
+
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1.2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="First Name"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="FirstNameTextBox"
+                                             MinHeight="36"
+                                             TextChanged="LearnerFields_TextChanged" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Middle Name"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="MiddleNameTextBox"
+                                             MinHeight="36"
+                                             TextChanged="LearnerFields_TextChanged" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Last Name"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="LastNameTextBox"
+                                             MinHeight="36"
+                                             TextChanged="LearnerFields_TextChanged" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="6">
+                                    <TextBlock Text="Extension"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="ExtensionNameTextBox"
+                                             MinHeight="36"
+                                             TextChanged="LearnerFields_TextChanged" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Grid.Row="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.2*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="LRN"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="LrnTextBox"
+                                             MinHeight="36"
+                                             TextChanged="LearnerFields_TextChanged" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Birthday"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <DatePicker x:Name="BirthdayDatePicker"
+                                                MinHeight="36" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Sex"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <ComboBox x:Name="SexComboBox"
+                                              MinHeight="36"
+                                              ItemsSource="{Binding SexOptions}" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="6">
+                                    <TextBlock Text="Pronoun"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <ComboBox x:Name="PronounComboBox"
+                                              MinHeight="36"
+                                              IsEditable="True"
+                                              ItemsSource="{Binding PronounOptions}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Grid.Row="6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.4*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1.3*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1.7*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Religious Affiliation"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <ComboBox x:Name="ReligiousAffiliationComboBox"
+                                              MinHeight="36"
+                                              IsEditable="True"
+                                              ItemsSource="{Binding ReligiousAffiliationOptions}" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Mobile Number"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="MobileNumberTextBox"
+                                             MinHeight="36" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Email Address"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="EmailAddressTextBox"
+                                             MinHeight="36" />
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="Address">
+                        <Grid Margin="4">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Learner Address"
+                                       Style="{StaticResource TextBlock.SectionTitle}" />
+
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.8*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1.2*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1.2*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1.2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="House/Street/Sitio/Purok"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="HouseStreetTextBox"
+                                             MinHeight="36" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Barangay"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="BarangayTextBox"
+                                             MinHeight="36" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Municipality/City"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="MunicipalityTextBox"
+                                             MinHeight="36" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="6">
+                                    <TextBlock Text="Province"
+                                               Margin="0,0,0,6"
+                                               Style="{StaticResource TextBlock.Body}" />
+                                    <TextBox x:Name="ProvinceTextBox"
+                                             MinHeight="36" />
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Grid.Row="4"
+                                       Text="Address fields are plain text in this first profile slice. These can be upgraded later to the same lookup-driven address selector flow."
+                                       Style="{StaticResource TextBlock.Caption}" />
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="Custodians">
+                        <Grid Margin="4">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="16"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Custodian Cards"
+                                           VerticalAlignment="Center"
+                                           Style="{StaticResource TextBlock.SectionTitle}" />
+
+                                <Button x:Name="AddCustodianCardButton"
+                                        Grid.Column="1"
+                                        MinWidth="140"
+                                        Padding="14,8"
+                                        Click="AddCustodianCardButton_Click"
+                                        Visibility="{Binding EditOnlyVisibility}">
+                                    <TextBlock Text="Add Custodian" />
+                                </Button>
+                            </Grid>
+
+                            <ScrollViewer Grid.Row="2"
+                                          VerticalScrollBarVisibility="Auto"
+                                          HorizontalScrollBarVisibility="Disabled">
+                                <ItemsControl ItemsSource="{Binding CustodianCards}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Style="{StaticResource CardBorderStyle}"
+                                                    Margin="0,0,0,12">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="16" />
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="16" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+
+                                                    <Grid Grid.Row="0">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*" />
+                                                            <ColumnDefinition Width="Auto" />
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <TextBlock Text="Custodian Entry"
+                                                                   Style="{StaticResource TextBlock.SectionTitle}" />
+
+                                                        <Button Grid.Column="1"
+                                                                MinWidth="120"
+                                                                Padding="14,8"
+                                                                Tag="{Binding}"
+                                                                Click="RemoveCustodianCardButton_Click"
+                                                                Visibility="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.EditOnlyVisibility}">
+                                                            <TextBlock Text="Remove Card" />
+                                                        </Button>
+                                                    </Grid>
+
+                                                    <Grid Grid.Row="2">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="1.2*"/>
+                                                            <ColumnDefinition Width="16"/>
+                                                            <ColumnDefinition Width="1.4*"/>
+                                                            <ColumnDefinition Width="16"/>
+                                                            <ColumnDefinition Width="90"/>
+                                                            <ColumnDefinition Width="16"/>
+                                                            <ColumnDefinition Width="90"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <StackPanel Grid.Column="0">
+                                                            <TextBlock Text="Relationship Type"
+                                                                       Margin="0,0,0,6"
+                                                                       Style="{StaticResource TextBlock.Body}" />
+                                                            <ComboBox MinHeight="36"
+                                                                      IsEditable="True"
+                                                                      IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEditMode}"
+                                                                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RelationshipTypeOptions}"
+                                                                      SelectedItem="{Binding RelationshipType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+
+                                                        <StackPanel Grid.Column="2">
+                                                            <TextBlock Text="Relationship Label"
+                                                                       Margin="0,0,0,6"
+                                                                       Style="{StaticResource TextBlock.Body}" />
+                                                            <ComboBox MinHeight="36"
+                                                                      IsEditable="True"
+                                                                      IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEditMode}"
+                                                                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RelationshipLabelOptions}"
+                                                                      SelectedItem="{Binding RelationshipLabel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                        </StackPanel>
+
+                                                        <StackPanel Grid.Column="4">
+                                                            <TextBlock Text="Custody"
+                                                                       Margin="0,0,0,6"
+                                                                       Style="{StaticResource TextBlock.Body}" />
+                                                            <CheckBox VerticalAlignment="Center"
+                                                                      HorizontalAlignment="Left"
+                                                                      IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEditMode}"
+                                                                      IsChecked="{Binding HasCustody, Mode=TwoWay}" />
+                                                        </StackPanel>
+
+                                                        <StackPanel Grid.Column="6">
+                                                            <TextBlock Text="Lives With"
+                                                                       Margin="0,0,0,6"
+                                                                       Style="{StaticResource TextBlock.Body}" />
+                                                            <CheckBox VerticalAlignment="Center"
+                                                                      HorizontalAlignment="Left"
+                                                                      IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEditMode}"
+                                                                      IsChecked="{Binding LivesWithLearner, Mode=TwoWay}" />
+                                                        </StackPanel>
+                                                    </Grid>
+
+                                                    <Grid Grid.Row="4">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="16" />
+                                                            <RowDefinition Height="Auto" />
+                                                        </Grid.RowDefinitions>
+
+                                                        <Grid Grid.Row="0">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="2*"/>
+                                                                <ColumnDefinition Width="16"/>
+                                                                <ColumnDefinition Width="2*"/>
+                                                                <ColumnDefinition Width="16"/>
+                                                                <ColumnDefinition Width="2*"/>
+                                                                <ColumnDefinition Width="16"/>
+                                                                <ColumnDefinition Width="1.2*"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <StackPanel Grid.Column="0">
+                                                                <TextBlock Text="First Name"
+                                                                           Margin="0,0,0,6"
+                                                                           Style="{StaticResource TextBlock.Body}" />
+                                                                <TextBox MinHeight="36"
+                                                                         IsReadOnly="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsViewMode}"
+                                                                         IsHitTestVisible="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEditMode}"
+                                                                         Text="{Binding Custodian.FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                            </StackPanel>
+
+                                                            <StackPanel Grid.Column="2">
+                                                                <TextBlock Text="Middle Name"
+                                                                           Margin="0,0,0,6"
+                                                                           Style="{StaticResource TextBlock.Body}" />
+                                                                <TextBox MinHeight="36"
+                                                                         IsReadOnly="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsViewMode}"
+                                                                         IsHitTestVisible="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEditMode}"
+                                                                         Text="{Binding Custodian.MiddleName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                            </StackPanel>
+
+                                                            <StackPanel Grid.Column="4">
+                                                                <TextBlock Text="Last Name"
+                                                                           Margin="0,0,0,6"
+                                                                           Style="{StaticResource TextBlock.Body}" />
+                                                                <TextBox MinHeight="36"
+                                                                         IsReadOnly="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsViewMode}"
+                                                                         IsHitTestVisible="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEditMode}"
+                                                                         Text="{Binding Custodian.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                            </StackPanel>
+
+                                                            <StackPanel Grid.Column="6">
+                                                                <TextBlock Text="Extension"
+                                                                           Margin="0,0,0,6"
+                                                                           Style="{StaticResource TextBlock.Body}" />
+                                                                <TextBox MinHeight="36"
+                                                                         IsReadOnly="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsViewMode}"
+                                                                         IsHitTestVisible="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEditMode}"
+                                                                         Text="{Binding Custodian.ExtensionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                            </StackPanel>
+                                                        </Grid>
+
+                                                        <Grid Grid.Row="2">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="1.3*"/>
+                                                                <ColumnDefinition Width="16"/>
+                                                                <ColumnDefinition Width="1.8*"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <StackPanel Grid.Column="0">
+                                                                <TextBlock Text="Mobile Number"
+                                                                           Margin="0,0,0,6"
+                                                                           Style="{StaticResource TextBlock.Body}" />
+                                                                <TextBox MinHeight="36"
+                                                                         IsReadOnly="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsViewMode}"
+                                                                         IsHitTestVisible="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEditMode}"
+                                                                         Text="{Binding Custodian.MobileNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                            </StackPanel>
+
+                                                            <StackPanel Grid.Column="2">
+                                                                <TextBlock Text="Email Address"
+                                                                           Margin="0,0,0,6"
+                                                                           Style="{StaticResource TextBlock.Body}" />
+                                                                <TextBox MinHeight="36"
+                                                                         IsReadOnly="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsViewMode}"
+                                                                         IsHitTestVisible="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEditMode}"
+                                                                         Text="{Binding Custodian.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Grid>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

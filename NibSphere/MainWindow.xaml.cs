@@ -511,5 +511,10 @@ namespace NibSphere
 				? new Thickness(16, 0, 14, 0)
 				: new Thickness(34 + ((depth - 1) * 12), 0, 14, 0);
 		}
+
+		public void ShowContent(object content)
+		{
+			MainContentHost.Content = content;
+		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using NibSphere.Core.Interfaces;
 using NibSphere.Core.Modules.Learners.Models;
+using NibSphere.Core.Modules.Learners.Profile;
 using NibSphere.Data.Modules.Learners.Repositories;
 using NibSphere.Modules.Learners.Windows;
 using System.Windows;
@@ -10,6 +11,7 @@ namespace NibSphere.Modules.Learners.Views
 	public partial class LearnersListView : UserControl
 	{
 		private readonly LearnerRepository _learnerRepository;
+		private readonly LearnerCustodianRepository _learnerCustodianRepository;
 
 		public LearnersListView()
 		{
@@ -17,6 +19,7 @@ namespace NibSphere.Modules.Learners.Views
 
 			IAppPaths appPaths = App.AppPaths;
 			_learnerRepository = new LearnerRepository(appPaths);
+			_learnerCustodianRepository = new LearnerCustodianRepository(appPaths);
 
 			Loaded += LearnersListView_Loaded;
 		}
@@ -43,11 +46,20 @@ namespace NibSphere.Modules.Learners.Views
 
 		private void AddLearnerButton_Click(object sender, RoutedEventArgs e)
 		{
-			MessageBox.Show(
-				"Add Learner is not implemented yet.",
-				"Learners",
-				MessageBoxButton.OK,
-				MessageBoxImage.Information);
+			NavigateToProfile(new LearnerProfileView(LearnerProfileMode.Add));
+		}
+
+		private void ViewLearnerButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is not Button button ||
+				button.Tag is not LearnerListRow row)
+			{
+				return;
+			}
+
+			NavigateToProfile(new LearnerProfileView(
+				LearnerProfileMode.View,
+				row.Learner.Id));
 		}
 
 		private async void LearnerSettingsButton_Click(object sender, RoutedEventArgs e)
@@ -73,11 +85,9 @@ namespace NibSphere.Modules.Learners.Views
 				return;
 			}
 
-			MessageBox.Show(
-				$"Edit Learner is not implemented yet.{Environment.NewLine}{Environment.NewLine}{row.FullNameDisplay}",
-				"Learners",
-				MessageBoxButton.OK,
-				MessageBoxImage.Information);
+			NavigateToProfile(new LearnerProfileView(
+				LearnerProfileMode.Edit,
+				row.Learner.Id));
 		}
 
 		private async void DeleteLearnerButton_Click(object sender, RoutedEventArgs e)
@@ -89,7 +99,7 @@ namespace NibSphere.Modules.Learners.Views
 			}
 
 			MessageBoxResult result = MessageBox.Show(
-				$"Delete learner '{row.FullNameDisplay}'?",
+				$"Delete learner '{row.FullNameDisplay}'?{Environment.NewLine}{Environment.NewLine}This will remove the learner profile and its learner-custodian links. Shared custodian records will be kept.",
 				"Confirm Delete",
 				MessageBoxButton.YesNo,
 				MessageBoxImage.Warning);
@@ -99,14 +109,34 @@ namespace NibSphere.Modules.Learners.Views
 				return;
 			}
 
-			await _learnerRepository.DeleteAsync(row.Learner.Id);
-			await LoadLearnersAsync();
+			try
+			{
+				await _learnerCustodianRepository.DeleteByLearnerIdAsync(row.Learner.Id);
+				await _learnerRepository.DeleteAsync(row.Learner.Id);
+				await LoadLearnersAsync();
 
-			MessageBox.Show(
-				"Learner deleted successfully.",
-				"Deleted",
-				MessageBoxButton.OK,
-				MessageBoxImage.Information);
+				MessageBox.Show(
+					"Learner deleted successfully.",
+					"Deleted",
+					MessageBoxButton.OK,
+					MessageBoxImage.Information);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					$"Unable to delete learner.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+					"Delete Failed",
+					MessageBoxButton.OK,
+					MessageBoxImage.Warning);
+			}
+		}
+
+		private void NavigateToProfile(UserControl view)
+		{
+			if (Window.GetWindow(this) is MainWindow mainWindow)
+			{
+				mainWindow.ShowContent(view);
+			}
 		}
 
 		private static string BuildFullNameDisplay(Learner learner)

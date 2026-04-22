@@ -96,11 +96,25 @@
                                             Width="2.8*" />
 
                         <DataGridTemplateColumn Header="Action"
-                                                Width="110">
+                                                Width="160">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal"
                                                 HorizontalAlignment="Center">
+                                        <Button Width="32"
+                                                Height="32"
+                                                Margin="0,0,8,0"
+                                                Padding="0"
+                                                ToolTip="View"
+                                                Tag="{Binding}"
+                                                Click="ViewLearnerButton_Click"
+                                                Style="{StaticResource IconButtonStyle}">
+                                            <controls:ControlSvgIcon Width="16"
+                                                                     Height="16"
+                                                                     Source="/Modules/Learners/Resources/Icons/viewstudent.svg"
+                                                                     Tint="{DynamicResource Brush.PrimaryText}" />
+                                        </Button>
+
                                         <Button Width="32"
                                                 Height="32"
                                                 Margin="0,0,8,0"
