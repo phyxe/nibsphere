@@ -95,19 +95,51 @@
         <Setter Property="Background" Value="{DynamicResource Brush.PopupBackground}" />
         <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource Brush.GridSelectionBackground}" />
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{DynamicResource Brush.TabActiveBackground}" />
-                <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
-            </Trigger>
-            <Trigger Property="IsToday" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource Brush.PrimaryAccent}" />
-                <Setter Property="BorderThickness" Value="1" />
-            </Trigger>
-        </Style.Triggers>
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CalendarDayButton">
+                    <Border x:Name="DayButtonBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="4"
+                        Padding="2">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      RecognizesAccessKey="True"
+                                      TextElement.Foreground="{TemplateBinding Foreground}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="DayButtonBorder"
+                                Property="Background"
+                                Value="{DynamicResource Brush.GridSelectionBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="DayButtonBorder"
+                                Property="Background"
+                                Value="{DynamicResource Brush.TabActiveBackground}" />
+                            <Setter Property="Foreground"
+                                Value="{DynamicResource Brush.PrimaryText}" />
+                        </Trigger>
+                        <Trigger Property="IsInactive" Value="True">
+                            <Setter Property="Opacity" Value="0.65" />
+                        </Trigger>
+                        <Trigger Property="IsToday" Value="True">
+                            <Setter TargetName="DayButtonBorder"
+                                Property="BorderBrush"
+                                Value="{DynamicResource Brush.PrimaryAccent}" />
+                            <Setter TargetName="DayButtonBorder"
+                                Property="BorderThickness"
+                                Value="1" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style TargetType="CalendarButton">
@@ -115,18 +147,42 @@
         <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
         <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
         <Setter Property="BorderThickness" Value="0" />
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource Brush.GridSelectionBackground}" />
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{DynamicResource Brush.TabActiveBackground}" />
-                <Setter Property="Foreground" Value="{DynamicResource Brush.PrimaryText}" />
-            </Trigger>
-            <Trigger Property="IsInactive" Value="True">
-                <Setter Property="Opacity" Value="0.65" />
-            </Trigger>
-        </Style.Triggers>
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CalendarButton">
+                    <Border x:Name="CalendarButtonBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="4"
+                        Padding="4">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      RecognizesAccessKey="True"
+                                      TextElement.Foreground="{TemplateBinding Foreground}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="CalendarButtonBorder"
+                                Property="Background"
+                                Value="{DynamicResource Brush.GridSelectionBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="CalendarButtonBorder"
+                                Property="Background"
+                                Value="{DynamicResource Brush.TabActiveBackground}" />
+                            <Setter Property="Foreground"
+                                Value="{DynamicResource Brush.PrimaryText}" />
+                        </Trigger>
+                        <Trigger Property="IsInactive" Value="True">
+                            <Setter Property="Opacity" Value="0.65" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style TargetType="CalendarItem">
