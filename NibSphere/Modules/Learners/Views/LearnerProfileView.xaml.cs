@@ -17,7 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace NibSphere.Modules.Learners.Views
 {
@@ -489,7 +489,7 @@ namespace NibSphere.Modules.Learners.Views
 				: string.Empty;
 			learner.Barangay = BarangayComboBox.SelectedItem is AddressBarangay barangay
 				? barangay.Name
-				: string.Empty; ;
+				: string.Empty;
 
 			ResetCustodianCardSortOrders();
 			_profile.Custodians = CustodianCards.ToList();
@@ -570,7 +570,7 @@ namespace NibSphere.Modules.Learners.Views
 				}
 			}
 
-			ProfileImageEllipse.SetResourceReference(Shape.FillProperty, "Brush.SurfaceAlt");
+			ProfileImageEllipse.SetResourceReference(System.Windows.Shapes.Shape.FillProperty, "Brush.SurfaceAlt");
 			ProfileInitialsTextBlock.Text = BuildInitials();
 			ProfileInitialsTextBlock.Visibility = Visibility.Visible;
 		}
