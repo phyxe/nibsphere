@@ -286,9 +286,9 @@
                                                Margin="0,0,0,6"
                                                Style="{StaticResource TextBlock.Body}" />
                                     <ComboBox x:Name="PronounComboBox"
-                                              MinHeight="36"
-                                              IsEditable="True"
-                                              ItemsSource="{Binding PronounOptions}" />
+                                                MinHeight="36"
+                                                IsTextSearchEnabled="True"
+                                                ItemsSource="{Binding PronounOptions}" />
                                 </StackPanel>
                             </Grid>
 
@@ -306,9 +306,9 @@
                                                Margin="0,0,0,6"
                                                Style="{StaticResource TextBlock.Body}" />
                                     <ComboBox x:Name="ReligiousAffiliationComboBox"
-                                              MinHeight="36"
-                                              IsEditable="True"
-                                              ItemsSource="{Binding ReligiousAffiliationOptions}" />
+                                                  MinHeight="36"
+                                                  IsTextSearchEnabled="True"
+                                                  ItemsSource="{Binding ReligiousAffiliationOptions}" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
@@ -356,40 +356,50 @@
 
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="House/Street/Sitio/Purok"
-                                               Margin="0,0,0,6"
-                                               Style="{StaticResource TextBlock.Body}" />
+                   Margin="0,0,0,6"
+                   Style="{StaticResource TextBlock.Body}" />
                                     <TextBox x:Name="HouseStreetTextBox"
-                                             MinHeight="36" />
+                 MinHeight="36" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2">
-                                    <TextBlock Text="Barangay"
-                                               Margin="0,0,0,6"
-                                               Style="{StaticResource TextBlock.Body}" />
-                                    <TextBox x:Name="BarangayTextBox"
-                                             MinHeight="36" />
+                                    <TextBlock Text="Top Level"
+                   Margin="0,0,0,6"
+                   Style="{StaticResource TextBlock.Body}" />
+                                    <ComboBox x:Name="ProvinceComboBox"
+                  MinHeight="36"
+                  DisplayMemberPath="Name"
+                  SelectedValuePath="Code"
+                  IsTextSearchEnabled="True"
+                  SelectionChanged="ProvinceComboBox_SelectionChanged"
+                  ItemsSource="{Binding ProvinceOptions}" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="4">
                                     <TextBlock Text="Municipality/City"
-                                               Margin="0,0,0,6"
-                                               Style="{StaticResource TextBlock.Body}" />
-                                    <TextBox x:Name="MunicipalityTextBox"
-                                             MinHeight="36" />
+                   Margin="0,0,0,6"
+                   Style="{StaticResource TextBlock.Body}" />
+                                    <ComboBox x:Name="MunicipalityComboBox"
+                  MinHeight="36"
+                  DisplayMemberPath="Name"
+                  SelectedValuePath="Code"
+                  IsTextSearchEnabled="True"
+                  SelectionChanged="MunicipalityComboBox_SelectionChanged"
+                  ItemsSource="{Binding MunicipalityOptions}" />
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="6">
-                                    <TextBlock Text="Province"
-                                               Margin="0,0,0,6"
-                                               Style="{StaticResource TextBlock.Body}" />
-                                    <TextBox x:Name="ProvinceTextBox"
-                                             MinHeight="36" />
+                                    <TextBlock Text="Barangay"
+                   Margin="0,0,0,6"
+                   Style="{StaticResource TextBlock.Body}" />
+                                    <ComboBox x:Name="BarangayComboBox"
+                  MinHeight="36"
+                  DisplayMemberPath="Name"
+                  SelectedValuePath="Code"
+                  IsTextSearchEnabled="True"
+                  ItemsSource="{Binding BarangayOptions}" />
                                 </StackPanel>
                             </Grid>
-
-                            <TextBlock Grid.Row="4"
-                                       Text="Address fields are plain text in this first profile slice. These can be upgraded later to the same lookup-driven address selector flow."
-                                       Style="{StaticResource TextBlock.Caption}" />
                         </Grid>
                     </TabItem>
 
@@ -473,7 +483,7 @@
                                                                        Margin="0,0,0,6"
                                                                        Style="{StaticResource TextBlock.Body}" />
                                                             <ComboBox MinHeight="36"
-                                                                      IsEditable="True"
+                                                                      IsTextSearchEnabled="True"
                                                                       IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEditMode}"
                                                                       ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RelationshipTypeOptions}"
                                                                       SelectedItem="{Binding RelationshipType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -484,7 +494,7 @@
                                                                        Margin="0,0,0,6"
                                                                        Style="{StaticResource TextBlock.Body}" />
                                                             <ComboBox MinHeight="36"
-                                                                      IsEditable="True"
+                                                                      IsTextSearchEnabled="True"
                                                                       IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.IsEditMode}"
                                                                       ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RelationshipLabelOptions}"
                                                                       SelectedItem="{Binding RelationshipLabel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

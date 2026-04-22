@@ -3,9 +3,11 @@ using NibSphere.Core.Interfaces;
 using NibSphere.Core.Modules.Learners.Models;
 using NibSphere.Core.Modules.Learners.Profile;
 using NibSphere.Core.Modules.Learners.Settings;
+using NibSphere.Core.ReferenceData.Models;
 using NibSphere.Data.Modules.Learners.Profile;
 using NibSphere.Data.Modules.Learners.Repositories;
 using NibSphere.Data.Modules.Learners.Settings;
+using NibSphere.Data.ReferenceData;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -15,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace NibSphere.Modules.Learners.Views
 {
@@ -36,6 +39,13 @@ namespace NibSphere.Modules.Learners.Views
 		private IReadOnlyList<string> _relationshipLabelOptions = Array.Empty<string>();
 		private IReadOnlyList<string> _pronounOptions = Array.Empty<string>();
 		private IReadOnlyList<string> _religiousAffiliationOptions = Array.Empty<string>();
+
+		private readonly PhilippineAddressRepository _philippineAddressRepository;
+		private bool _isAddressSelectionLoading;
+
+		private IReadOnlyList<AddressTopLevel> _provinceOptions = Array.Empty<AddressTopLevel>();
+		private IReadOnlyList<AddressLocality> _municipalityOptions = Array.Empty<AddressLocality>();
+		private IReadOnlyList<AddressBarangay> _barangayOptions = Array.Empty<AddressBarangay>();
 
 		public ObservableCollection<LearnerCustodianCardItem> CustodianCards { get; } = new();
 
@@ -81,6 +91,36 @@ namespace NibSphere.Modules.Learners.Views
 			}
 		}
 
+		public IReadOnlyList<AddressTopLevel> ProvinceOptions
+		{
+			get => _provinceOptions;
+			private set
+			{
+				_provinceOptions = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public IReadOnlyList<AddressLocality> MunicipalityOptions
+		{
+			get => _municipalityOptions;
+			private set
+			{
+				_municipalityOptions = value;
+				OnPropertyChanged();
+			}
+		}
+
+		public IReadOnlyList<AddressBarangay> BarangayOptions
+		{
+			get => _barangayOptions;
+			private set
+			{
+				_barangayOptions = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public bool IsEditMode => _profile != null && _profile.Mode != LearnerProfileMode.View;
 
 		public bool IsViewMode => !IsEditMode;
@@ -102,6 +142,8 @@ namespace NibSphere.Modules.Learners.Views
 			_custodianRoleRepository = new CustodianRoleRepository(_appPaths);
 			_learnersSettingsStore = new LearnersSettingsStore(_appPaths);
 
+			_philippineAddressRepository = new PhilippineAddressRepository(_appPaths);
+
 			Loaded += LearnerProfileView_Loaded;
 		}
 
@@ -110,6 +152,7 @@ namespace NibSphere.Modules.Learners.Views
 			Loaded -= LearnerProfileView_Loaded;
 
 			await LoadReferenceDataAsync();
+			await LoadAddressTopLevelsAsync();
 			await LoadProfileAsync();
 		}
 
@@ -174,6 +217,14 @@ namespace NibSphere.Modules.Learners.Views
 			_removeProfileImage = false;
 
 			PopulateFields();
+			if (_profile != null)
+			{
+				PronounOptions = EnsureContainsValue(PronounOptions, _profile.Learner.Pronoun);
+				ReligiousAffiliationOptions = EnsureContainsValue(ReligiousAffiliationOptions, _profile.Learner.ReligiousAffiliation);
+			}
+
+			await RestoreAddressSelectionsAsync();
+
 			SyncCustodianCards();
 			UpdateHeaderPreview();
 			UpdateProfileImagePreview();
@@ -205,9 +256,7 @@ namespace NibSphere.Modules.Learners.Views
 			EmailAddressTextBox.Text = learner.Email;
 
 			HouseStreetTextBox.Text = learner.HouseStreetSitioPurok;
-			BarangayTextBox.Text = learner.Barangay;
-			MunicipalityTextBox.Text = learner.Municipality;
-			ProvinceTextBox.Text = learner.Province;
+
 		}
 
 		private void SyncCustodianCards()
@@ -432,9 +481,15 @@ namespace NibSphere.Modules.Learners.Views
 			learner.MobileNumber = MobileNumberTextBox.Text.Trim();
 			learner.Email = EmailAddressTextBox.Text.Trim();
 			learner.HouseStreetSitioPurok = HouseStreetTextBox.Text.Trim();
-			learner.Barangay = BarangayTextBox.Text.Trim();
-			learner.Municipality = MunicipalityTextBox.Text.Trim();
-			learner.Province = ProvinceTextBox.Text.Trim();
+			learner.Province = ProvinceComboBox.SelectedItem is AddressTopLevel topLevel
+				? topLevel.Name
+				: string.Empty;
+			learner.Municipality = MunicipalityComboBox.SelectedItem is AddressLocality locality
+				? locality.Name
+				: string.Empty;
+			learner.Barangay = BarangayComboBox.SelectedItem is AddressBarangay barangay
+				? barangay.Name
+				: string.Empty; ;
 
 			ResetCustodianCardSortOrders();
 			_profile.Custodians = CustodianCards.ToList();
@@ -515,7 +570,7 @@ namespace NibSphere.Modules.Learners.Views
 				}
 			}
 
-			ProfileImageEllipse.Fill = (Brush)FindResource("Brush.SurfaceAlt");
+			ProfileImageEllipse.SetResourceReference(Shape.FillProperty, "Brush.SurfaceAlt");
 			ProfileInitialsTextBlock.Text = BuildInitials();
 			ProfileInitialsTextBlock.Visibility = Visibility.Visible;
 		}
@@ -626,9 +681,6 @@ namespace NibSphere.Modules.Learners.Views
 			SetTextBoxMode(MobileNumberTextBox, isEditable);
 			SetTextBoxMode(EmailAddressTextBox, isEditable);
 			SetTextBoxMode(HouseStreetTextBox, isEditable);
-			SetTextBoxMode(BarangayTextBox, isEditable);
-			SetTextBoxMode(MunicipalityTextBox, isEditable);
-			SetTextBoxMode(ProvinceTextBox, isEditable);
 			SetDatePickerMode(BirthdayDatePicker, isEditable);
 
 			ProfileImageButtonsPanel.Visibility = isEditable
@@ -658,6 +710,8 @@ namespace NibSphere.Modules.Learners.Views
 				LearnerProfileMode.View => "Edit Learner",
 				_ => "Save Learner"
 			};
+
+			UpdateAddressComboState();
 		}
 
 		private void SetTextBoxMode(TextBox textBox, bool isEditable)
@@ -774,6 +828,185 @@ namespace NibSphere.Modules.Learners.Views
 		private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		private async Task LoadAddressTopLevelsAsync()
+		{
+			ProvinceOptions = await _philippineAddressRepository.GetTopLevelsAsync();
+		}
+
+		private static IReadOnlyList<string> EnsureContainsValue(
+	IReadOnlyList<string> source,
+	string value)
+		{
+			if (string.IsNullOrWhiteSpace(value))
+			{
+				return source;
+			}
+
+			if (source.Any(x => string.Equals(x, value, StringComparison.OrdinalIgnoreCase)))
+			{
+				return source;
+			}
+
+			return source
+				.Concat(new[] { value.Trim() })
+				.OrderBy(x => x, StringComparer.OrdinalIgnoreCase)
+				.ToList();
+		}
+
+
+		private async Task RestoreAddressSelectionsAsync()
+		{
+			if (_profile == null)
+			{
+				return;
+			}
+
+			_isAddressSelectionLoading = true;
+
+			try
+			{
+				ProvinceComboBox.SelectedItem = null;
+				MunicipalityOptions = Array.Empty<AddressLocality>();
+				MunicipalityComboBox.SelectedItem = null;
+				BarangayOptions = Array.Empty<AddressBarangay>();
+				BarangayComboBox.SelectedItem = null;
+
+				AddressTopLevel? selectedTopLevel = ProvinceOptions.FirstOrDefault(x =>
+					string.Equals(x.Name, _profile.Learner.Province, StringComparison.OrdinalIgnoreCase));
+
+				if (selectedTopLevel != null)
+				{
+					ProvinceComboBox.SelectedItem = selectedTopLevel;
+					MunicipalityOptions = await _philippineAddressRepository.GetLocalitiesByTopLevelCodeAsync(selectedTopLevel.Code);
+				}
+
+				AddressLocality? selectedLocality = MunicipalityOptions.FirstOrDefault(x =>
+					string.Equals(x.Name, _profile.Learner.Municipality, StringComparison.OrdinalIgnoreCase));
+
+				if (selectedLocality != null)
+				{
+					MunicipalityComboBox.SelectedItem = selectedLocality;
+					BarangayOptions = await _philippineAddressRepository.GetBarangaysByLocalityCodeAsync(selectedLocality.Code);
+				}
+
+				AddressBarangay? selectedBarangay = BarangayOptions.FirstOrDefault(x =>
+					string.Equals(x.Name, _profile.Learner.Barangay, StringComparison.OrdinalIgnoreCase));
+
+				if (selectedBarangay != null)
+				{
+					BarangayComboBox.SelectedItem = selectedBarangay;
+				}
+			}
+			finally
+			{
+				_isAddressSelectionLoading = false;
+				UpdateAddressComboState();
+			}
+		}
+
+		private async void ProvinceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (_isAddressSelectionLoading)
+			{
+				return;
+			}
+
+			_isAddressSelectionLoading = true;
+
+			try
+			{
+				await LoadMunicipalitiesForSelectedProvinceAsync(true);
+			}
+			finally
+			{
+				_isAddressSelectionLoading = false;
+				UpdateAddressComboState();
+			}
+		}
+
+		private async void MunicipalityComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (_isAddressSelectionLoading)
+			{
+				return;
+			}
+
+			_isAddressSelectionLoading = true;
+
+			try
+			{
+				await LoadBarangaysForSelectedMunicipalityAsync(true);
+			}
+			finally
+			{
+				_isAddressSelectionLoading = false;
+				UpdateAddressComboState();
+			}
+		}
+
+		private async Task LoadMunicipalitiesForSelectedProvinceAsync(bool clearChildSelections)
+		{
+			if (ProvinceComboBox.SelectedItem is not AddressTopLevel topLevel)
+			{
+				MunicipalityOptions = Array.Empty<AddressLocality>();
+				BarangayOptions = Array.Empty<AddressBarangay>();
+
+				if (clearChildSelections)
+				{
+					MunicipalityComboBox.SelectedItem = null;
+					BarangayComboBox.SelectedItem = null;
+				}
+
+				UpdateAddressComboState();
+				return;
+			}
+
+			MunicipalityOptions = await _philippineAddressRepository.GetLocalitiesByTopLevelCodeAsync(topLevel.Code);
+
+			if (clearChildSelections)
+			{
+				MunicipalityComboBox.SelectedItem = null;
+				BarangayOptions = Array.Empty<AddressBarangay>();
+				BarangayComboBox.SelectedItem = null;
+			}
+
+			UpdateAddressComboState();
+		}
+
+		private async Task LoadBarangaysForSelectedMunicipalityAsync(bool clearBarangaySelection)
+		{
+			if (MunicipalityComboBox.SelectedItem is not AddressLocality locality)
+			{
+				BarangayOptions = Array.Empty<AddressBarangay>();
+
+				if (clearBarangaySelection)
+				{
+					BarangayComboBox.SelectedItem = null;
+				}
+
+				UpdateAddressComboState();
+				return;
+			}
+
+			BarangayOptions = await _philippineAddressRepository.GetBarangaysByLocalityCodeAsync(locality.Code);
+
+			if (clearBarangaySelection)
+			{
+				BarangayComboBox.SelectedItem = null;
+			}
+
+			UpdateAddressComboState();
+		}
+
+		private void UpdateAddressComboState()
+		{
+			bool canEdit = IsEditMode;
+
+			ProvinceComboBox.IsEnabled = canEdit;
+			MunicipalityComboBox.IsEnabled = canEdit && ProvinceComboBox.SelectedItem is AddressTopLevel;
+			BarangayComboBox.IsEnabled = canEdit && MunicipalityComboBox.SelectedItem is AddressLocality;
 		}
 	}
 }
