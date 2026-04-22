@@ -29,6 +29,7 @@
     <None Remove="Modules\Learners\Resources\Icons\addstudent.svg" />
     <None Remove="Modules\Learners\Resources\Icons\delete.svg" />
     <None Remove="Modules\Learners\Resources\Icons\edit.svg" />
+    <None Remove="Modules\Learners\Resources\Icons\importstudent.svg" />
     <None Remove="Modules\Learners\Resources\Icons\setting.svg" />
     <None Remove="Modules\Learners\Resources\Icons\student.svg" />
     <None Remove="Modules\Learners\Resources\Icons\upload.svg" />
@@ -99,6 +100,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Modules\Learners\Resources\Icons\edit.svg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Modules\Learners\Resources\Icons\importstudent.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Modules\Learners\Resources\Icons\setting.svg">

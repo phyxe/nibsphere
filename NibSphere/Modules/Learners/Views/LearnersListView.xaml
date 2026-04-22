@@ -34,40 +34,56 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Text="Learner List"
-                               VerticalAlignment="Center"
-                               Style="{StaticResource TextBlock.SectionTitle}" />
+                       VerticalAlignment="Center"
+                       Style="{StaticResource TextBlock.SectionTitle}" />
 
                     <Button x:Name="AddLearnerButton"
-                            Grid.Column="1"
-                            Width="36"
-                            Height="36"
-                            Margin="12,0,0,0"
-                            Padding="0"
-                            ToolTip="Add Learner"
-                            Style="{StaticResource IconButtonStyle}"
-                            Click="AddLearnerButton_Click">
+                        Grid.Column="1"
+                        Width="36"
+                        Height="36"
+                        Margin="12,0,0,0"
+                        Padding="0"
+                        ToolTip="Add Learner"
+                        Style="{StaticResource IconButtonStyle}"
+                        Click="AddLearnerButton_Click">
                         <controls:ControlSvgIcon Width="16"
-                                                 Height="16"
-                                                 Source="/Modules/Learners/Resources/Icons/addstudent.svg"
-                                                 Tint="{DynamicResource Brush.PrimaryText}" />
+                                 Height="16"
+                                 Source="/Modules/Learners/Resources/Icons/addstudent.svg"
+                                 Tint="{DynamicResource Brush.PrimaryText}" />
+                    </Button>
+
+                    <Button x:Name="ImportLearnersButton"
+                        Grid.Column="2"
+                        Width="36"
+                        Height="36"
+                        Margin="8,0,0,0"
+                        Padding="0"
+                        ToolTip="Import Learners"
+                        Style="{StaticResource IconButtonStyle}"
+                        Click="ImportLearnersButton_Click">
+                        <controls:ControlSvgIcon Width="16"
+                                 Height="16"
+                                 Source="/Modules/Learners/Resources/Icons/importstudent.svg"
+                                 Tint="{DynamicResource Brush.PrimaryText}" />
                     </Button>
 
                     <Button x:Name="LearnerSettingsButton"
-                            Grid.Column="2"
-                            Width="36"
-                            Height="36"
-                            Margin="8,0,0,0"
-                            Padding="0"
-                            ToolTip="Learner Settings"
-                            Style="{StaticResource IconButtonStyle}"
-                            Click="LearnerSettingsButton_Click">
+                        Grid.Column="3"
+                        Width="36"
+                        Height="36"
+                        Margin="8,0,0,0"
+                        Padding="0"
+                        ToolTip="Learner Settings"
+                        Style="{StaticResource IconButtonStyle}"
+                        Click="LearnerSettingsButton_Click">
                         <controls:ControlSvgIcon Width="16"
-                                                 Height="16"
-                                                 Source="/Modules/Learners/Resources/Icons/setting.svg"
-                                                 Tint="{DynamicResource Brush.PrimaryText}" />
+                                 Height="16"
+                                 Source="/Modules/Learners/Resources/Icons/setting.svg"
+                                 Tint="{DynamicResource Brush.PrimaryText}" />
                     </Button>
                 </Grid>
 

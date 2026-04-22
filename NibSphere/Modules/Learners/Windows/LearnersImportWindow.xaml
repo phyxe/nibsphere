@@ -1,0 +1,57 @@
+﻿<Window x:Class="NibSphere.Modules.Learners.Windows.LearnersImportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Import Learners"
+        Height="520"
+        Width="760"
+        MinHeight="520"
+        MinWidth="760"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="{DynamicResource Brush.Background}">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="16" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="16" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Import Learners"
+                   Style="{StaticResource TextBlock.Heading2}" />
+
+        <Border Grid.Row="2"
+                Style="{StaticResource CardBorderStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="12" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Learners import flow will continue here."
+                           Style="{StaticResource TextBlock.SectionTitle}" />
+
+                <TextBlock Grid.Row="2"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Top"
+                           Text="Next step: file selection, sheet selection, header mapping, preview, then finalize import."
+                           Style="{StaticResource TextBlock.Body}" />
+            </Grid>
+        </Border>
+
+        <StackPanel Grid.Row="4"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Button Width="96"
+                    Height="36"
+                    Content="Close"
+                    Click="CloseButton_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

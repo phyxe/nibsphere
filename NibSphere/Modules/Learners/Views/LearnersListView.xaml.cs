@@ -188,5 +188,20 @@ namespace NibSphere.Modules.Learners.Views
 
 			public string FullNameDisplay { get; init; } = string.Empty;
 		}
+
+		private async void ImportLearnersButton_Click(object sender, RoutedEventArgs e)
+		{
+			LearnersImportWindow window = new LearnersImportWindow
+			{
+				Owner = Window.GetWindow(this)
+			};
+
+			bool? result = window.ShowDialog();
+
+			if (result == true)
+			{
+				await LoadLearnersAsync();
+			}
+		}
 	}
 }
