@@ -321,6 +321,63 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
+                                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_Enrollment')
+                BEGIN
+                    CREATE TABLE Academics_Enrollment
+                    (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+
+                        LearnerId INT NOT NULL,
+
+                        SchoolYearId INT NOT NULL,
+                        SchoolYearProgramId INT NOT NULL,
+                        SchoolYearSectionId INT NOT NULL,
+
+                        GradeLevelName NVARCHAR(50) NOT NULL,
+
+                        EnrollmentStatusId INT NOT NULL,
+
+                        EnrollmentStatusCode NVARCHAR(50) NOT NULL,
+                        EnrollmentStatusName NVARCHAR(100) NOT NULL,
+
+                        EnrollmentDate DATE NULL,
+                        EffectiveStartDate DATE NULL,
+                        EffectiveEndDate DATE NULL,
+
+                        IsCurrent BIT NOT NULL DEFAULT 1,
+                        IsActive BIT NOT NULL DEFAULT 1,
+
+                        Remarks NVARCHAR(500) NULL,
+
+                        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+                        UpdatedAt DATETIME2 NULL
+                    );
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_EnrollmentSubject')
+                BEGIN
+                    CREATE TABLE Academics_EnrollmentSubject
+                    (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+
+                        EnrollmentId INT NOT NULL,
+                        SubjectId INT NOT NULL,
+
+                        EnrollmentStatusId INT NULL,
+
+                        EnrollmentStatusCode NVARCHAR(50) NULL,
+                        EnrollmentStatusName NVARCHAR(100) NULL,
+
+                        EffectiveStartDate DATE NULL,
+                        EffectiveEndDate DATE NULL,
+
+                        IsActive BIT NOT NULL DEFAULT 1,
+
+                        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+                        UpdatedAt DATETIME2 NULL
+                    );
+                END
+
                 IF NOT EXISTS
                 (
                     SELECT 1
@@ -595,6 +652,111 @@ namespace NibSphere.Data.Modules.Academics.Database
                     ADD CONSTRAINT FK_Academics_SubjectScheduleSlot_Subject
                         FOREIGN KEY (SubjectId)
                         REFERENCES Academics_Subject(Id);
+                END
+
+                                IF OBJECT_ID('Learners_Learner', 'U') IS NOT NULL
+                   AND NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_Enrollment_Learner'
+                )
+                BEGIN
+                    ALTER TABLE Academics_Enrollment
+                    ADD CONSTRAINT FK_Academics_Enrollment_Learner
+                        FOREIGN KEY (LearnerId)
+                        REFERENCES Learners_Learner(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_Enrollment_SchoolYear'
+                )
+                BEGIN
+                    ALTER TABLE Academics_Enrollment
+                    ADD CONSTRAINT FK_Academics_Enrollment_SchoolYear
+                        FOREIGN KEY (SchoolYearId)
+                        REFERENCES Academics_SchoolYear(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_Enrollment_Program'
+                )
+                BEGIN
+                    ALTER TABLE Academics_Enrollment
+                    ADD CONSTRAINT FK_Academics_Enrollment_Program
+                        FOREIGN KEY (SchoolYearProgramId)
+                        REFERENCES Academics_SchoolYearProgram(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_Enrollment_Section'
+                )
+                BEGIN
+                    ALTER TABLE Academics_Enrollment
+                    ADD CONSTRAINT FK_Academics_Enrollment_Section
+                        FOREIGN KEY (SchoolYearSectionId)
+                        REFERENCES Academics_SchoolYearSection(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_Enrollment_Status'
+                )
+                BEGIN
+                    ALTER TABLE Academics_Enrollment
+                    ADD CONSTRAINT FK_Academics_Enrollment_Status
+                        FOREIGN KEY (EnrollmentStatusId)
+                        REFERENCES Academics_EnrollmentStatus(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_EnrollmentSubject_Enrollment'
+                )
+                BEGIN
+                    ALTER TABLE Academics_EnrollmentSubject
+                    ADD CONSTRAINT FK_Academics_EnrollmentSubject_Enrollment
+                        FOREIGN KEY (EnrollmentId)
+                        REFERENCES Academics_Enrollment(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_EnrollmentSubject_Subject'
+                )
+                BEGIN
+                    ALTER TABLE Academics_EnrollmentSubject
+                    ADD CONSTRAINT FK_Academics_EnrollmentSubject_Subject
+                        FOREIGN KEY (SubjectId)
+                        REFERENCES Academics_Subject(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_EnrollmentSubject_Status'
+                )
+                BEGIN
+                    ALTER TABLE Academics_EnrollmentSubject
+                    ADD CONSTRAINT FK_Academics_EnrollmentSubject_Status
+                        FOREIGN KEY (EnrollmentStatusId)
+                        REFERENCES Academics_EnrollmentStatus(Id);
                 END
 
                 IF NOT EXISTS
@@ -1073,6 +1235,132 @@ namespace NibSphere.Data.Modules.Academics.Database
                         DayOfWeekNumber,
                         StartTime
                     );
+                END
+
+                                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_Enrollment_Learner'
+                      AND object_id = OBJECT_ID('Academics_Enrollment')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_Enrollment_Learner
+                    ON Academics_Enrollment
+                    (
+                        LearnerId,
+                        SchoolYearId,
+                        IsCurrent,
+                        IsActive
+                    );
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_Enrollment_SchoolYear'
+                      AND object_id = OBJECT_ID('Academics_Enrollment')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_Enrollment_SchoolYear
+                    ON Academics_Enrollment
+                    (
+                        SchoolYearId,
+                        SchoolYearSectionId,
+                        SchoolYearProgramId,
+                        GradeLevelName
+                    );
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'UX_Academics_Enrollment_CurrentLearnerSchoolYear'
+                      AND object_id = OBJECT_ID('Academics_Enrollment')
+                )
+                BEGIN
+                    CREATE UNIQUE INDEX UX_Academics_Enrollment_CurrentLearnerSchoolYear
+                    ON Academics_Enrollment
+                    (
+                        LearnerId,
+                        SchoolYearId
+                    )
+                    WHERE IsCurrent = 1
+                      AND IsActive = 1;
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_Enrollment_Status'
+                      AND object_id = OBJECT_ID('Academics_Enrollment')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_Enrollment_Status
+                    ON Academics_Enrollment(EnrollmentStatusId);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'UX_Academics_EnrollmentSubject_Link'
+                      AND object_id = OBJECT_ID('Academics_EnrollmentSubject')
+                )
+                BEGIN
+                    CREATE UNIQUE INDEX UX_Academics_EnrollmentSubject_Link
+                    ON Academics_EnrollmentSubject
+                    (
+                        EnrollmentId,
+                        SubjectId
+                    );
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_EnrollmentSubject_Enrollment'
+                      AND object_id = OBJECT_ID('Academics_EnrollmentSubject')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_EnrollmentSubject_Enrollment
+                    ON Academics_EnrollmentSubject
+                    (
+                        EnrollmentId,
+                        IsActive
+                    );
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_EnrollmentSubject_Subject'
+                      AND object_id = OBJECT_ID('Academics_EnrollmentSubject')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_EnrollmentSubject_Subject
+                    ON Academics_EnrollmentSubject
+                    (
+                        SubjectId,
+                        IsActive
+                    );
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_EnrollmentSubject_Status'
+                      AND object_id = OBJECT_ID('Academics_EnrollmentSubject')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_EnrollmentSubject_Status
+                    ON Academics_EnrollmentSubject(EnrollmentStatusId);
                 END
 
                 IF NOT EXISTS
