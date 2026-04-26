@@ -22,6 +22,19 @@ namespace NibSphere.Data.Modules.Academics.Database
 
 			string sql =
 				"""
+                -- ============================================================
+                -- Academics Module Database Initialization
+                -- Order:
+                -- 1. Tables
+                -- 2. Foreign keys
+                -- 3. Indexes
+                -- 4. Seed data
+                -- ============================================================
+
+                -- ============================================================
+                -- 1. TABLES
+                -- ============================================================
+
                 IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_Teacher')
                 BEGIN
                     CREATE TABLE Academics_Teacher
@@ -118,7 +131,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
-                                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SchoolYear')
+                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SchoolYear')
                 BEGIN
                     CREATE TABLE Academics_SchoolYear
                     (
@@ -166,7 +179,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
-                        IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SchoolYearProgram')
+                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SchoolYearProgram')
                 BEGIN
                     CREATE TABLE Academics_SchoolYearProgram
                     (
@@ -215,7 +228,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
-                                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SchoolYearSection')
+                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SchoolYearSection')
                 BEGIN
                     CREATE TABLE Academics_SchoolYearSection
                     (
@@ -262,7 +275,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
-                                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_Subject')
+                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_Subject')
                 BEGIN
                     CREATE TABLE Academics_Subject
                     (
@@ -321,7 +334,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
-                                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_Enrollment')
+                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_Enrollment')
                 BEGIN
                     CREATE TABLE Academics_Enrollment
                     (
@@ -378,6 +391,10 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
+                -- ============================================================
+                -- 2. FOREIGN KEYS
+                -- ============================================================
+
                 IF NOT EXISTS
                 (
                     SELECT 1
@@ -405,7 +422,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                         REFERENCES LearningArea(Id);
                 END
 
-                                IF NOT EXISTS
+                IF NOT EXISTS
                 (
                     SELECT 1
                     FROM sys.foreign_keys
@@ -431,7 +448,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                         REFERENCES Academics_SchoolYearTerm(Id);
                 END
 
-                                IF NOT EXISTS
+                IF NOT EXISTS
                 (
                     SELECT 1
                     FROM sys.foreign_keys
@@ -497,7 +514,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                         REFERENCES LearningArea(Id);
                 END
 
-                                IF NOT EXISTS
+                IF NOT EXISTS
                 (
                     SELECT 1
                     FROM sys.foreign_keys
@@ -562,7 +579,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                         REFERENCES Academics_SchoolYearProgram(Id);
                 END
 
-                                IF NOT EXISTS
+                IF NOT EXISTS
                 (
                     SELECT 1
                     FROM sys.foreign_keys
@@ -654,7 +671,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                         REFERENCES Academics_Subject(Id);
                 END
 
-                                IF OBJECT_ID('Learners_Learner', 'U') IS NOT NULL
+                IF OBJECT_ID('Learners_Learner', 'U') IS NOT NULL
                    AND NOT EXISTS
                 (
                     SELECT 1
@@ -759,6 +776,10 @@ namespace NibSphere.Data.Modules.Academics.Database
                         REFERENCES Academics_EnrollmentStatus(Id);
                 END
 
+                -- ============================================================
+                -- 3. INDEXES
+                -- ============================================================
+
                 IF NOT EXISTS
                 (
                     SELECT 1
@@ -861,7 +882,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                     ON Academics_SectionTemplate(GradeLevelName, SectionName);
                 END
 
-                                IF NOT EXISTS
+                IF NOT EXISTS
                 (
                     SELECT 1
                     FROM sys.indexes
@@ -904,7 +925,19 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
-                                IF NOT EXISTS
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_SchoolYearTerm_ParentTerm'
+                      AND object_id = OBJECT_ID('Academics_SchoolYearTerm')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_SchoolYearTerm_ParentTerm
+                    ON Academics_SchoolYearTerm(ParentTermId);
+                END
+
+                IF NOT EXISTS
                 (
                     SELECT 1
                     FROM sys.indexes
@@ -980,84 +1013,6 @@ namespace NibSphere.Data.Modules.Academics.Database
                 END
 
                 IF NOT EXISTS
-                (
-                    SELECT 1
-                    FROM sys.indexes
-                    WHERE name = 'IX_Academics_SchoolYearTerm_ParentTerm'
-                      AND object_id = OBJECT_ID('Academics_SchoolYearTerm')
-                )
-                BEGIN
-                    CREATE INDEX IX_Academics_SchoolYearTerm_ParentTerm
-                    ON Academics_SchoolYearTerm(ParentTermId);
-                END
-
-                                IF NOT EXISTS
-                (
-                    SELECT 1
-                    FROM sys.foreign_keys
-                    WHERE name = 'FK_Academics_SchoolYearProgram_SchoolYear'
-                )
-                BEGIN
-                    ALTER TABLE Academics_SchoolYearProgram
-                    ADD CONSTRAINT FK_Academics_SchoolYearProgram_SchoolYear
-                        FOREIGN KEY (SchoolYearId)
-                        REFERENCES Academics_SchoolYear(Id);
-                END
-
-                IF NOT EXISTS
-                (
-                    SELECT 1
-                    FROM sys.foreign_keys
-                    WHERE name = 'FK_Academics_SchoolYearProgram_SourceProgram'
-                )
-                BEGIN
-                    ALTER TABLE Academics_SchoolYearProgram
-                    ADD CONSTRAINT FK_Academics_SchoolYearProgram_SourceProgram
-                        FOREIGN KEY (SourceProgramId)
-                        REFERENCES Academics_Program(Id);
-                END
-
-                IF NOT EXISTS
-                (
-                    SELECT 1
-                    FROM sys.foreign_keys
-                    WHERE name = 'FK_Academics_SchoolYearProgramLine_SchoolYearProgram'
-                )
-                BEGIN
-                    ALTER TABLE Academics_SchoolYearProgramLine
-                    ADD CONSTRAINT FK_Academics_SchoolYearProgramLine_SchoolYearProgram
-                        FOREIGN KEY (SchoolYearProgramId)
-                        REFERENCES Academics_SchoolYearProgram(Id);
-                END
-
-                IF NOT EXISTS
-                (
-                    SELECT 1
-                    FROM sys.foreign_keys
-                    WHERE name = 'FK_Academics_SchoolYearProgramLine_SourceProspectusLine'
-                )
-                BEGIN
-                    ALTER TABLE Academics_SchoolYearProgramLine
-                    ADD CONSTRAINT FK_Academics_SchoolYearProgramLine_SourceProspectusLine
-                        FOREIGN KEY (SourceProgramProspectusLineId)
-                        REFERENCES Academics_ProgramProspectusLine(Id);
-                END
-
-                IF OBJECT_ID('LearningArea', 'U') IS NOT NULL
-                   AND NOT EXISTS
-                (
-                    SELECT 1
-                    FROM sys.foreign_keys
-                    WHERE name = 'FK_Academics_SchoolYearProgramLine_LearningArea'
-                )
-                BEGIN
-                    ALTER TABLE Academics_SchoolYearProgramLine
-                    ADD CONSTRAINT FK_Academics_SchoolYearProgramLine_LearningArea
-                        FOREIGN KEY (LearningAreaId)
-                        REFERENCES LearningArea(Id);
-                END
-
-                                IF NOT EXISTS
                 (
                     SELECT 1
                     FROM sys.indexes
@@ -1148,7 +1103,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                     ON Academics_SchoolYearSectionProgram(SchoolYearProgramId);
                 END
 
-                                IF NOT EXISTS
+                IF NOT EXISTS
                 (
                     SELECT 1
                     FROM sys.indexes
@@ -1237,7 +1192,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
-                                IF NOT EXISTS
+                IF NOT EXISTS
                 (
                     SELECT 1
                     FROM sys.indexes
@@ -1362,6 +1317,10 @@ namespace NibSphere.Data.Modules.Academics.Database
                     CREATE INDEX IX_Academics_EnrollmentSubject_Status
                     ON Academics_EnrollmentSubject(EnrollmentStatusId);
                 END
+
+                -- ============================================================
+                -- 4. SEED DATA
+                -- ============================================================
 
                 IF NOT EXISTS
                 (
