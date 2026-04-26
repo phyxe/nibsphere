@@ -166,6 +166,55 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
+                                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SchoolYearProgram')
+                BEGIN
+                    CREATE TABLE Academics_SchoolYearProgram
+                    (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+
+                        SchoolYearId INT NOT NULL,
+                        SourceProgramId INT NOT NULL,
+
+                        ProgramCode NVARCHAR(50) NOT NULL,
+                        ProgramName NVARCHAR(150) NOT NULL,
+                        ProgramDescription NVARCHAR(500) NULL,
+
+                        SortOrder INT NOT NULL DEFAULT 0,
+                        IsActive BIT NOT NULL DEFAULT 1,
+
+                        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+                        UpdatedAt DATETIME2 NULL
+                    );
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SchoolYearProgramLine')
+                BEGIN
+                    CREATE TABLE Academics_SchoolYearProgramLine
+                    (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+
+                        SchoolYearProgramId INT NOT NULL,
+                        SourceProgramProspectusLineId INT NOT NULL,
+
+                        GradeLevelName NVARCHAR(50) NOT NULL,
+
+                        TemplateTermSequence INT NOT NULL DEFAULT 1,
+                        TemplateTermLabel NVARCHAR(100) NOT NULL,
+
+                        LearningAreaId INT NOT NULL,
+
+                        LearningAreaCode NVARCHAR(50) NOT NULL,
+                        LearningAreaShortName NVARCHAR(150) NULL,
+                        LearningAreaDescription NVARCHAR(300) NOT NULL,
+
+                        SortOrder INT NOT NULL DEFAULT 0,
+                        IsActive BIT NOT NULL DEFAULT 1,
+
+                        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+                        UpdatedAt DATETIME2 NULL
+                    );
+                END
+
                 IF NOT EXISTS
                 (
                     SELECT 1
@@ -217,6 +266,72 @@ namespace NibSphere.Data.Modules.Academics.Database
                     ADD CONSTRAINT FK_Academics_SchoolYearTerm_ParentTerm
                         FOREIGN KEY (ParentTermId)
                         REFERENCES Academics_SchoolYearTerm(Id);
+                END
+
+                                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SchoolYearProgram_SchoolYear'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearProgram
+                    ADD CONSTRAINT FK_Academics_SchoolYearProgram_SchoolYear
+                        FOREIGN KEY (SchoolYearId)
+                        REFERENCES Academics_SchoolYear(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SchoolYearProgram_SourceProgram'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearProgram
+                    ADD CONSTRAINT FK_Academics_SchoolYearProgram_SourceProgram
+                        FOREIGN KEY (SourceProgramId)
+                        REFERENCES Academics_Program(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SchoolYearProgramLine_SchoolYearProgram'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearProgramLine
+                    ADD CONSTRAINT FK_Academics_SchoolYearProgramLine_SchoolYearProgram
+                        FOREIGN KEY (SchoolYearProgramId)
+                        REFERENCES Academics_SchoolYearProgram(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SchoolYearProgramLine_SourceProspectusLine'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearProgramLine
+                    ADD CONSTRAINT FK_Academics_SchoolYearProgramLine_SourceProspectusLine
+                        FOREIGN KEY (SourceProgramProspectusLineId)
+                        REFERENCES Academics_ProgramProspectusLine(Id);
+                END
+
+                IF OBJECT_ID('LearningArea', 'U') IS NOT NULL
+                   AND NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SchoolYearProgramLine_LearningArea'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearProgramLine
+                    ADD CONSTRAINT FK_Academics_SchoolYearProgramLine_LearningArea
+                        FOREIGN KEY (LearningAreaId)
+                        REFERENCES LearningArea(Id);
                 END
 
                 IF NOT EXISTS
@@ -364,6 +479,81 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
+                                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'UX_Academics_SchoolYearProgram_Year_SourceProgram'
+                      AND object_id = OBJECT_ID('Academics_SchoolYearProgram')
+                )
+                BEGIN
+                    CREATE UNIQUE INDEX UX_Academics_SchoolYearProgram_Year_SourceProgram
+                    ON Academics_SchoolYearProgram(SchoolYearId, SourceProgramId);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_SchoolYearProgram_SchoolYear'
+                      AND object_id = OBJECT_ID('Academics_SchoolYearProgram')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_SchoolYearProgram_SchoolYear
+                    ON Academics_SchoolYearProgram
+                    (
+                        SchoolYearId,
+                        SortOrder,
+                        ProgramName
+                    );
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_SchoolYearProgramLine_Program'
+                      AND object_id = OBJECT_ID('Academics_SchoolYearProgramLine')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_SchoolYearProgramLine_Program
+                    ON Academics_SchoolYearProgramLine
+                    (
+                        SchoolYearProgramId,
+                        GradeLevelName,
+                        TemplateTermSequence,
+                        SortOrder
+                    );
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_SchoolYearProgramLine_LearningArea'
+                      AND object_id = OBJECT_ID('Academics_SchoolYearProgramLine')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_SchoolYearProgramLine_LearningArea
+                    ON Academics_SchoolYearProgramLine(LearningAreaId);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'UX_Academics_SchoolYearProgramLine_SourceLine'
+                      AND object_id = OBJECT_ID('Academics_SchoolYearProgramLine')
+                )
+                BEGIN
+                    CREATE UNIQUE INDEX UX_Academics_SchoolYearProgramLine_SourceLine
+                    ON Academics_SchoolYearProgramLine
+                    (
+                        SchoolYearProgramId,
+                        SourceProgramProspectusLineId
+                    );
+                END
+
                 IF NOT EXISTS
                 (
                     SELECT 1
@@ -374,6 +564,72 @@ namespace NibSphere.Data.Modules.Academics.Database
                 BEGIN
                     CREATE INDEX IX_Academics_SchoolYearTerm_ParentTerm
                     ON Academics_SchoolYearTerm(ParentTermId);
+                END
+
+                                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SchoolYearProgram_SchoolYear'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearProgram
+                    ADD CONSTRAINT FK_Academics_SchoolYearProgram_SchoolYear
+                        FOREIGN KEY (SchoolYearId)
+                        REFERENCES Academics_SchoolYear(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SchoolYearProgram_SourceProgram'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearProgram
+                    ADD CONSTRAINT FK_Academics_SchoolYearProgram_SourceProgram
+                        FOREIGN KEY (SourceProgramId)
+                        REFERENCES Academics_Program(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SchoolYearProgramLine_SchoolYearProgram'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearProgramLine
+                    ADD CONSTRAINT FK_Academics_SchoolYearProgramLine_SchoolYearProgram
+                        FOREIGN KEY (SchoolYearProgramId)
+                        REFERENCES Academics_SchoolYearProgram(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SchoolYearProgramLine_SourceProspectusLine'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearProgramLine
+                    ADD CONSTRAINT FK_Academics_SchoolYearProgramLine_SourceProspectusLine
+                        FOREIGN KEY (SourceProgramProspectusLineId)
+                        REFERENCES Academics_ProgramProspectusLine(Id);
+                END
+
+                IF OBJECT_ID('LearningArea', 'U') IS NOT NULL
+                   AND NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SchoolYearProgramLine_LearningArea'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearProgramLine
+                    ADD CONSTRAINT FK_Academics_SchoolYearProgramLine_LearningArea
+                        FOREIGN KEY (LearningAreaId)
+                        REFERENCES LearningArea(Id);
                 END
 
                 IF NOT EXISTS
