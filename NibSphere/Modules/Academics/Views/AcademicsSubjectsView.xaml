@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="NibSphere.Modules.Academics.Views.AcademicsSubjectsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="760"
+             d:DesignWidth="1100"
+             Background="{DynamicResource Brush.Background}">
+
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Subjects"
+                   Style="{StaticResource TextBlock.Heading1}" />
+
+        <Border Grid.Row="2"
+                Style="{StaticResource CardBorderStyle}">
+            <StackPanel>
+                <TextBlock Text="Subject Offerings"
+                           Style="{StaticResource TextBlock.SectionTitle}" />
+
+                <TextBlock Margin="0,12,0,0"
+                           Text="This view will manage term, section, learning area, teacher, and schedule-based subject offerings."
+                           Style="{StaticResource TextBlock.Body}" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
