@@ -118,6 +118,54 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
+                                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SchoolYear')
+                BEGIN
+                    CREATE TABLE Academics_SchoolYear
+                    (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+
+                        Name NVARCHAR(100) NOT NULL,
+
+                        StartDate DATE NULL,
+                        EndDate DATE NULL,
+
+                        IsCurrent BIT NOT NULL DEFAULT 0,
+                        IsActive BIT NOT NULL DEFAULT 1,
+
+                        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+                        UpdatedAt DATETIME2 NULL
+                    );
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SchoolYearTerm')
+                BEGIN
+                    CREATE TABLE Academics_SchoolYearTerm
+                    (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+
+                        SchoolYearId INT NOT NULL,
+
+                        ParentTermId INT NULL,
+
+                        Name NVARCHAR(100) NOT NULL,
+                        ShortName NVARCHAR(50) NULL,
+
+                        StartDate DATE NULL,
+                        EndDate DATE NULL,
+
+                        SortOrder INT NOT NULL DEFAULT 0,
+
+                        IsEnrollmentTerm BIT NOT NULL DEFAULT 0,
+                        IsGradingTerm BIT NOT NULL DEFAULT 1,
+                        IsReportingTerm BIT NOT NULL DEFAULT 1,
+
+                        IsActive BIT NOT NULL DEFAULT 1,
+
+                        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+                        UpdatedAt DATETIME2 NULL
+                    );
+                END
+
                 IF NOT EXISTS
                 (
                     SELECT 1
@@ -245,6 +293,61 @@ namespace NibSphere.Data.Modules.Academics.Database
                 BEGIN
                     CREATE UNIQUE INDEX UX_Academics_SectionTemplate_GradeLevel_SectionName
                     ON Academics_SectionTemplate(GradeLevelName, SectionName);
+                END
+
+                                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'UX_Academics_SchoolYear_Name'
+                      AND object_id = OBJECT_ID('Academics_SchoolYear')
+                )
+                BEGIN
+                    CREATE UNIQUE INDEX UX_Academics_SchoolYear_Name
+                    ON Academics_SchoolYear(Name);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'UX_Academics_SchoolYear_Current'
+                      AND object_id = OBJECT_ID('Academics_SchoolYear')
+                )
+                BEGIN
+                    CREATE UNIQUE INDEX UX_Academics_SchoolYear_Current
+                    ON Academics_SchoolYear(IsCurrent)
+                    WHERE IsCurrent = 1;
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_SchoolYearTerm_SchoolYear'
+                      AND object_id = OBJECT_ID('Academics_SchoolYearTerm')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_SchoolYearTerm_SchoolYear
+                    ON Academics_SchoolYearTerm
+                    (
+                        SchoolYearId,
+                        ParentTermId,
+                        SortOrder,
+                        Name
+                    );
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_SchoolYearTerm_ParentTerm'
+                      AND object_id = OBJECT_ID('Academics_SchoolYearTerm')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_SchoolYearTerm_ParentTerm
+                    ON Academics_SchoolYearTerm(ParentTermId);
                 END
 
                 IF NOT EXISTS
