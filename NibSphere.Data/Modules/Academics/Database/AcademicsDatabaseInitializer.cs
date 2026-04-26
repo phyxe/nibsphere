@@ -166,7 +166,7 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
-                                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SchoolYearProgram')
+                        IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SchoolYearProgram')
                 BEGIN
                     CREATE TABLE Academics_SchoolYearProgram
                     (
@@ -253,6 +253,65 @@ namespace NibSphere.Data.Modules.Academics.Database
 
                         SchoolYearSectionId INT NOT NULL,
                         SchoolYearProgramId INT NOT NULL,
+
+                        SortOrder INT NOT NULL DEFAULT 0,
+                        IsActive BIT NOT NULL DEFAULT 1,
+
+                        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+                        UpdatedAt DATETIME2 NULL
+                    );
+                END
+
+                                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_Subject')
+                BEGIN
+                    CREATE TABLE Academics_Subject
+                    (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+
+                        SchoolYearId INT NOT NULL,
+                        TermId INT NOT NULL,
+                        SectionId INT NOT NULL,
+
+                        LearningAreaId INT NOT NULL,
+
+                        SchoolYearProgramLineId INT NULL,
+
+                        TeacherId INT NULL,
+
+                        TeacherLastName NVARCHAR(100) NULL,
+                        TeacherFirstName NVARCHAR(100) NULL,
+                        TeacherMiddleName NVARCHAR(100) NULL,
+                        TeacherExtensionName NVARCHAR(50) NULL,
+
+                        TeacherPosition NVARCHAR(150) NULL,
+                        TeacherDesignation NVARCHAR(150) NULL,
+
+                        SubjectCode NVARCHAR(50) NULL,
+                        SubjectName NVARCHAR(150) NULL,
+
+                        SortOrder INT NOT NULL DEFAULT 0,
+                        IsActive BIT NOT NULL DEFAULT 1,
+
+                        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+                        UpdatedAt DATETIME2 NULL
+                    );
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_SubjectScheduleSlot')
+                BEGIN
+                    CREATE TABLE Academics_SubjectScheduleSlot
+                    (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+
+                        SubjectId INT NOT NULL,
+
+                        DayOfWeekNumber INT NOT NULL DEFAULT 0,
+                        DayOfWeekName NVARCHAR(50) NOT NULL,
+
+                        StartTime TIME NULL,
+                        EndTime TIME NULL,
+
+                        Room NVARCHAR(100) NULL,
 
                         SortOrder INT NOT NULL DEFAULT 0,
                         IsActive BIT NOT NULL DEFAULT 1,
@@ -444,6 +503,98 @@ namespace NibSphere.Data.Modules.Academics.Database
                     ADD CONSTRAINT FK_Academics_SchoolYearSectionProgram_Program
                         FOREIGN KEY (SchoolYearProgramId)
                         REFERENCES Academics_SchoolYearProgram(Id);
+                END
+
+                                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_Subject_SchoolYear'
+                )
+                BEGIN
+                    ALTER TABLE Academics_Subject
+                    ADD CONSTRAINT FK_Academics_Subject_SchoolYear
+                        FOREIGN KEY (SchoolYearId)
+                        REFERENCES Academics_SchoolYear(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_Subject_Term'
+                )
+                BEGIN
+                    ALTER TABLE Academics_Subject
+                    ADD CONSTRAINT FK_Academics_Subject_Term
+                        FOREIGN KEY (TermId)
+                        REFERENCES Academics_SchoolYearTerm(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_Subject_Section'
+                )
+                BEGIN
+                    ALTER TABLE Academics_Subject
+                    ADD CONSTRAINT FK_Academics_Subject_Section
+                        FOREIGN KEY (SectionId)
+                        REFERENCES Academics_SchoolYearSection(Id);
+                END
+
+                IF OBJECT_ID('LearningArea', 'U') IS NOT NULL
+                   AND NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_Subject_LearningArea'
+                )
+                BEGIN
+                    ALTER TABLE Academics_Subject
+                    ADD CONSTRAINT FK_Academics_Subject_LearningArea
+                        FOREIGN KEY (LearningAreaId)
+                        REFERENCES LearningArea(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_Subject_SchoolYearProgramLine'
+                )
+                BEGIN
+                    ALTER TABLE Academics_Subject
+                    ADD CONSTRAINT FK_Academics_Subject_SchoolYearProgramLine
+                        FOREIGN KEY (SchoolYearProgramLineId)
+                        REFERENCES Academics_SchoolYearProgramLine(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_Subject_Teacher'
+                )
+                BEGIN
+                    ALTER TABLE Academics_Subject
+                    ADD CONSTRAINT FK_Academics_Subject_Teacher
+                        FOREIGN KEY (TeacherId)
+                        REFERENCES Academics_Teacher(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SubjectScheduleSlot_Subject'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SubjectScheduleSlot
+                    ADD CONSTRAINT FK_Academics_SubjectScheduleSlot_Subject
+                        FOREIGN KEY (SubjectId)
+                        REFERENCES Academics_Subject(Id);
                 END
 
                 IF NOT EXISTS
@@ -833,6 +984,95 @@ namespace NibSphere.Data.Modules.Academics.Database
                 BEGIN
                     CREATE INDEX IX_Academics_SchoolYearSectionProgram_Program
                     ON Academics_SchoolYearSectionProgram(SchoolYearProgramId);
+                END
+
+                                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'UX_Academics_Subject_Term_Section_LearningArea'
+                      AND object_id = OBJECT_ID('Academics_Subject')
+                )
+                BEGIN
+                    CREATE UNIQUE INDEX UX_Academics_Subject_Term_Section_LearningArea
+                    ON Academics_Subject
+                    (
+                        TermId,
+                        SectionId,
+                        LearningAreaId
+                    );
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_Subject_SchoolYear'
+                      AND object_id = OBJECT_ID('Academics_Subject')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_Subject_SchoolYear
+                    ON Academics_Subject
+                    (
+                        SchoolYearId,
+                        TermId,
+                        SectionId,
+                        SortOrder
+                    );
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_Subject_Teacher'
+                      AND object_id = OBJECT_ID('Academics_Subject')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_Subject_Teacher
+                    ON Academics_Subject(TeacherId);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_Subject_LearningArea'
+                      AND object_id = OBJECT_ID('Academics_Subject')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_Subject_LearningArea
+                    ON Academics_Subject(LearningAreaId);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_Subject_ProgramLine'
+                      AND object_id = OBJECT_ID('Academics_Subject')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_Subject_ProgramLine
+                    ON Academics_Subject(SchoolYearProgramLineId);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'IX_Academics_SubjectScheduleSlot_Subject'
+                      AND object_id = OBJECT_ID('Academics_SubjectScheduleSlot')
+                )
+                BEGIN
+                    CREATE INDEX IX_Academics_SubjectScheduleSlot_Subject
+                    ON Academics_SubjectScheduleSlot
+                    (
+                        SubjectId,
+                        SortOrder,
+                        DayOfWeekNumber,
+                        StartTime
+                    );
                 END
 
                 IF NOT EXISTS
