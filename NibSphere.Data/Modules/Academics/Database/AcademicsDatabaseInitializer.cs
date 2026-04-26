@@ -193,6 +193,32 @@ namespace NibSphere.Data.Modules.Academics.Database
                         REFERENCES LearningArea(Id);
                 END
 
+                                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SchoolYearTerm_SchoolYear'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearTerm
+                    ADD CONSTRAINT FK_Academics_SchoolYearTerm_SchoolYear
+                        FOREIGN KEY (SchoolYearId)
+                        REFERENCES Academics_SchoolYear(Id);
+                END
+
+                IF NOT EXISTS
+                (
+                    SELECT 1
+                    FROM sys.foreign_keys
+                    WHERE name = 'FK_Academics_SchoolYearTerm_ParentTerm'
+                )
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearTerm
+                    ADD CONSTRAINT FK_Academics_SchoolYearTerm_ParentTerm
+                        FOREIGN KEY (ParentTermId)
+                        REFERENCES Academics_SchoolYearTerm(Id);
+                END
+
                 IF NOT EXISTS
                 (
                     SELECT 1
