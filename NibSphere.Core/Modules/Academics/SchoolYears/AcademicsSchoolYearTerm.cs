@@ -23,6 +23,30 @@
 
 		public bool IsActive { get; set; } = true;
 
+		public int ChildTermCount { get; set; }
+		public int DependentRecordCount { get; set; }
+
+		public bool IsEditable { get; set; } = true;
+		public bool IsDeletable { get; set; } = true;
+
+		public string TermScope
+		{
+			get
+			{
+				if (ParentTermId.HasValue)
+				{
+					return "Child term";
+				}
+
+				if (IsEnrollmentTerm)
+				{
+					return "Enrollment term";
+				}
+
+				return "Parent term";
+			}
+		}
+
 		public string DisplayName
 		{
 			get

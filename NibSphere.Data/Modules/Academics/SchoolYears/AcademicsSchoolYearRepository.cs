@@ -21,21 +21,53 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
 			const string sql =
 				"""
                 SELECT
-                    Id,
-                    Name,
-                    StartDate,
-                    EndDate,
-                    IsCurrent,
-                    IsActive
-                FROM Academics_SchoolYear
+                    sy.Id,
+                    sy.Name,
+                    sy.StartDate,
+                    sy.EndDate,
+                    sy.IsCurrent,
+                    sy.IsActive,
+
+                    (
+                        SELECT COUNT(1)
+                        FROM Academics_SchoolYearTerm term
+                        WHERE term.SchoolYearId = sy.Id
+                    ) AS TermCount,
+
+                    (
+                        (
+                            SELECT COUNT(1)
+                            FROM Academics_SchoolYearProgram program
+                            WHERE program.SchoolYearId = sy.Id
+                        )
+                        +
+                        (
+                            SELECT COUNT(1)
+                            FROM Academics_SchoolYearSection section
+                            WHERE section.SchoolYearId = sy.Id
+                        )
+                        +
+                        (
+                            SELECT COUNT(1)
+                            FROM Academics_Subject subject
+                            WHERE subject.SchoolYearId = sy.Id
+                        )
+                        +
+                        (
+                            SELECT COUNT(1)
+                            FROM Academics_Enrollment enrollment
+                            WHERE enrollment.SchoolYearId = sy.Id
+                        )
+                    ) AS DependentRecordCount
+                FROM Academics_SchoolYear sy
                 WHERE @IncludeInactive = 1
-                   OR IsActive = 1
+                   OR sy.IsActive = 1
                 ORDER BY
-                    IsCurrent DESC,
-                    IsActive DESC,
-                    StartDate DESC,
-                    Name DESC,
-                    Id DESC;
+                    sy.IsCurrent DESC,
+                    sy.IsActive DESC,
+                    sy.StartDate DESC,
+                    sy.Name DESC,
+                    sy.Id DESC;
                 """;
 
 			List<AcademicsSchoolYear> items = new();
@@ -63,14 +95,46 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
 			const string sql =
 				"""
                 SELECT
-                    Id,
-                    Name,
-                    StartDate,
-                    EndDate,
-                    IsCurrent,
-                    IsActive
-                FROM Academics_SchoolYear
-                WHERE Id = @Id;
+                    sy.Id,
+                    sy.Name,
+                    sy.StartDate,
+                    sy.EndDate,
+                    sy.IsCurrent,
+                    sy.IsActive,
+
+                    (
+                        SELECT COUNT(1)
+                        FROM Academics_SchoolYearTerm term
+                        WHERE term.SchoolYearId = sy.Id
+                    ) AS TermCount,
+
+                    (
+                        (
+                            SELECT COUNT(1)
+                            FROM Academics_SchoolYearProgram program
+                            WHERE program.SchoolYearId = sy.Id
+                        )
+                        +
+                        (
+                            SELECT COUNT(1)
+                            FROM Academics_SchoolYearSection section
+                            WHERE section.SchoolYearId = sy.Id
+                        )
+                        +
+                        (
+                            SELECT COUNT(1)
+                            FROM Academics_Subject subject
+                            WHERE subject.SchoolYearId = sy.Id
+                        )
+                        +
+                        (
+                            SELECT COUNT(1)
+                            FROM Academics_Enrollment enrollment
+                            WHERE enrollment.SchoolYearId = sy.Id
+                        )
+                    ) AS DependentRecordCount
+                FROM Academics_SchoolYear sy
+                WHERE sy.Id = @Id;
                 """;
 
 			using SqlConnection connection = _connectionFactory.CreateAppConnection();
@@ -286,6 +350,9 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
 
 		private static AcademicsSchoolYear Map(SqlDataReader reader)
 		{
+			int termCount = GetOptionalInt32(reader, "TermCount");
+			int dependentRecordCount = GetOptionalInt32(reader, "DependentRecordCount");
+
 			return new AcademicsSchoolYear
 			{
 				Id = reader.GetInt32(reader.GetOrdinal("Id")),
@@ -297,13 +364,37 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
 					? null
 					: reader.GetDateTime(reader.GetOrdinal("EndDate")),
 				IsCurrent = reader.GetBoolean(reader.GetOrdinal("IsCurrent")),
-				IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive"))
+				IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+				TermCount = termCount,
+				DependentRecordCount = dependentRecordCount,
+				IsEditable = dependentRecordCount == 0,
+				IsDeletable = termCount == 0 && dependentRecordCount == 0
 			};
 		}
 
 		private static void PrepareForSave(AcademicsSchoolYear schoolYear)
 		{
 			schoolYear.Name = NormalizeRequired(schoolYear.Name);
+
+			if (string.IsNullOrWhiteSpace(schoolYear.Name))
+			{
+				throw new InvalidOperationException("School year name is required.");
+			}
+
+			if (!schoolYear.StartDate.HasValue)
+			{
+				throw new InvalidOperationException("School year start date is required.");
+			}
+
+			if (!schoolYear.EndDate.HasValue)
+			{
+				throw new InvalidOperationException("School year end date is required.");
+			}
+
+			if (schoolYear.EndDate.Value.Date < schoolYear.StartDate.Value.Date)
+			{
+				throw new InvalidOperationException("School year end date cannot be earlier than the start date.");
+			}
 
 			if (!schoolYear.IsActive)
 			{
@@ -318,6 +409,19 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
 			command.Parameters.AddWithValue("@EndDate", ToDbNullable(schoolYear.EndDate));
 			command.Parameters.AddWithValue("@IsCurrent", schoolYear.IsCurrent);
 			command.Parameters.AddWithValue("@IsActive", schoolYear.IsActive);
+		}
+
+		private static int GetOptionalInt32(SqlDataReader reader, string columnName)
+		{
+			for (int i = 0; i < reader.FieldCount; i++)
+			{
+				if (string.Equals(reader.GetName(i), columnName, StringComparison.OrdinalIgnoreCase))
+				{
+					return reader[columnName] == DBNull.Value ? 0 : Convert.ToInt32(reader[columnName]);
+				}
+			}
+
+			return 0;
 		}
 
 		private static object ToDbNullable(DateTime? value)
