@@ -26,6 +26,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Modules\Academics\Resources\Icons\academics.svg" />
+    <None Remove="Modules\Academics\Resources\Icons\academicsetup.svg" />
+    <None Remove="Modules\Academics\Resources\Icons\enroll.svg" />
+    <None Remove="Modules\Academics\Resources\Icons\schoolyear.svg" />
+    <None Remove="Modules\Academics\Resources\Icons\subject.svg" />
     <None Remove="Modules\Learners\Resources\Icons\addstudent.svg" />
     <None Remove="Modules\Learners\Resources\Icons\delete.svg" />
     <None Remove="Modules\Learners\Resources\Icons\edit.svg" />
@@ -93,6 +98,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Modules\Academics\Resources\Icons\academics.svg" />
+    <Resource Include="Modules\Academics\Resources\Icons\academicsetup.svg" />
+    <Resource Include="Modules\Academics\Resources\Icons\enroll.svg" />
+    <Resource Include="Modules\Academics\Resources\Icons\schoolyear.svg" />
+    <Resource Include="Modules\Academics\Resources\Icons\subject.svg" />
     <Resource Include="Modules\Learners\Resources\Icons\addstudent.svg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

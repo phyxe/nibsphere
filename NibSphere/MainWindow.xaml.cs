@@ -4,6 +4,7 @@ using NibSphere.Views;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -209,7 +210,142 @@ namespace NibSphere
 				return;
 			}
 
-			if (_isNavCollapsed && item.HasChildren && !item.CanActivate)
+			if (_isNavCollapsed && item.HasChildren)
+			{
+				ShowCollapsedNavigationFlyout(item, button);
+				return;
+			}
+
+			HideCollapsedNavigationFlyout();
+
+			object? content = _navigationService.Activate(item);
+
+			if (content != null)
+			{
+				MainContentHost.Content = content;
+			}
+
+			RefreshModuleNavigationLayout();
+			RefreshModuleNavigationVisuals();
+		}
+
+		private void ShowCollapsedNavigationFlyout(
+	ShellNavigationItem parentItem,
+	Button placementTarget)
+		{
+			if (!_isNavCollapsed || !parentItem.HasChildren)
+			{
+				HideCollapsedNavigationFlyout();
+				return;
+			}
+
+			CollapsedNavFlyoutItemsHost.Children.Clear();
+
+			CollapsedNavFlyoutTitle.Text = parentItem.Title;
+
+			foreach (ShellNavigationItem child in parentItem.Children)
+			{
+				if (!child.CanActivate)
+				{
+					continue;
+				}
+
+				Button childButton = CreateCollapsedFlyoutButton(child);
+				CollapsedNavFlyoutItemsHost.Children.Add(childButton);
+			}
+
+			if (CollapsedNavFlyoutItemsHost.Children.Count == 0)
+			{
+				HideCollapsedNavigationFlyout();
+				return;
+			}
+
+			CollapsedNavFlyout.PlacementTarget = placementTarget;
+			CollapsedNavFlyout.Placement = PlacementMode.Right;
+			CollapsedNavFlyout.HorizontalOffset = 8;
+			CollapsedNavFlyout.IsOpen = true;
+		}
+
+		private Button CreateCollapsedFlyoutButton(ShellNavigationItem item)
+		{
+			Button button = new()
+			{
+				Height = 36,
+				HorizontalContentAlignment = HorizontalAlignment.Stretch,
+				Background = Brushes.Transparent,
+				BorderBrush = Brushes.Transparent,
+				BorderThickness = new Thickness(0),
+				Padding = new Thickness(10, 0, 10, 0),
+				Margin = new Thickness(0, 2, 0, 2),
+				FocusVisualStyle = null,
+				Tag = item,
+				ToolTip = item.Title
+			};
+
+			button.Click += CollapsedFlyoutNavigationButton_Click;
+
+			Grid layout = new()
+			{
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				VerticalAlignment = VerticalAlignment.Center
+			};
+
+			layout.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+			TextBlock titleText = new()
+			{
+				Text = item.Title,
+				VerticalAlignment = VerticalAlignment.Center,
+				TextTrimming = TextTrimming.CharacterEllipsis,
+				FontSize = 13
+			};
+
+			titleText.SetResourceReference(TextBlock.ForegroundProperty, "Brush.PrimaryText");
+
+			layout.Children.Add(titleText);
+
+			button.Content = layout;
+
+			if (item.IsActive)
+			{
+				button.SetResourceReference(Button.BackgroundProperty, "Brush.NavItemActive");
+				button.SetResourceReference(Button.BorderBrushProperty, "Brush.NavItemActive");
+			}
+			else
+			{
+				button.Background = Brushes.Transparent;
+				button.BorderBrush = Brushes.Transparent;
+			}
+
+			button.MouseEnter += (_, _) =>
+			{
+				if (!item.IsActive)
+				{
+					button.SetResourceReference(Button.BackgroundProperty, "Brush.IconButtonHoverBackground");
+				}
+			};
+
+			button.MouseLeave += (_, _) =>
+			{
+				if (item.IsActive)
+				{
+					button.SetResourceReference(Button.BackgroundProperty, "Brush.NavItemActive");
+					button.SetResourceReference(Button.BorderBrushProperty, "Brush.NavItemActive");
+				}
+				else
+				{
+					button.Background = Brushes.Transparent;
+					button.BorderBrush = Brushes.Transparent;
+				}
+			};
+
+			return button;
+		}
+
+		private void CollapsedFlyoutNavigationButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is not Button button ||
+				button.Tag is not ShellNavigationItem item)
 			{
 				return;
 			}
@@ -221,8 +357,18 @@ namespace NibSphere
 				MainContentHost.Content = content;
 			}
 
+			HideCollapsedNavigationFlyout();
+
 			RefreshModuleNavigationLayout();
 			RefreshModuleNavigationVisuals();
+		}
+
+		private void HideCollapsedNavigationFlyout()
+		{
+			if (CollapsedNavFlyout != null)
+			{
+				CollapsedNavFlyout.IsOpen = false;
+			}
 		}
 
 		private void RefreshModuleNavigationLayout()
@@ -300,6 +446,8 @@ namespace NibSphere
 
 		private void NavToggleButton_Click(object sender, RoutedEventArgs e)
 		{
+			HideCollapsedNavigationFlyout();
+
 			_isNavCollapsed = !_isNavCollapsed;
 
 			NavColumn.Width = _isNavCollapsed

@@ -314,6 +314,33 @@
                     </Button>
                 </Border>
 
+                <!--Navigation Flyout -->
+                <Popup x:Name="CollapsedNavFlyout"
+                   Placement="Right"
+                   StaysOpen="False"
+                   AllowsTransparency="True"
+                   PopupAnimation="Fade"
+                   HorizontalOffset="8">
+
+                    <Border x:Name="CollapsedNavFlyoutBorder"
+                        MinWidth="190"
+                        MaxWidth="260"
+                        Padding="8"
+                        Background="{DynamicResource Brush.Surface}"
+                        BorderBrush="{DynamicResource Brush.Border}"
+                        BorderThickness="1"
+                        CornerRadius="12">
+
+                        <StackPanel>
+                            <TextBlock x:Name="CollapsedNavFlyoutTitle"
+                               Margin="8,4,8,8"
+                               Text="Navigation"
+                               Style="{StaticResource TextBlock.SectionTitle}" />
+                            <StackPanel x:Name="CollapsedNavFlyoutItemsHost" />
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
                 <!-- Content Area -->
                 <Grid Grid.Column="1"
 					  Background="{DynamicResource Brush.Background}">

@@ -18,6 +18,7 @@ namespace NibSphere.Modules.Academics
 				{
 					ItemKey = "academics",
 					Title = "Academics",
+					IconPath = "/Modules/Academics/Resources/Icons/academics.svg",
 					SortOrder = 300,
 					Children = new[]
 					{
@@ -25,6 +26,7 @@ namespace NibSphere.Modules.Academics
 						{
 							ItemKey = "academics-school-years",
 							Title = "School Years",
+							IconPath = "/Modules/Academics/Resources/Icons/schoolyear.svg",
 							SortOrder = 10,
 							IsDefault = true,
 							ContentFactory = static () => new AcademicsSchoolYearsView()
@@ -33,6 +35,7 @@ namespace NibSphere.Modules.Academics
 						{
 							ItemKey = "academics-subjects",
 							Title = "Subjects",
+							IconPath = "/Modules/Academics/Resources/Icons/subject.svg",
 							SortOrder = 20,
 							ContentFactory = static () => new AcademicsSubjectsView()
 						},
@@ -40,12 +43,14 @@ namespace NibSphere.Modules.Academics
 						{
 							ItemKey = "academics-enrollments",
 							Title = "Enrollments",
+							IconPath = "/Modules/Academics/Resources/Icons/enroll.svg",
 							SortOrder = 30,
 							ContentFactory = static () => new AcademicsEnrollmentsView()
 						},
 						new ModuleNavItemDefinition
 						{
 							ItemKey = "academics-setup",
+							IconPath = "/Modules/Academics/Resources/Icons/academicsetup.svg",
 							Title = "Setup",
 							SortOrder = 40,
 							ContentFactory = static () => new AcademicsSetupView()
