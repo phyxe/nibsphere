@@ -25,13 +25,15 @@ namespace NibSphere
 			storageInitializer.EnsureDirectoriesExist();
 			EnsureReferenceDataFiles();
 
+			string cachedThemePreference = ResolveCachedThemePreference();
+			ApplyThemePreference(cachedThemePreference);
+
 			var databaseInitializer = new DatabaseInitializer(AppPaths);
 			await databaseInitializer.InitializeAsync();
 
 			await ModulesCatalog.InitializeDatabasesAsync(AppPaths);
 
-			bool useDarkTheme = await ResolveInitialThemeAsync();
-			ApplyTheme(useDarkTheme);
+			await ReconcileThemePreferenceCacheFromDatabaseAsync();
 
 			base.OnStartup(e);
 		}
@@ -64,22 +66,8 @@ namespace NibSphere
 
 		private static async Task<bool> ResolveInitialThemeAsync()
 		{
-			var repository = new AppUserProfileRepository(AppPaths);
-			var userProfile = await repository.GetPrimaryUserProfileAsync();
-
-			string? preference = userProfile?.ThemePreference;
-
-			if (string.Equals(preference, "Dark", StringComparison.OrdinalIgnoreCase))
-			{
-				return true;
-			}
-
-			if (string.Equals(preference, "Light", StringComparison.OrdinalIgnoreCase))
-			{
-				return false;
-			}
-
-			return IsSystemDarkMode();
+			string? preference = await ResolveDatabaseThemePreferenceAsync();
+			return ResolveThemePreferenceToDark(preference);
 		}
 
 		private static bool IsSystemDarkMode()
@@ -97,6 +85,93 @@ namespace NibSphere
 			}
 
 			return false;
+		}
+
+		public static void ApplyThemePreference(string? themePreference)
+		{
+			bool useDarkTheme = ResolveThemePreferenceToDark(themePreference);
+			ApplyTheme(useDarkTheme);
+		}
+
+		public static void SaveThemePreferenceCache(string? themePreference)
+		{
+			string normalizedPreference = NormalizeThemePreference(themePreference);
+
+			Directory.CreateDirectory(AppPaths.ConfigDirectory);
+			File.WriteAllText(GetThemePreferenceCachePath(), normalizedPreference);
+		}
+
+		private static string ResolveCachedThemePreference()
+		{
+			string cachePath = GetThemePreferenceCachePath();
+
+			if (!File.Exists(cachePath))
+			{
+				return "System";
+			}
+
+			string value = File.ReadAllText(cachePath).Trim();
+			return NormalizeThemePreference(value);
+		}
+
+		private static async Task<string?> ResolveDatabaseThemePreferenceAsync()
+		{
+			var repository = new AppUserProfileRepository(AppPaths);
+			var userProfile = await repository.GetPrimaryUserProfileAsync();
+
+			return userProfile?.ThemePreference;
+		}
+
+		private static async Task ReconcileThemePreferenceCacheFromDatabaseAsync()
+		{
+			string? databasePreference = await ResolveDatabaseThemePreferenceAsync();
+
+			if (string.IsNullOrWhiteSpace(databasePreference))
+			{
+				return;
+			}
+
+			string normalizedPreference = NormalizeThemePreference(databasePreference);
+
+			SaveThemePreferenceCache(normalizedPreference);
+			ApplyThemePreference(normalizedPreference);
+		}
+
+		private static bool ResolveThemePreferenceToDark(string? themePreference)
+		{
+			string normalizedPreference = NormalizeThemePreference(themePreference);
+
+			if (string.Equals(normalizedPreference, "Dark", StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+
+			if (string.Equals(normalizedPreference, "Light", StringComparison.OrdinalIgnoreCase))
+			{
+				return false;
+			}
+
+			return IsSystemDarkMode();
+		}
+
+		private static string NormalizeThemePreference(string? themePreference)
+		{
+			if (string.Equals(themePreference, "Dark", StringComparison.OrdinalIgnoreCase))
+			{
+				return "Dark";
+			}
+
+			if (string.Equals(themePreference, "Light", StringComparison.OrdinalIgnoreCase))
+			{
+				return "Light";
+			}
+
+			return "System";
+		}
+
+		private static string GetThemePreferenceCachePath()
+		{
+			return Path.Combine(AppPaths.ConfigDirectory, "theme-preference.txt");
 		}
 
 		private static void EnsureReferenceDataFiles()

@@ -217,6 +217,9 @@ namespace NibSphere.Views
 				_appUserProfile = userProfile;
 			}
 
+			App.SaveThemePreferenceCache(userProfile.ThemePreference);
+			App.ApplyThemePreference(userProfile.ThemePreference);
+
 			SetUserFieldsEditable(false);
 			SetUserButtonToEditMode();
 			_isUserEditMode = false;

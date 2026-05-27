@@ -144,6 +144,9 @@ namespace NibSphere.Views
 				await _appUserProfileRepository.UpdateUserProfileAsync(_appUserProfile);
 			}
 
+			App.SaveThemePreferenceCache(_appUserProfile.ThemePreference);
+			App.ApplyThemePreference(_appUserProfile.ThemePreference);
+
 			_pendingProfileImageSourcePath = null;
 			_removeProfileImage = false;
 			_isEditMode = false;
