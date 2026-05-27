@@ -16,12 +16,13 @@ namespace NibSphere.Modules.Academics.Views
 		private readonly AcademicsProgramProspectusLineRepository _prospectusLineRepository;
 		private readonly LearningAreaRepository _learningAreaRepository;
 
-
 		private AcademicsGradeLevel? _selectedGradeLevel;
 		private AcademicsProgram? _selectedProgram;
 		private AcademicsSectionTemplate? _selectedSectionTemplate;
 		private AcademicsProgramProspectusLine? _selectedProspectusLine;
+		private AcademicsProgramProspectusCluster? _selectedProspectusCluster;
 
+		private List<ClusterLearningAreaChoiceRow> _clusterLearningAreaChoices = new();
 
 		public AcademicsSetupView()
 		{
@@ -48,6 +49,9 @@ namespace NibSphere.Modules.Academics.Views
 			ClearProgramForm();
 			ClearSectionTemplateForm();
 			ClearProspectusLineForm();
+			await ClearProspectusClusterFormAsync();
+
+			ShowProspectusClusterMode();
 		}
 
 		private async Task LoadAllAsync()
@@ -56,9 +60,14 @@ namespace NibSphere.Modules.Academics.Views
 			await LoadProgramsAsync();
 			await LoadSectionTemplateGradeLevelOptionsAsync();
 			await LoadSectionTemplatesAsync();
+
 			await LoadProspectusProgramOptionsAsync();
 			await LoadProspectusGradeLevelOptionsAsync();
+			await LoadProspectusClusterGradeLevelOptionsAsync();
 			await LoadProspectusLearningAreaOptionsAsync();
+			await LoadClusterLearningAreaChoicesAsync();
+
+			await LoadProspectusClustersForSelectedProgramAsync();
 			await LoadProspectusLinesForSelectedProgramAsync();
 		}
 
@@ -118,6 +127,10 @@ namespace NibSphere.Modules.Academics.Views
 			{
 				ProspectusProgramComboBox.SelectedValue = options[0].Id;
 			}
+			else
+			{
+				ProspectusProgramComboBox.SelectedValue = null;
+			}
 		}
 
 		private async Task LoadProspectusGradeLevelOptionsAsync()
@@ -129,6 +142,15 @@ namespace NibSphere.Modules.Academics.Views
 				.ToList();
 		}
 
+		private async Task LoadProspectusClusterGradeLevelOptionsAsync()
+		{
+			List<AcademicsGradeLevel> gradeLevels = await _gradeLevelRepository.GetAllAsync(includeInactive: false);
+
+			ProspectusClusterGradeLevelComboBox.ItemsSource = gradeLevels
+				.Select(x => new GradeLevelOptionRow(x.Name, x.DisplayName))
+				.ToList();
+		}
+
 		private async Task LoadProspectusLearningAreaOptionsAsync()
 		{
 			List<LearningArea> learningAreas = await _learningAreaRepository.GetAllAsync();
@@ -136,6 +158,47 @@ namespace NibSphere.Modules.Academics.Views
 			ProspectusLearningAreaComboBox.ItemsSource = learningAreas
 				.Select(x => new LearningAreaOptionRow(x.Id, BuildLearningAreaDisplayName(x)))
 				.ToList();
+		}
+
+		private async Task LoadClusterLearningAreaChoicesAsync(IEnumerable<int>? selectedLearningAreaIds = null)
+		{
+			HashSet<int> selectedIds = selectedLearningAreaIds?.ToHashSet() ?? new HashSet<int>();
+
+			List<LearningArea> learningAreas = await _learningAreaRepository.GetAllAsync();
+
+			_clusterLearningAreaChoices = learningAreas
+				.Select(x => new ClusterLearningAreaChoiceRow(
+					x.Id,
+					BuildLearningAreaDisplayName(x),
+					BuildLearningAreaSearchText(x),
+					selectedIds.Contains(x.Id)))
+				.ToList();
+
+			ApplyClusterLearningAreaFilter();
+		}
+
+		private async Task LoadProspectusClustersForSelectedProgramAsync()
+		{
+			int programId = GetSelectedProspectusProgramId();
+
+			if (programId <= 0)
+			{
+				ProspectusClustersItemsControl.ItemsSource = null;
+				EmptyProspectusClustersTextBlock.Visibility = Visibility.Visible;
+				return;
+			}
+
+			List<AcademicsProgramProspectusCluster> clusters = await _prospectusLineRepository.GetClustersByProgramIdAsync(
+				programId,
+				includeInactive: true);
+
+			ProspectusClustersItemsControl.ItemsSource = clusters
+				.Select(x => new ProspectusClusterRow(x))
+				.ToList();
+
+			EmptyProspectusClustersTextBlock.Visibility = clusters.Count == 0
+				? Visibility.Visible
+				: Visibility.Collapsed;
 		}
 
 		private async Task LoadProspectusLinesForSelectedProgramAsync()
@@ -227,6 +290,59 @@ namespace NibSphere.Modules.Academics.Views
 			DeleteProspectusLineButton.IsEnabled = false;
 		}
 
+		private async Task ClearProspectusClusterFormAsync()
+		{
+			_selectedProspectusCluster = null;
+
+			ProspectusClusterEditorTitleTextBlock.Text = "New Term Cluster";
+			ProspectusClusterGradeLevelComboBox.SelectedValue = null;
+			ProspectusClusterTermLabelTextBox.Text = string.Empty;
+			ProspectusClusterLearningAreaSearchTextBox.Text = string.Empty;
+
+			int programId = GetSelectedProspectusProgramId();
+
+			if (programId > 0)
+			{
+				int nextSequence = await _prospectusLineRepository.GetNextTemplateTermSequenceAsync(programId);
+				ProspectusClusterTermSequenceTextBox.Text = nextSequence.ToString();
+			}
+			else
+			{
+				ProspectusClusterTermSequenceTextBox.Text = "1";
+			}
+
+			await LoadClusterLearningAreaChoicesAsync();
+
+			ToggleProspectusClusterActiveButton.IsEnabled = false;
+			ToggleProspectusClusterActiveButton.Content = "Archive";
+			DeleteProspectusClusterButton.IsEnabled = false;
+		}
+
+		private void ShowProspectusClusterMode()
+		{
+			ProspectusClusterModePanel.Visibility = Visibility.Visible;
+			ProspectusLineEntryModePanel.Visibility = Visibility.Collapsed;
+			ShowProspectusClusterListMode();
+		}
+
+		private void ShowProspectusLineEntryMode()
+		{
+			ProspectusClusterModePanel.Visibility = Visibility.Collapsed;
+			ProspectusLineEntryModePanel.Visibility = Visibility.Visible;
+		}
+
+		private void ShowProspectusClusterListMode()
+		{
+			ProspectusClusterListPanel.Visibility = Visibility.Visible;
+			ProspectusClusterEditorPanel.Visibility = Visibility.Collapsed;
+		}
+
+		private void ShowProspectusClusterEditorMode()
+		{
+			ProspectusClusterListPanel.Visibility = Visibility.Collapsed;
+			ProspectusClusterEditorPanel.Visibility = Visibility.Visible;
+		}
+
 		private void EditGradeLevelButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (sender is not Button button ||
@@ -274,6 +390,8 @@ namespace NibSphere.Modules.Academics.Views
 				await LoadGradeLevelsAsync();
 				await LoadSectionTemplateGradeLevelOptionsAsync();
 				await LoadProspectusGradeLevelOptionsAsync();
+				await LoadProspectusClusterGradeLevelOptionsAsync();
+
 				ClearGradeLevelForm();
 			}
 			catch (Exception ex)
@@ -307,9 +425,12 @@ namespace NibSphere.Modules.Academics.Views
 			try
 			{
 				await _gradeLevelRepository.DeleteAsync(_selectedGradeLevel.Id);
+
 				await LoadGradeLevelsAsync();
 				await LoadSectionTemplateGradeLevelOptionsAsync();
 				await LoadProspectusGradeLevelOptionsAsync();
+				await LoadProspectusClusterGradeLevelOptionsAsync();
+
 				ClearGradeLevelForm();
 			}
 			catch (Exception ex)
@@ -371,6 +492,9 @@ namespace NibSphere.Modules.Academics.Views
 
 				await LoadProgramsAsync();
 				await LoadProspectusProgramOptionsAsync();
+				await LoadProspectusClustersForSelectedProgramAsync();
+				await LoadProspectusLinesForSelectedProgramAsync();
+
 				ClearProgramForm();
 			}
 			catch (Exception ex)
@@ -400,7 +524,9 @@ namespace NibSphere.Modules.Academics.Views
 
 				await LoadProgramsAsync();
 				await LoadProspectusProgramOptionsAsync();
+				await LoadProspectusClustersForSelectedProgramAsync();
 				await LoadProspectusLinesForSelectedProgramAsync();
+
 				ClearProgramForm();
 			}
 			catch (Exception ex)
@@ -509,7 +635,202 @@ namespace NibSphere.Modules.Academics.Views
 		private async void ProspectusProgramComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			ClearProspectusLineForm();
+			await ClearProspectusClusterFormAsync();
+
+			await LoadProspectusClustersForSelectedProgramAsync();
 			await LoadProspectusLinesForSelectedProgramAsync();
+			ShowProspectusClusterListMode();
+		}
+
+		private void ProspectusClusterModeButton_Click(object sender, RoutedEventArgs e)
+		{
+			ShowProspectusClusterMode();
+		}
+
+		private void ProspectusLineEntryModeButton_Click(object sender, RoutedEventArgs e)
+		{
+			ShowProspectusLineEntryMode();
+		}
+
+		private async void NewProspectusClusterButton_Click(object sender, RoutedEventArgs e)
+		{
+			await ClearProspectusClusterFormAsync();
+			ShowProspectusClusterEditorMode();
+		}
+
+		private async void CancelProspectusClusterButton_Click(object sender, RoutedEventArgs e)
+		{
+			await ClearProspectusClusterFormAsync();
+			ShowProspectusClusterListMode();
+		}
+
+		private async void EditProspectusClusterButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is not Button button ||
+				button.Tag is not ProspectusClusterRow row)
+			{
+				return;
+			}
+
+			_selectedProspectusCluster = row.Cluster;
+
+			ProspectusClusterEditorTitleTextBlock.Text = $"Edit Term Cluster: {_selectedProspectusCluster.DisplayName}";
+			ProspectusClusterGradeLevelComboBox.SelectedValue = _selectedProspectusCluster.GradeLevelName;
+			ProspectusClusterTermSequenceTextBox.Text = _selectedProspectusCluster.TemplateTermSequence.ToString();
+			ProspectusClusterTermLabelTextBox.Text = _selectedProspectusCluster.TemplateTermLabel;
+			ProspectusClusterLearningAreaSearchTextBox.Text = string.Empty;
+
+			await LoadClusterLearningAreaChoicesAsync(
+				_selectedProspectusCluster.LearningAreas.Select(x => x.LearningAreaId));
+
+			ToggleProspectusClusterActiveButton.IsEnabled = true;
+			ToggleProspectusClusterActiveButton.Content = _selectedProspectusCluster.IsActive ? "Archive" : "Restore";
+			DeleteProspectusClusterButton.IsEnabled = true;
+
+			ShowProspectusClusterEditorMode();
+		}
+
+		private async void SaveProspectusClusterButton_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				int programId = GetSelectedProspectusProgramId();
+
+				if (programId <= 0)
+				{
+					throw new InvalidOperationException("Select a program before saving a term cluster.");
+				}
+
+				string selectedGradeLevelName = ProspectusClusterGradeLevelComboBox.SelectedValue as string ?? string.Empty;
+
+				int templateTermSequence = ParsePositiveInt(
+					ProspectusClusterTermSequenceTextBox.Text,
+					"Template term sequence");
+
+				string templateTermLabel = ProspectusClusterTermLabelTextBox.Text;
+
+				List<int> selectedLearningAreaIds = _clusterLearningAreaChoices
+					.Where(x => x.IsSelected)
+					.Select(x => x.Id)
+					.ToList();
+
+				await _prospectusLineRepository.SaveClusterAsync(
+					programId,
+					selectedGradeLevelName,
+					templateTermSequence,
+					templateTermLabel,
+					selectedLearningAreaIds);
+
+				await LoadProspectusClustersForSelectedProgramAsync();
+				await LoadProspectusLinesForSelectedProgramAsync();
+				await ClearProspectusClusterFormAsync();
+				ShowProspectusClusterListMode();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					$"Unable to save term cluster.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+					"Save Failed",
+					MessageBoxButton.OK,
+					MessageBoxImage.Warning);
+			}
+		}
+
+		private async void ToggleProspectusClusterActiveButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (_selectedProspectusCluster == null)
+			{
+				return;
+			}
+
+			try
+			{
+				bool newActiveState = !_selectedProspectusCluster.IsActive;
+
+				await _prospectusLineRepository.SetClusterIsActiveAsync(
+					_selectedProspectusCluster.ProgramId,
+					_selectedProspectusCluster.GradeLevelName,
+					_selectedProspectusCluster.TemplateTermSequence,
+					newActiveState);
+
+				await LoadProspectusClustersForSelectedProgramAsync();
+				await LoadProspectusLinesForSelectedProgramAsync();
+				await ClearProspectusClusterFormAsync();
+				ShowProspectusClusterListMode();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					$"Unable to update term cluster status.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+					"Update Failed",
+					MessageBoxButton.OK,
+					MessageBoxImage.Warning);
+			}
+		}
+
+		private async void DeleteProspectusClusterButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (_selectedProspectusCluster == null)
+			{
+				return;
+			}
+
+			MessageBoxResult result = MessageBox.Show(
+				$"Delete term cluster '{_selectedProspectusCluster.DisplayName}'?",
+				"Confirm Delete",
+				MessageBoxButton.YesNo,
+				MessageBoxImage.Warning);
+
+			if (result != MessageBoxResult.Yes)
+			{
+				return;
+			}
+
+			try
+			{
+				await _prospectusLineRepository.DeleteClusterAsync(
+					_selectedProspectusCluster.ProgramId,
+					_selectedProspectusCluster.GradeLevelName,
+					_selectedProspectusCluster.TemplateTermSequence);
+
+				await LoadProspectusClustersForSelectedProgramAsync();
+				await LoadProspectusLinesForSelectedProgramAsync();
+				await ClearProspectusClusterFormAsync();
+				ShowProspectusClusterListMode();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					$"Unable to delete term cluster.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+					"Delete Failed",
+					MessageBoxButton.OK,
+					MessageBoxImage.Warning);
+			}
+		}
+
+		private void ProspectusClusterLearningAreaSearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			ApplyClusterLearningAreaFilter();
+		}
+
+		private void ApplyClusterLearningAreaFilter()
+		{
+			if (ProspectusClusterLearningAreasItemsControl == null)
+			{
+				return;
+			}
+
+			string searchText = ProspectusClusterLearningAreaSearchTextBox.Text?.Trim() ?? string.Empty;
+
+			IEnumerable<ClusterLearningAreaChoiceRow> filteredChoices = _clusterLearningAreaChoices;
+
+			if (!string.IsNullOrWhiteSpace(searchText))
+			{
+				filteredChoices = filteredChoices.Where(x =>
+					x.SearchText.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+			}
+
+			ProspectusClusterLearningAreasItemsControl.ItemsSource = filteredChoices.ToList();
 		}
 
 		private void NewProspectusLineButton_Click(object sender, RoutedEventArgs e)
@@ -576,6 +897,7 @@ namespace NibSphere.Modules.Academics.Views
 					await _prospectusLineRepository.InsertAsync(line);
 				}
 
+				await LoadProspectusClustersForSelectedProgramAsync();
 				await LoadProspectusLinesForSelectedProgramAsync();
 				ClearProspectusLineForm();
 			}
@@ -604,6 +926,7 @@ namespace NibSphere.Modules.Academics.Views
 					_selectedProspectusLine.Id,
 					newActiveState);
 
+				await LoadProspectusClustersForSelectedProgramAsync();
 				await LoadProspectusLinesForSelectedProgramAsync();
 				ClearProspectusLineForm();
 			}
@@ -638,6 +961,8 @@ namespace NibSphere.Modules.Academics.Views
 			try
 			{
 				await _prospectusLineRepository.DeleteAsync(_selectedProspectusLine.Id);
+
+				await LoadProspectusClustersForSelectedProgramAsync();
 				await LoadProspectusLinesForSelectedProgramAsync();
 				ClearProspectusLineForm();
 			}
@@ -758,6 +1083,23 @@ namespace NibSphere.Modules.Academics.Views
 			}
 		}
 
+		private sealed class ProgramOptionRow
+		{
+			public ProgramOptionRow(int id, string displayName)
+			{
+				Id = id;
+				DisplayName = displayName;
+			}
+
+			public int Id { get; }
+			public string DisplayName { get; }
+
+			public override string ToString()
+			{
+				return DisplayName;
+			}
+		}
+
 		private sealed class SectionTemplateRow
 		{
 			public SectionTemplateRow(AcademicsSectionTemplate sectionTemplate)
@@ -785,23 +1127,6 @@ namespace NibSphere.Modules.Academics.Views
 				}
 
 				return string.Join(" • ", parts);
-			}
-		}
-
-		private sealed class ProgramOptionRow
-		{
-			public ProgramOptionRow(int id, string displayName)
-			{
-				Id = id;
-				DisplayName = displayName;
-			}
-
-			public int Id { get; }
-			public string DisplayName { get; }
-
-			public override string ToString()
-			{
-				return DisplayName;
 			}
 		}
 
@@ -852,6 +1177,62 @@ namespace NibSphere.Modules.Academics.Views
 			}
 		}
 
+		private sealed class ProspectusClusterRow
+		{
+			public ProspectusClusterRow(AcademicsProgramProspectusCluster cluster)
+			{
+				Cluster = cluster;
+				DisplayName = cluster.DisplayName;
+				DetailDisplay = BuildDetailDisplay(cluster);
+				LearningAreaNames = cluster.LearningAreas
+					.Where(x => x.IsActive)
+					.Select(x => x.DisplayName)
+					.ToList();
+			}
+
+			public AcademicsProgramProspectusCluster Cluster { get; }
+
+			public string DisplayName { get; }
+			public string DetailDisplay { get; }
+			public List<string> LearningAreaNames { get; }
+
+			private static string BuildDetailDisplay(AcademicsProgramProspectusCluster cluster)
+			{
+				List<string> parts = new();
+
+				parts.Add(cluster.SummaryDisplay);
+				parts.Add(cluster.IsActive ? "Active" : "Archived");
+
+				if (cluster.DependentRecordCount > 0)
+				{
+					parts.Add($"{cluster.DependentRecordCount} deployed line{(cluster.DependentRecordCount == 1 ? string.Empty : "s")}");
+				}
+
+				return string.Join(" • ", parts);
+			}
+		}
+
+		private sealed class ClusterLearningAreaChoiceRow
+		{
+			public ClusterLearningAreaChoiceRow(
+				int id,
+				string displayName,
+				string searchText,
+				bool isSelected)
+			{
+				Id = id;
+				DisplayName = displayName;
+				SearchText = searchText;
+				IsSelected = isSelected;
+			}
+
+			public int Id { get; }
+			public string DisplayName { get; }
+			public string SearchText { get; }
+
+			public bool IsSelected { get; set; }
+		}
+
 		private static string BuildLearningAreaDisplayName(LearningArea learningArea)
 		{
 			if (!string.IsNullOrWhiteSpace(learningArea.ShortName))
@@ -865,6 +1246,21 @@ namespace NibSphere.Modules.Academics.Views
 			}
 
 			return learningArea.Code;
+		}
+
+		private static string BuildLearningAreaSearchText(LearningArea learningArea)
+		{
+			List<string> parts = new()
+			{
+				learningArea.Code,
+				learningArea.ShortName,
+				learningArea.Description,
+				learningArea.Category,
+				learningArea.CategoryName,
+				learningArea.AcademicGroupName
+			};
+
+			return string.Join(" ", parts.Where(x => !string.IsNullOrWhiteSpace(x)));
 		}
 	}
 }
