@@ -1,6 +1,8 @@
 ﻿using NibSphere.Core.Interfaces;
+using NibSphere.Core.Models;
 using NibSphere.Core.Modules.Academics.Setup;
 using NibSphere.Data.Modules.Academics.Setup;
+using NibSphere.Data.Repositories;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,10 +13,15 @@ namespace NibSphere.Modules.Academics.Views
 		private readonly AcademicsGradeLevelRepository _gradeLevelRepository;
 		private readonly AcademicsProgramRepository _programRepository;
 		private readonly AcademicsSectionTemplateRepository _sectionTemplateRepository;
+		private readonly AcademicsProgramProspectusLineRepository _prospectusLineRepository;
+		private readonly LearningAreaRepository _learningAreaRepository;
+
 
 		private AcademicsGradeLevel? _selectedGradeLevel;
 		private AcademicsProgram? _selectedProgram;
 		private AcademicsSectionTemplate? _selectedSectionTemplate;
+		private AcademicsProgramProspectusLine? _selectedProspectusLine;
+
 
 		public AcademicsSetupView()
 		{
@@ -25,6 +32,8 @@ namespace NibSphere.Modules.Academics.Views
 			_gradeLevelRepository = new AcademicsGradeLevelRepository(appPaths);
 			_programRepository = new AcademicsProgramRepository(appPaths);
 			_sectionTemplateRepository = new AcademicsSectionTemplateRepository(appPaths);
+			_prospectusLineRepository = new AcademicsProgramProspectusLineRepository(appPaths);
+			_learningAreaRepository = new LearningAreaRepository(appPaths);
 
 			Loaded += AcademicsSetupView_Loaded;
 		}
@@ -38,6 +47,7 @@ namespace NibSphere.Modules.Academics.Views
 			ClearGradeLevelForm();
 			ClearProgramForm();
 			ClearSectionTemplateForm();
+			ClearProspectusLineForm();
 		}
 
 		private async Task LoadAllAsync()
@@ -46,6 +56,10 @@ namespace NibSphere.Modules.Academics.Views
 			await LoadProgramsAsync();
 			await LoadSectionTemplateGradeLevelOptionsAsync();
 			await LoadSectionTemplatesAsync();
+			await LoadProspectusProgramOptionsAsync();
+			await LoadProspectusGradeLevelOptionsAsync();
+			await LoadProspectusLearningAreaOptionsAsync();
+			await LoadProspectusLinesForSelectedProgramAsync();
 		}
 
 		private async Task LoadGradeLevelsAsync()
@@ -82,6 +96,77 @@ namespace NibSphere.Modules.Academics.Views
 			SectionTemplateGradeLevelComboBox.ItemsSource = gradeLevels
 				.Select(x => new GradeLevelOptionRow(x.Name, x.DisplayName))
 				.ToList();
+		}
+
+		private async Task LoadProspectusProgramOptionsAsync()
+		{
+			List<AcademicsProgram> programs = await _programRepository.GetAllAsync(includeInactive: false);
+
+			int currentSelectedId = GetSelectedProspectusProgramId();
+
+			List<ProgramOptionRow> options = programs
+				.Select(x => new ProgramOptionRow(x.Id, $"{x.Code} - {x.Name}".Trim()))
+				.ToList();
+
+			ProspectusProgramComboBox.ItemsSource = options;
+
+			if (currentSelectedId > 0 && options.Any(x => x.Id == currentSelectedId))
+			{
+				ProspectusProgramComboBox.SelectedValue = currentSelectedId;
+			}
+			else if (options.Count > 0)
+			{
+				ProspectusProgramComboBox.SelectedValue = options[0].Id;
+			}
+		}
+
+		private async Task LoadProspectusGradeLevelOptionsAsync()
+		{
+			List<AcademicsGradeLevel> gradeLevels = await _gradeLevelRepository.GetAllAsync(includeInactive: false);
+
+			ProspectusGradeLevelComboBox.ItemsSource = gradeLevels
+				.Select(x => new GradeLevelOptionRow(x.Name, x.DisplayName))
+				.ToList();
+		}
+
+		private async Task LoadProspectusLearningAreaOptionsAsync()
+		{
+			List<LearningArea> learningAreas = await _learningAreaRepository.GetAllAsync();
+
+			ProspectusLearningAreaComboBox.ItemsSource = learningAreas
+				.Select(x => new LearningAreaOptionRow(x.Id, BuildLearningAreaDisplayName(x)))
+				.ToList();
+		}
+
+		private async Task LoadProspectusLinesForSelectedProgramAsync()
+		{
+			int programId = GetSelectedProspectusProgramId();
+
+			if (programId <= 0)
+			{
+				ProspectusLinesItemsControl.ItemsSource = null;
+				EmptyProspectusLinesTextBlock.Visibility = Visibility.Visible;
+				return;
+			}
+
+			List<AcademicsProgramProspectusLine> lines = await _prospectusLineRepository.GetByProgramIdAsync(
+				programId,
+				includeInactive: true);
+
+			ProspectusLinesItemsControl.ItemsSource = lines
+				.Select(x => new ProspectusLineRow(x))
+				.ToList();
+
+			EmptyProspectusLinesTextBlock.Visibility = lines.Count == 0
+				? Visibility.Visible
+				: Visibility.Collapsed;
+		}
+
+		private int GetSelectedProspectusProgramId()
+		{
+			return ProspectusProgramComboBox.SelectedValue is int id
+				? id
+				: 0;
 		}
 
 		private void ClearGradeLevelForm()
@@ -123,6 +208,23 @@ namespace NibSphere.Modules.Academics.Views
 			SectionTemplateIsActiveCheckBox.IsChecked = true;
 
 			DeleteSectionTemplateButton.IsEnabled = false;
+		}
+
+		private void ClearProspectusLineForm()
+		{
+			_selectedProspectusLine = null;
+
+			ProspectusLineEditorTitleTextBlock.Text = "New Prospectus Line";
+			ProspectusGradeLevelComboBox.SelectedValue = null;
+			ProspectusLearningAreaComboBox.SelectedValue = null;
+			ProspectusTermSequenceTextBox.Text = "1";
+			ProspectusTermLabelTextBox.Text = string.Empty;
+			ProspectusSortOrderTextBox.Text = "0";
+			ProspectusIsActiveCheckBox.IsChecked = true;
+
+			ToggleProspectusLineActiveButton.IsEnabled = false;
+			ToggleProspectusLineActiveButton.Content = "Archive";
+			DeleteProspectusLineButton.IsEnabled = false;
 		}
 
 		private void EditGradeLevelButton_Click(object sender, RoutedEventArgs e)
@@ -171,6 +273,7 @@ namespace NibSphere.Modules.Academics.Views
 
 				await LoadGradeLevelsAsync();
 				await LoadSectionTemplateGradeLevelOptionsAsync();
+				await LoadProspectusGradeLevelOptionsAsync();
 				ClearGradeLevelForm();
 			}
 			catch (Exception ex)
@@ -206,6 +309,7 @@ namespace NibSphere.Modules.Academics.Views
 				await _gradeLevelRepository.DeleteAsync(_selectedGradeLevel.Id);
 				await LoadGradeLevelsAsync();
 				await LoadSectionTemplateGradeLevelOptionsAsync();
+				await LoadProspectusGradeLevelOptionsAsync();
 				ClearGradeLevelForm();
 			}
 			catch (Exception ex)
@@ -266,6 +370,7 @@ namespace NibSphere.Modules.Academics.Views
 				}
 
 				await LoadProgramsAsync();
+				await LoadProspectusProgramOptionsAsync();
 				ClearProgramForm();
 			}
 			catch (Exception ex)
@@ -294,6 +399,8 @@ namespace NibSphere.Modules.Academics.Views
 					newActiveState);
 
 				await LoadProgramsAsync();
+				await LoadProspectusProgramOptionsAsync();
+				await LoadProspectusLinesForSelectedProgramAsync();
 				ClearProgramForm();
 			}
 			catch (Exception ex)
@@ -399,6 +506,151 @@ namespace NibSphere.Modules.Academics.Views
 			}
 		}
 
+		private async void ProspectusProgramComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			ClearProspectusLineForm();
+			await LoadProspectusLinesForSelectedProgramAsync();
+		}
+
+		private void NewProspectusLineButton_Click(object sender, RoutedEventArgs e)
+		{
+			ClearProspectusLineForm();
+		}
+
+		private void EditProspectusLineButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is not Button button ||
+				button.Tag is not ProspectusLineRow row)
+			{
+				return;
+			}
+
+			_selectedProspectusLine = row.Line;
+
+			ProspectusLineEditorTitleTextBlock.Text = $"Edit Prospectus Line: {_selectedProspectusLine.DisplayName}";
+			ProspectusGradeLevelComboBox.SelectedValue = _selectedProspectusLine.GradeLevelName;
+			ProspectusLearningAreaComboBox.SelectedValue = _selectedProspectusLine.LearningAreaId;
+			ProspectusTermSequenceTextBox.Text = _selectedProspectusLine.TemplateTermSequence.ToString();
+			ProspectusTermLabelTextBox.Text = _selectedProspectusLine.TemplateTermLabel;
+			ProspectusSortOrderTextBox.Text = _selectedProspectusLine.SortOrder.ToString();
+			ProspectusIsActiveCheckBox.IsChecked = _selectedProspectusLine.IsActive;
+
+			ToggleProspectusLineActiveButton.IsEnabled = true;
+			ToggleProspectusLineActiveButton.Content = _selectedProspectusLine.IsActive ? "Archive" : "Restore";
+			DeleteProspectusLineButton.IsEnabled = _selectedProspectusLine.IsDeletable;
+		}
+
+		private async void SaveProspectusLineButton_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				int programId = GetSelectedProspectusProgramId();
+
+				if (programId <= 0)
+				{
+					throw new InvalidOperationException("Select a program before saving prospectus lines.");
+				}
+
+				string selectedGradeLevelName = ProspectusGradeLevelComboBox.SelectedValue as string ?? string.Empty;
+
+				int selectedLearningAreaId = ProspectusLearningAreaComboBox.SelectedValue is int learningAreaId
+					? learningAreaId
+					: 0;
+
+				AcademicsProgramProspectusLine line = _selectedProspectusLine ?? new AcademicsProgramProspectusLine();
+
+				line.ProgramId = programId;
+				line.GradeLevelName = selectedGradeLevelName;
+				line.LearningAreaId = selectedLearningAreaId;
+				line.TemplateTermSequence = ParsePositiveInt(ProspectusTermSequenceTextBox.Text, "Template term sequence");
+				line.TemplateTermLabel = ProspectusTermLabelTextBox.Text;
+				line.SortOrder = ParseSortOrder(ProspectusSortOrderTextBox.Text);
+				line.IsActive = ProspectusIsActiveCheckBox.IsChecked == true;
+
+				if (line.Id > 0)
+				{
+					await _prospectusLineRepository.UpdateAsync(line);
+				}
+				else
+				{
+					await _prospectusLineRepository.InsertAsync(line);
+				}
+
+				await LoadProspectusLinesForSelectedProgramAsync();
+				ClearProspectusLineForm();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					$"Unable to save prospectus line.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+					"Save Failed",
+					MessageBoxButton.OK,
+					MessageBoxImage.Warning);
+			}
+		}
+
+		private async void ToggleProspectusLineActiveButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (_selectedProspectusLine == null)
+			{
+				return;
+			}
+
+			try
+			{
+				bool newActiveState = !_selectedProspectusLine.IsActive;
+
+				await _prospectusLineRepository.SetIsActiveAsync(
+					_selectedProspectusLine.Id,
+					newActiveState);
+
+				await LoadProspectusLinesForSelectedProgramAsync();
+				ClearProspectusLineForm();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					$"Unable to update prospectus line status.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+					"Update Failed",
+					MessageBoxButton.OK,
+					MessageBoxImage.Warning);
+			}
+		}
+
+		private async void DeleteProspectusLineButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (_selectedProspectusLine == null)
+			{
+				return;
+			}
+
+			MessageBoxResult result = MessageBox.Show(
+				$"Delete prospectus line '{_selectedProspectusLine.DisplayName}'?",
+				"Confirm Delete",
+				MessageBoxButton.YesNo,
+				MessageBoxImage.Warning);
+
+			if (result != MessageBoxResult.Yes)
+			{
+				return;
+			}
+
+			try
+			{
+				await _prospectusLineRepository.DeleteAsync(_selectedProspectusLine.Id);
+				await LoadProspectusLinesForSelectedProgramAsync();
+				ClearProspectusLineForm();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					$"Unable to delete prospectus line.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+					"Delete Failed",
+					MessageBoxButton.OK,
+					MessageBoxImage.Warning);
+			}
+		}
+
 		private static int ParseSortOrder(string value)
 		{
 			if (string.IsNullOrWhiteSpace(value))
@@ -412,6 +664,21 @@ namespace NibSphere.Modules.Academics.Views
 			}
 
 			return Math.Max(0, sortOrder);
+		}
+
+		private static int ParsePositiveInt(string value, string label)
+		{
+			if (string.IsNullOrWhiteSpace(value))
+			{
+				return 1;
+			}
+
+			if (!int.TryParse(value, out int parsedValue))
+			{
+				throw new InvalidOperationException($"{label} must be a whole number.");
+			}
+
+			return Math.Max(1, parsedValue);
 		}
 
 		private sealed class GradeLevelRow
@@ -519,6 +786,85 @@ namespace NibSphere.Modules.Academics.Views
 
 				return string.Join(" • ", parts);
 			}
+		}
+
+		private sealed class ProgramOptionRow
+		{
+			public ProgramOptionRow(int id, string displayName)
+			{
+				Id = id;
+				DisplayName = displayName;
+			}
+
+			public int Id { get; }
+			public string DisplayName { get; }
+
+			public override string ToString()
+			{
+				return DisplayName;
+			}
+		}
+
+		private sealed class LearningAreaOptionRow
+		{
+			public LearningAreaOptionRow(int id, string displayName)
+			{
+				Id = id;
+				DisplayName = displayName;
+			}
+
+			public int Id { get; }
+			public string DisplayName { get; }
+
+			public override string ToString()
+			{
+				return DisplayName;
+			}
+		}
+
+		private sealed class ProspectusLineRow
+		{
+			public ProspectusLineRow(AcademicsProgramProspectusLine line)
+			{
+				Line = line;
+				DisplayName = line.DisplayName;
+				DetailDisplay = BuildDetailDisplay(line);
+			}
+
+			public AcademicsProgramProspectusLine Line { get; }
+
+			public string DisplayName { get; }
+			public string DetailDisplay { get; }
+
+			private static string BuildDetailDisplay(AcademicsProgramProspectusLine line)
+			{
+				List<string> parts = new();
+
+				parts.Add($"Sort order: {line.SortOrder}");
+				parts.Add(line.IsActive ? "Active" : "Archived");
+
+				if (line.DependentRecordCount > 0)
+				{
+					parts.Add($"{line.DependentRecordCount} deployed line{(line.DependentRecordCount == 1 ? string.Empty : "s")}");
+				}
+
+				return string.Join(" • ", parts);
+			}
+		}
+
+		private static string BuildLearningAreaDisplayName(LearningArea learningArea)
+		{
+			if (!string.IsNullOrWhiteSpace(learningArea.ShortName))
+			{
+				return $"{learningArea.ShortName} - {learningArea.Description}".Trim();
+			}
+
+			if (!string.IsNullOrWhiteSpace(learningArea.Description))
+			{
+				return learningArea.Description;
+			}
+
+			return learningArea.Code;
 		}
 	}
 }

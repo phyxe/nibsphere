@@ -421,6 +421,177 @@
                         </Border>
                     </Grid>
                 </TabItem>
+
+                <!-- ===================================================== -->
+                <!-- PROGRAM PROSPECTUS                                    -->
+                <!-- ===================================================== -->
+                <TabItem Header="Program Prospectus">
+                    <Grid Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="460"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Program Prospectus"
+                                       Style="{StaticResource TextBlock.SectionTitle}" />
+
+                            <TextBlock Margin="0,4,0,0"
+                                       Text="Define the curriculum blueprint for each program. These lines will later be copied into school-year program lines and used to generate subject offerings."
+                                       Style="{StaticResource TextBlock.Secondary}" />
+
+                            <Label Margin="0,14,0,0"
+                                   Content="Program" />
+
+                            <ComboBox x:Name="ProspectusProgramComboBox"
+                                      MinHeight="34"
+                                      DisplayMemberPath="DisplayName"
+                                      SelectedValuePath="Id"
+                                      VerticalContentAlignment="Center"
+                                      SelectionChanged="ProspectusProgramComboBox_SelectionChanged" />
+                        </StackPanel>
+
+                        <TextBlock x:Name="EmptyProspectusLinesTextBlock"
+                                   Grid.Row="2"
+                                   Grid.Column="0"
+                                   Text="No prospectus lines yet for the selected program."
+                                   Style="{StaticResource TextBlock.Secondary}"
+                                   Visibility="Collapsed" />
+
+                        <ScrollViewer Grid.Row="2"
+                                      Grid.Column="0"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl x:Name="ProspectusLinesItemsControl">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="0,0,0,10"
+                                                Padding="14"
+                                                Style="{StaticResource CardBorderStyle}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding DisplayName}"
+                                                               FontWeight="SemiBold"
+                                                               Style="{StaticResource TextBlock.Body}" />
+
+                                                    <TextBlock Margin="0,4,0,0"
+                                                               Text="{Binding DetailDisplay}"
+                                                               Style="{StaticResource TextBlock.Secondary}" />
+                                                </StackPanel>
+
+                                                <Button Grid.Column="1"
+                                                        MinWidth="72"
+                                                        MinHeight="32"
+                                                        Padding="10,4"
+                                                        Margin="16,0,0,0"
+                                                        Content="Edit"
+                                                        Tag="{Binding}"
+                                                        Click="EditProspectusLineButton_Click" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <Border Grid.Column="2"
+                                Grid.RowSpan="3"
+                                Padding="14"
+                                Style="{StaticResource CardBorderStyle}">
+                            <StackPanel>
+                                <TextBlock x:Name="ProspectusLineEditorTitleTextBlock"
+                                           Text="New Prospectus Line"
+                                           Style="{StaticResource TextBlock.SectionTitle}" />
+
+                                <TextBlock Margin="0,4,0,16"
+                                           Text="Attach one learning area to a grade level and template term under the selected program."
+                                           Style="{StaticResource TextBlock.Secondary}" />
+
+                                <Label Content="Grade Level" />
+                                <ComboBox x:Name="ProspectusGradeLevelComboBox"
+                                          MinHeight="34"
+                                          DisplayMemberPath="DisplayName"
+                                          SelectedValuePath="Name"
+                                          VerticalContentAlignment="Center" />
+
+                                <Label Margin="0,10,0,0"
+                                       Content="Learning Area" />
+                                <ComboBox x:Name="ProspectusLearningAreaComboBox"
+                                          MinHeight="34"
+                                          DisplayMemberPath="DisplayName"
+                                          SelectedValuePath="Id"
+                                          VerticalContentAlignment="Center" />
+
+                                <Label Margin="0,10,0,0"
+                                       Content="Template Term Sequence" />
+                                <TextBox x:Name="ProspectusTermSequenceTextBox"
+                                         MinHeight="34"
+                                         VerticalContentAlignment="Center" />
+
+                                <Label Margin="0,10,0,0"
+                                       Content="Template Term Label" />
+                                <TextBox x:Name="ProspectusTermLabelTextBox"
+                                         MinHeight="34"
+                                         VerticalContentAlignment="Center" />
+
+                                <Label Margin="0,10,0,0"
+                                       Content="Sort Order" />
+                                <TextBox x:Name="ProspectusSortOrderTextBox"
+                                         MinHeight="34"
+                                         VerticalContentAlignment="Center" />
+
+                                <CheckBox x:Name="ProspectusIsActiveCheckBox"
+                                          Margin="0,14,0,0"
+                                          Content="Active" />
+
+                                <StackPanel Margin="0,18,0,0"
+                                            Orientation="Horizontal"
+                                            HorizontalAlignment="Right">
+                                    <Button MinWidth="72"
+                                            MinHeight="32"
+                                            Margin="0,0,8,0"
+                                            Padding="10,4"
+                                            Content="New"
+                                            Click="NewProspectusLineButton_Click" />
+
+                                    <Button MinWidth="72"
+                                            MinHeight="32"
+                                            Margin="0,0,8,0"
+                                            Padding="10,4"
+                                            Content="Save"
+                                            Click="SaveProspectusLineButton_Click" />
+
+                                    <Button x:Name="ToggleProspectusLineActiveButton"
+                                            MinWidth="86"
+                                            MinHeight="32"
+                                            Margin="0,0,8,0"
+                                            Padding="10,4"
+                                            Content="Archive"
+                                            Click="ToggleProspectusLineActiveButton_Click" />
+
+                                    <Button x:Name="DeleteProspectusLineButton"
+                                            MinWidth="72"
+                                            MinHeight="32"
+                                            Padding="10,4"
+                                            Content="Delete"
+                                            Click="DeleteProspectusLineButton_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
             </TabControl>
         </Border>
     </Grid>

@@ -18,5 +18,32 @@
 
 		public int SortOrder { get; set; }
 		public bool IsActive { get; set; } = true;
+
+		public int DependentRecordCount { get; set; }
+
+		public bool IsEditable { get; set; } = true;
+		public bool IsDeletable { get; set; } = true;
+
+		public string LearningAreaDisplayName
+		{
+			get
+			{
+				if (!string.IsNullOrWhiteSpace(LearningAreaShortName))
+				{
+					return LearningAreaShortName;
+				}
+
+				if (!string.IsNullOrWhiteSpace(LearningAreaDescription))
+				{
+					return LearningAreaDescription;
+				}
+
+				return LearningAreaCode;
+			}
+		}
+
+		public string TermDisplayName => $"{TemplateTermSequence}. {TemplateTermLabel}".Trim();
+
+		public string DisplayName => $"{GradeLevelName} - {TermDisplayName} - {LearningAreaDisplayName}".Trim();
 	}
 }
