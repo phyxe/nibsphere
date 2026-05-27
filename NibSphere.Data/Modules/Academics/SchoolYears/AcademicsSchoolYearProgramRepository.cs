@@ -184,6 +184,7 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
                 INNER JOIN LearningArea la
                     ON ppl.LearningAreaId = la.Id
                 WHERE ppl.ProgramId = @SourceProgramId
+                AND ppl.IsActive = 1
                   AND NOT EXISTS
                   (
                       SELECT 1
