@@ -316,6 +316,73 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
 			await command.ExecuteNonQueryAsync(cancellationToken);
 		}
 
+		public async Task DeleteAsync(
+	int id,
+	CancellationToken cancellationToken = default)
+		{
+			const string countSql =
+				"""
+                SELECT
+                    (
+                        SELECT COUNT(1)
+                        FROM Academics_SchoolYearTerm
+                        WHERE Id = @Id
+                    ) AS TermCount,
+
+                    (
+                        SELECT COUNT(1)
+                        FROM Academics_SchoolYearTerm
+                        WHERE ParentTermId = @Id
+                    ) AS ChildTermCount,
+
+                    (
+                        SELECT COUNT(1)
+                        FROM Academics_Subject
+                        WHERE TermId = @Id
+                    ) AS DependentRecordCount;
+                """;
+
+			const string deleteSql =
+				"""
+                DELETE FROM Academics_SchoolYearTerm
+                WHERE Id = @Id;
+                """;
+
+			using SqlConnection connection = _connectionFactory.CreateAppConnection();
+			await connection.OpenAsync(cancellationToken);
+
+			using SqlCommand countCommand = new(countSql, connection);
+			countCommand.Parameters.AddWithValue("@Id", id);
+
+			using SqlDataReader reader = await countCommand.ExecuteReaderAsync(cancellationToken);
+
+			if (!await reader.ReadAsync(cancellationToken))
+			{
+				throw new InvalidOperationException("Term could not be checked before deletion.");
+			}
+
+			int termCount = Convert.ToInt32(reader["TermCount"]);
+			int childTermCount = Convert.ToInt32(reader["ChildTermCount"]);
+			int dependentRecordCount = Convert.ToInt32(reader["DependentRecordCount"]);
+
+			await reader.CloseAsync();
+
+			if (termCount == 0)
+			{
+				throw new InvalidOperationException("Term was not found.");
+			}
+
+			if (childTermCount > 0 || dependentRecordCount > 0)
+			{
+				throw new InvalidOperationException("Term cannot be deleted because it already has child terms or related subjects.");
+			}
+
+			using SqlCommand deleteCommand = new(deleteSql, connection);
+			deleteCommand.Parameters.AddWithValue("@Id", id);
+
+			await deleteCommand.ExecuteNonQueryAsync(cancellationToken);
+		}
+
 		private static AcademicsSchoolYearTerm Map(SqlDataReader reader)
 		{
 			int childTermCount = GetOptionalInt32(reader, "ChildTermCount");
