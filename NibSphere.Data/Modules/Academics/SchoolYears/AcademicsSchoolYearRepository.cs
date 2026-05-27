@@ -349,34 +349,54 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
 		}
 
 		public async Task DeleteAsync(
-	int id,
-	CancellationToken cancellationToken = default)
+			int id,
+			CancellationToken cancellationToken = default)
 		{
 			const string countSql =
 				"""
         SELECT
             (
                 SELECT COUNT(1)
-                FROM Academics_SchoolYearTerm
+                FROM Academics_SchoolYear
                 WHERE Id = @Id
+            ) AS SchoolYearCount,
+
+            (
+                SELECT COUNT(1)
+                FROM Academics_SchoolYearTerm
+                WHERE SchoolYearId = @Id
             ) AS TermCount,
 
             (
-                SELECT COUNT(1)
-                FROM Academics_SchoolYearTerm
-                WHERE ParentTermId = @Id
-            ) AS ChildTermCount,
-
-            (
-                SELECT COUNT(1)
-                FROM Academics_Subject
-                WHERE TermId = @Id
+                (
+                    SELECT COUNT(1)
+                    FROM Academics_SchoolYearProgram
+                    WHERE SchoolYearId = @Id
+                )
+                +
+                (
+                    SELECT COUNT(1)
+                    FROM Academics_SchoolYearSection
+                    WHERE SchoolYearId = @Id
+                )
+                +
+                (
+                    SELECT COUNT(1)
+                    FROM Academics_Subject
+                    WHERE SchoolYearId = @Id
+                )
+                +
+                (
+                    SELECT COUNT(1)
+                    FROM Academics_Enrollment
+                    WHERE SchoolYearId = @Id
+                )
             ) AS DependentRecordCount;
         """;
 
 			const string deleteSql =
 				"""
-        DELETE FROM Academics_SchoolYearTerm
+        DELETE FROM Academics_SchoolYear
         WHERE Id = @Id;
         """;
 
@@ -390,23 +410,23 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
 
 			if (!await reader.ReadAsync(cancellationToken))
 			{
-				throw new InvalidOperationException("Term could not be checked before deletion.");
+				throw new InvalidOperationException("School year could not be checked before deletion.");
 			}
 
+			int schoolYearCount = Convert.ToInt32(reader["SchoolYearCount"]);
 			int termCount = Convert.ToInt32(reader["TermCount"]);
-			int childTermCount = Convert.ToInt32(reader["ChildTermCount"]);
 			int dependentRecordCount = Convert.ToInt32(reader["DependentRecordCount"]);
 
 			await reader.CloseAsync();
 
-			if (termCount == 0)
+			if (schoolYearCount == 0)
 			{
-				throw new InvalidOperationException("Term was not found.");
+				throw new InvalidOperationException("School year was not found.");
 			}
 
-			if (childTermCount > 0 || dependentRecordCount > 0)
+			if (termCount > 0 || dependentRecordCount > 0)
 			{
-				throw new InvalidOperationException("Term cannot be deleted because it already has child terms or related subjects.");
+				throw new InvalidOperationException("School year cannot be deleted because it already has terms or related academic records.");
 			}
 
 			using SqlCommand deleteCommand = new(deleteSql, connection);

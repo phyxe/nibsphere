@@ -3,7 +3,6 @@ using NibSphere.Core.Modules.Academics.SchoolYears;
 using NibSphere.Data.Modules.Academics.SchoolYears;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace NibSphere.Modules.Academics.Views
 {
@@ -30,54 +29,37 @@ namespace NibSphere.Modules.Academics.Views
 		private async void AcademicsSchoolYearsView_Loaded(object sender, RoutedEventArgs e)
 		{
 			Loaded -= AcademicsSchoolYearsView_Loaded;
+
 			await LoadSchoolYearsAsync();
+			ShowListMode();
 		}
 
-		private async Task LoadSchoolYearsAsync(int? selectedSchoolYearId = null)
+		private async Task LoadSchoolYearsAsync()
 		{
 			List<AcademicsSchoolYear> schoolYears = await _schoolYearRepository.GetAllAsync(includeInactive: true);
 
-			List<SchoolYearCardRow> rows = schoolYears
+			SchoolYearsItemsControl.ItemsSource = schoolYears
 				.Select(x => new SchoolYearCardRow(x))
 				.ToList();
 
-			SchoolYearsItemsControl.ItemsSource = rows;
-
-			AcademicsSchoolYear? selected = null;
-
-			if (selectedSchoolYearId.HasValue)
-			{
-				selected = schoolYears.FirstOrDefault(x => x.Id == selectedSchoolYearId.Value);
-			}
-
-			selected ??= schoolYears.FirstOrDefault(x => x.IsCurrent);
-			selected ??= schoolYears.FirstOrDefault();
-
-			await SelectSchoolYearAsync(selected);
+			EmptySchoolYearsTextBlock.Visibility = schoolYears.Count == 0
+				? Visibility.Visible
+				: Visibility.Collapsed;
 		}
 
-		private async Task SelectSchoolYearAsync(AcademicsSchoolYear? schoolYear)
+		private async Task LoadSelectedSchoolYearAsync(int schoolYearId)
 		{
-			_selectedSchoolYear = schoolYear;
+			_selectedSchoolYear = await _schoolYearRepository.GetByIdAsync(schoolYearId);
 
-			if (schoolYear == null)
+			if (_selectedSchoolYear == null)
 			{
-				ClearSchoolYearForm();
-				TermsItemsControl.ItemsSource = null;
+				await LoadSchoolYearsAsync();
+				ShowListMode();
 				return;
 			}
 
-			SelectedSchoolYearTitleTextBlock.Text = schoolYear.Name;
-
-			SchoolYearNameTextBox.Text = schoolYear.Name;
-			SchoolYearStartDatePicker.SelectedDate = schoolYear.StartDate;
-			SchoolYearEndDatePicker.SelectedDate = schoolYear.EndDate;
-			SchoolYearIsCurrentCheckBox.IsChecked = schoolYear.IsCurrent;
-			SchoolYearIsActiveCheckBox.IsChecked = schoolYear.IsActive;
-
-			DeleteSchoolYearButton.IsEnabled = schoolYear.IsDeletable;
-
-			await LoadTermsAsync(schoolYear.Id);
+			await LoadTermsAsync(_selectedSchoolYear.Id);
+			LoadOverview();
 		}
 
 		private async Task LoadTermsAsync(int schoolYearId)
@@ -89,38 +71,114 @@ namespace NibSphere.Modules.Academics.Views
 			TermsItemsControl.ItemsSource = terms
 				.Select(x => new TermAccordionRow(x))
 				.ToList();
+
+			EmptyTermsTextBlock.Visibility = terms.Count == 0
+				? Visibility.Visible
+				: Visibility.Collapsed;
 		}
 
-		private void ClearSchoolYearForm()
+		private void LoadOverview()
 		{
-			SelectedSchoolYearTitleTextBlock.Text = "New School Year";
-
-			SchoolYearNameTextBox.Text = string.Empty;
-			SchoolYearStartDatePicker.SelectedDate = null;
-			SchoolYearEndDatePicker.SelectedDate = null;
-			SchoolYearIsCurrentCheckBox.IsChecked = false;
-			SchoolYearIsActiveCheckBox.IsChecked = true;
-			TermEditorBorder.Visibility = Visibility.Collapsed;
-
-			DeleteSchoolYearButton.IsEnabled = false;
-		}
-
-		private async void SchoolYearCard_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-		{
-			if (sender is not Border border ||
-				border.Tag is not SchoolYearCardRow row)
+			if (_selectedSchoolYear == null)
 			{
 				return;
 			}
 
-			await SelectSchoolYearAsync(row.SchoolYear);
+			OverviewTitleTextBlock.Text = _selectedSchoolYear.Name;
+			OverviewDateRangeTextBlock.Text = $"{FormatDate(_selectedSchoolYear.StartDate)} to {FormatDate(_selectedSchoolYear.EndDate)}";
+			OverviewTermCountTextBlock.Text = $"{_selectedSchoolYear.TermCount} term{(_selectedSchoolYear.TermCount == 1 ? string.Empty : "s")}";
+			OverviewStatusTextBlock.Text = BuildStatusDisplay(_selectedSchoolYear);
+
+			OverviewDependencyTextBlock.Text = _selectedSchoolYear.DependentRecordCount == 0
+				? "No dependent academic records yet."
+				: $"{_selectedSchoolYear.DependentRecordCount} related academic record{(_selectedSchoolYear.DependentRecordCount == 1 ? string.Empty : "s")}.";
+
+			DeleteSchoolYearButton.IsEnabled = _selectedSchoolYear.IsDeletable;
+		}
+
+		private void ShowListMode()
+		{
+			SchoolYearListPanel.Visibility = Visibility.Visible;
+			SchoolYearOverviewPanel.Visibility = Visibility.Collapsed;
+			SchoolYearEditorPanel.Visibility = Visibility.Collapsed;
+			TermEditorPanel.Visibility = Visibility.Collapsed;
+		}
+
+		private void ShowOverviewMode()
+		{
+			SchoolYearListPanel.Visibility = Visibility.Collapsed;
+			SchoolYearOverviewPanel.Visibility = Visibility.Visible;
+			SchoolYearEditorPanel.Visibility = Visibility.Collapsed;
+			TermEditorPanel.Visibility = Visibility.Collapsed;
+		}
+
+		private void ShowSchoolYearEditorMode()
+		{
+			SchoolYearListPanel.Visibility = Visibility.Collapsed;
+			SchoolYearOverviewPanel.Visibility = Visibility.Collapsed;
+			SchoolYearEditorPanel.Visibility = Visibility.Visible;
+			TermEditorPanel.Visibility = Visibility.Collapsed;
+		}
+
+		private void ShowTermEditorMode()
+		{
+			SchoolYearListPanel.Visibility = Visibility.Collapsed;
+			SchoolYearOverviewPanel.Visibility = Visibility.Collapsed;
+			SchoolYearEditorPanel.Visibility = Visibility.Collapsed;
+			TermEditorPanel.Visibility = Visibility.Visible;
+		}
+
+		private async void OpenSchoolYearButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is not Button button ||
+				button.Tag is not SchoolYearCardRow row)
+			{
+				return;
+			}
+
+			await LoadSelectedSchoolYearAsync(row.SchoolYear.Id);
+			ShowOverviewMode();
+		}
+
+		private async void BackToListButton_Click(object sender, RoutedEventArgs e)
+		{
+			_selectedSchoolYear = null;
+			_editingTerm = null;
+
+			await LoadSchoolYearsAsync();
+			ShowListMode();
 		}
 
 		private void NewSchoolYearButton_Click(object sender, RoutedEventArgs e)
 		{
 			_selectedSchoolYear = null;
-			ClearSchoolYearForm();
-			TermsItemsControl.ItemsSource = null;
+			_editingTerm = null;
+
+			SchoolYearEditorTitleTextBlock.Text = "New School Year";
+			SchoolYearNameTextBox.Text = string.Empty;
+			SchoolYearStartDatePicker.SelectedDate = null;
+			SchoolYearEndDatePicker.SelectedDate = null;
+			SchoolYearIsCurrentCheckBox.IsChecked = false;
+			SchoolYearIsActiveCheckBox.IsChecked = true;
+
+			ShowSchoolYearEditorMode();
+		}
+
+		private void EditSchoolYearButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (_selectedSchoolYear == null)
+			{
+				return;
+			}
+
+			SchoolYearEditorTitleTextBlock.Text = $"Edit School Year: {_selectedSchoolYear.Name}";
+			SchoolYearNameTextBox.Text = _selectedSchoolYear.Name;
+			SchoolYearStartDatePicker.SelectedDate = _selectedSchoolYear.StartDate;
+			SchoolYearEndDatePicker.SelectedDate = _selectedSchoolYear.EndDate;
+			SchoolYearIsCurrentCheckBox.IsChecked = _selectedSchoolYear.IsCurrent;
+			SchoolYearIsActiveCheckBox.IsChecked = _selectedSchoolYear.IsActive;
+
+			ShowSchoolYearEditorMode();
 		}
 
 		private async void SaveSchoolYearButton_Click(object sender, RoutedEventArgs e)
@@ -147,7 +205,9 @@ namespace NibSphere.Modules.Academics.Views
 					selectedId = await _schoolYearRepository.InsertAsync(schoolYear);
 				}
 
-				await LoadSchoolYearsAsync(selectedId);
+				await LoadSchoolYearsAsync();
+				await LoadSelectedSchoolYearAsync(selectedId);
+				ShowOverviewMode();
 			}
 			catch (Exception ex)
 			{
@@ -157,6 +217,18 @@ namespace NibSphere.Modules.Academics.Views
 					MessageBoxButton.OK,
 					MessageBoxImage.Warning);
 			}
+		}
+
+		private void CancelSchoolYearEditorButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (_selectedSchoolYear == null)
+			{
+				ShowListMode();
+				return;
+			}
+
+			LoadOverview();
+			ShowOverviewMode();
 		}
 
 		private async void DeleteSchoolYearButton_Click(object sender, RoutedEventArgs e)
@@ -191,7 +263,12 @@ namespace NibSphere.Modules.Academics.Views
 			try
 			{
 				await _schoolYearRepository.DeleteAsync(_selectedSchoolYear.Id);
+
+				_selectedSchoolYear = null;
+				_editingTerm = null;
+
 				await LoadSchoolYearsAsync();
+				ShowListMode();
 			}
 			catch (Exception ex)
 			{
@@ -207,12 +284,6 @@ namespace NibSphere.Modules.Academics.Views
 		{
 			if (_selectedSchoolYear == null)
 			{
-				MessageBox.Show(
-					"Select or save a school year first before adding terms.",
-					"School Year Required",
-					MessageBoxButton.OK,
-					MessageBoxImage.Information);
-
 				return;
 			}
 
@@ -226,13 +297,15 @@ namespace NibSphere.Modules.Academics.Views
 			TermStartDatePicker.SelectedDate = _selectedSchoolYear.StartDate;
 			TermEndDatePicker.SelectedDate = _selectedSchoolYear.EndDate;
 			ParentTermComboBox.SelectedValue = 0;
+			TermIsParentTermCheckBox.IsChecked = true;
+			ParentTermPanel.Visibility = Visibility.Collapsed;
 			TermSortOrderTextBox.Text = "0";
 			TermIsEnrollmentCheckBox.IsChecked = false;
 			TermIsGradingCheckBox.IsChecked = true;
 			TermIsReportingCheckBox.IsChecked = true;
 			TermIsActiveCheckBox.IsChecked = true;
 
-			TermEditorBorder.Visibility = Visibility.Visible;
+			ShowTermEditorMode();
 		}
 
 		private async void EditTermButton_Click(object sender, RoutedEventArgs e)
@@ -247,11 +320,15 @@ namespace NibSphere.Modules.Academics.Views
 
 			await LoadParentTermOptionsAsync(_editingTerm.Id);
 
+			bool isParentTerm = !_editingTerm.ParentTermId.HasValue;
+
 			TermEditorTitleTextBlock.Text = $"Edit Term: {_editingTerm.DisplayName}";
 			TermNameTextBox.Text = _editingTerm.Name;
 			TermShortNameTextBox.Text = _editingTerm.ShortName;
 			TermStartDatePicker.SelectedDate = _editingTerm.StartDate;
 			TermEndDatePicker.SelectedDate = _editingTerm.EndDate;
+			TermIsParentTermCheckBox.IsChecked = isParentTerm;
+			ParentTermPanel.Visibility = isParentTerm ? Visibility.Collapsed : Visibility.Visible;
 			ParentTermComboBox.SelectedValue = _editingTerm.ParentTermId ?? 0;
 			TermSortOrderTextBox.Text = _editingTerm.SortOrder.ToString();
 			TermIsEnrollmentCheckBox.IsChecked = _editingTerm.IsEnrollmentTerm;
@@ -259,7 +336,79 @@ namespace NibSphere.Modules.Academics.Views
 			TermIsReportingCheckBox.IsChecked = _editingTerm.IsReportingTerm;
 			TermIsActiveCheckBox.IsChecked = _editingTerm.IsActive;
 
-			TermEditorBorder.Visibility = Visibility.Visible;
+			ShowTermEditorMode();
+		}
+
+		private async void SaveTermButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (_selectedSchoolYear == null)
+			{
+				return;
+			}
+
+			try
+			{
+				int sortOrder = 0;
+
+				if (!string.IsNullOrWhiteSpace(TermSortOrderTextBox.Text) &&
+					!int.TryParse(TermSortOrderTextBox.Text, out sortOrder))
+				{
+					throw new InvalidOperationException("Sort order must be a whole number.");
+				}
+
+				bool isParentTerm = TermIsParentTermCheckBox.IsChecked == true;
+
+				int selectedParentId = ParentTermComboBox.SelectedValue is int parentId
+					? parentId
+					: 0;
+
+				AcademicsSchoolYearTerm term = _editingTerm ?? new AcademicsSchoolYearTerm();
+
+				term.SchoolYearId = _selectedSchoolYear.Id;
+				term.ParentTermId = isParentTerm || selectedParentId <= 0
+					? null
+					: selectedParentId;
+				term.Name = TermNameTextBox.Text;
+				term.ShortName = TermShortNameTextBox.Text;
+				term.StartDate = TermStartDatePicker.SelectedDate;
+				term.EndDate = TermEndDatePicker.SelectedDate;
+				term.SortOrder = sortOrder;
+				term.IsEnrollmentTerm = TermIsEnrollmentCheckBox.IsChecked == true;
+				term.IsGradingTerm = TermIsGradingCheckBox.IsChecked == true;
+				term.IsReportingTerm = TermIsReportingCheckBox.IsChecked == true;
+				term.IsActive = TermIsActiveCheckBox.IsChecked == true;
+
+				if (term.Id > 0)
+				{
+					await _termRepository.UpdateAsync(term);
+				}
+				else
+				{
+					await _termRepository.InsertAsync(term);
+				}
+
+				_editingTerm = null;
+
+				await LoadSchoolYearsAsync();
+				await LoadSelectedSchoolYearAsync(_selectedSchoolYear.Id);
+				ShowOverviewMode();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					$"Unable to save term.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
+					"Save Failed",
+					MessageBoxButton.OK,
+					MessageBoxImage.Warning);
+			}
+		}
+
+		private void CancelTermButton_Click(object sender, RoutedEventArgs e)
+		{
+			_editingTerm = null;
+
+			LoadOverview();
+			ShowOverviewMode();
 		}
 
 		private async void DeleteTermButton_Click(object sender, RoutedEventArgs e)
@@ -298,8 +447,9 @@ namespace NibSphere.Modules.Academics.Views
 
 				if (_selectedSchoolYear != null)
 				{
-					await LoadTermsAsync(_selectedSchoolYear.Id);
-					await LoadSchoolYearsAsync(_selectedSchoolYear.Id);
+					await LoadSchoolYearsAsync();
+					await LoadSelectedSchoolYearAsync(_selectedSchoolYear.Id);
+					ShowOverviewMode();
 				}
 			}
 			catch (Exception ex)
@@ -312,70 +462,18 @@ namespace NibSphere.Modules.Academics.Views
 			}
 		}
 
-		private async void SaveTermButton_Click(object sender, RoutedEventArgs e)
+		private void TermIsParentTermCheckBox_Changed(object sender, RoutedEventArgs e)
 		{
-			if (_selectedSchoolYear == null)
+			bool isParentTerm = TermIsParentTermCheckBox.IsChecked == true;
+
+			ParentTermPanel.Visibility = isParentTerm
+				? Visibility.Collapsed
+				: Visibility.Visible;
+
+			if (isParentTerm)
 			{
-				return;
+				ParentTermComboBox.SelectedValue = 0;
 			}
-
-			try
-			{
-				int sortOrder = 0;
-
-				if (!string.IsNullOrWhiteSpace(TermSortOrderTextBox.Text) &&
-					!int.TryParse(TermSortOrderTextBox.Text, out sortOrder))
-				{
-					throw new InvalidOperationException("Sort order must be a whole number.");
-				}
-
-				int selectedParentId = ParentTermComboBox.SelectedValue is int parentId
-					? parentId
-					: 0;
-
-				AcademicsSchoolYearTerm term = _editingTerm ?? new AcademicsSchoolYearTerm();
-
-				term.SchoolYearId = _selectedSchoolYear.Id;
-				term.ParentTermId = selectedParentId <= 0 ? null : selectedParentId;
-				term.Name = TermNameTextBox.Text;
-				term.ShortName = TermShortNameTextBox.Text;
-				term.StartDate = TermStartDatePicker.SelectedDate;
-				term.EndDate = TermEndDatePicker.SelectedDate;
-				term.SortOrder = sortOrder;
-				term.IsEnrollmentTerm = TermIsEnrollmentCheckBox.IsChecked == true;
-				term.IsGradingTerm = TermIsGradingCheckBox.IsChecked == true;
-				term.IsReportingTerm = TermIsReportingCheckBox.IsChecked == true;
-				term.IsActive = TermIsActiveCheckBox.IsChecked == true;
-
-				if (term.Id > 0)
-				{
-					await _termRepository.UpdateAsync(term);
-				}
-				else
-				{
-					await _termRepository.InsertAsync(term);
-				}
-
-				TermEditorBorder.Visibility = Visibility.Collapsed;
-				_editingTerm = null;
-
-				await LoadTermsAsync(_selectedSchoolYear.Id);
-				await LoadSchoolYearsAsync(_selectedSchoolYear.Id);
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(
-					$"Unable to save term.{Environment.NewLine}{Environment.NewLine}{ex.Message}",
-					"Save Failed",
-					MessageBoxButton.OK,
-					MessageBoxImage.Warning);
-			}
-		}
-
-		private void CancelTermButton_Click(object sender, RoutedEventArgs e)
-		{
-			_editingTerm = null;
-			TermEditorBorder.Visibility = Visibility.Collapsed;
 		}
 
 		private async Task LoadParentTermOptionsAsync(int? excludeTermId)
@@ -392,9 +490,9 @@ namespace NibSphere.Modules.Academics.Views
 				includeInactive: false);
 
 			List<ParentTermOptionRow> options = new()
-	{
-		new ParentTermOptionRow(0, "No parent term")
-	};
+			{
+				new ParentTermOptionRow(0, "No parent term")
+			};
 
 			options.AddRange(parentTerms.Select(x => new ParentTermOptionRow(x.Id, x.DisplayName)));
 
@@ -419,16 +517,6 @@ namespace NibSphere.Modules.Academics.Views
 			public string DateRangeDisplay { get; }
 			public string TermSummaryDisplay { get; }
 			public string StatusDisplay { get; }
-
-			private static string BuildStatusDisplay(AcademicsSchoolYear schoolYear)
-			{
-				List<string> parts = new();
-
-				parts.Add(schoolYear.IsCurrent ? "Current" : "Not current");
-				parts.Add(schoolYear.IsActive ? "Active" : "Archived");
-
-				return string.Join(" • ", parts);
-			}
 		}
 
 		private sealed class ParentTermOptionRow
@@ -441,6 +529,11 @@ namespace NibSphere.Modules.Academics.Views
 
 			public int Id { get; }
 			public string DisplayName { get; }
+
+			public override string ToString()
+			{
+				return DisplayName;
+			}
 		}
 
 		private sealed class TermAccordionRow
@@ -450,39 +543,50 @@ namespace NibSphere.Modules.Academics.Views
 				Term = term;
 
 				Name = term.Name;
-				ShortName = string.IsNullOrWhiteSpace(term.ShortName) ? "—" : term.ShortName;
+				HeaderDisplay = term.DisplayName;
 				DateRangeDisplay = $"{FormatDate(term.StartDate)} to {FormatDate(term.EndDate)}";
-				TermScope = term.TermScope;
-				UsageDisplay = BuildUsageDisplay(term);
-				HeaderDisplay = $"{term.DisplayName} • {DateRangeDisplay}";
+				DetailDisplay = BuildDetailDisplay(term);
 			}
 
 			public AcademicsSchoolYearTerm Term { get; }
 
 			public string HeaderDisplay { get; }
 			public string Name { get; }
-			public string ShortName { get; }
 			public string DateRangeDisplay { get; }
-			public string TermScope { get; }
-			public string UsageDisplay { get; }
+			public string DetailDisplay { get; }
 
-			private static string BuildUsageDisplay(AcademicsSchoolYearTerm term)
+			private static string BuildDetailDisplay(AcademicsSchoolYearTerm term)
 			{
-				List<string> parts = new();
+				List<string> parts = new()
+				{
+					term.TermScope
+				};
+
+				if (!string.IsNullOrWhiteSpace(term.ParentTermName))
+				{
+					parts.Add($"Parent: {term.ParentTermName}");
+				}
+
+				List<string> uses = new();
 
 				if (term.IsEnrollmentTerm)
 				{
-					parts.Add("Enrollment");
+					uses.Add("Enrollment");
 				}
 
 				if (term.IsGradingTerm)
 				{
-					parts.Add("Grading");
+					uses.Add("Grading");
 				}
 
 				if (term.IsReportingTerm)
 				{
-					parts.Add("Reporting");
+					uses.Add("Reporting");
+				}
+
+				if (uses.Count > 0)
+				{
+					parts.Add(string.Join(", ", uses));
 				}
 
 				if (!term.IsActive)
@@ -490,8 +594,18 @@ namespace NibSphere.Modules.Academics.Views
 					parts.Add("Archived");
 				}
 
-				return parts.Count == 0 ? "No use selected" : string.Join(" • ", parts);
+				return string.Join(" • ", parts);
 			}
+		}
+
+		private static string BuildStatusDisplay(AcademicsSchoolYear schoolYear)
+		{
+			List<string> parts = new();
+
+			parts.Add(schoolYear.IsCurrent ? "Current" : "Not current");
+			parts.Add(schoolYear.IsActive ? "Active" : "Archived");
+
+			return string.Join(" • ", parts);
 		}
 
 		private static string FormatDate(DateTime? value)
