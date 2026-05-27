@@ -231,6 +231,8 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
                     UpdatedAt = GETDATE()
                 WHERE LearnerId = @LearnerId
                   AND SchoolYearId = @SchoolYearId
+                  AND SchoolYearSectionId = @SchoolYearSectionId
+                  AND EnrollmentScope = @EnrollmentScope
                   AND IsCurrent = 1
                   AND IsActive = 1;
                 """;
@@ -305,6 +307,8 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
 					using SqlCommand clearCommand = new(clearCurrentSql, connection, transaction);
 					clearCommand.Parameters.AddWithValue("@LearnerId", enrollment.LearnerId);
 					clearCommand.Parameters.AddWithValue("@SchoolYearId", enrollment.SchoolYearId);
+					clearCommand.Parameters.AddWithValue("@SchoolYearSectionId", enrollment.SchoolYearSectionId);
+					clearCommand.Parameters.AddWithValue("@EnrollmentScope", enrollment.EnrollmentScope);
 					await clearCommand.ExecuteNonQueryAsync(cancellationToken);
 				}
 
@@ -355,6 +359,8 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
                     UpdatedAt = GETDATE()
                 WHERE LearnerId = @LearnerId
                   AND SchoolYearId = @SchoolYearId
+                  AND SchoolYearSectionId = @SchoolYearSectionId
+                  AND EnrollmentScope = @EnrollmentScope
                   AND Id <> @Id
                   AND IsCurrent = 1
                   AND IsActive = 1;
@@ -410,6 +416,8 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
 					using SqlCommand clearCommand = new(clearCurrentSql, connection, transaction);
 					clearCommand.Parameters.AddWithValue("@LearnerId", enrollment.LearnerId);
 					clearCommand.Parameters.AddWithValue("@SchoolYearId", enrollment.SchoolYearId);
+					clearCommand.Parameters.AddWithValue("@SchoolYearSectionId", enrollment.SchoolYearSectionId);
+					clearCommand.Parameters.AddWithValue("@EnrollmentScope", enrollment.EnrollmentScope);
 					clearCommand.Parameters.AddWithValue("@Id", enrollment.Id);
 					await clearCommand.ExecuteNonQueryAsync(cancellationToken);
 				}

@@ -11,7 +11,7 @@ namespace NibSphere.Data.Modules.Academics.Database
 
 		public int SortOrder => 300;
 
-		public int SchemaVersion => 2;
+		public int SchemaVersion => 3;
 
 		public async Task InitializeAsync(
 			IAppPaths appPaths,
@@ -495,6 +495,19 @@ namespace NibSphere.Data.Modules.Academics.Database
                       AND name = 'SchoolYearProgramId'
                       AND is_nullable = 0
                 )
+
+                IF EXISTS
+                (
+                    SELECT 1
+                    FROM sys.indexes
+                    WHERE name = 'UX_Academics_Enrollment_CurrentLearnerSchoolYear'
+                      AND object_id = OBJECT_ID('Academics_Enrollment')
+                )
+                BEGIN
+                    DROP INDEX UX_Academics_Enrollment_CurrentLearnerSchoolYear
+                    ON Academics_Enrollment;
+                END
+
                 BEGIN
                     IF EXISTS
                     (
@@ -1373,7 +1386,9 @@ namespace NibSphere.Data.Modules.Academics.Database
                     ON Academics_Enrollment
                     (
                         LearnerId,
-                        SchoolYearId
+                        SchoolYearId,
+                        SchoolYearSectionId,
+                        EnrollmentScope
                     )
                     WHERE IsCurrent = 1
                       AND IsActive = 1;
