@@ -18,16 +18,313 @@
         <TextBlock Text="School Years"
                    Style="{StaticResource TextBlock.Heading1}" />
 
-        <Border Grid.Row="2"
-                Style="{StaticResource CardBorderStyle}">
-            <StackPanel>
-                <TextBlock Text="School Year Management"
-                           Style="{StaticResource TextBlock.SectionTitle}" />
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="360"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                <TextBlock Margin="0,12,0,0"
-                           Text="This view will manage school years, terms, and program deployment snapshots."
-                           Style="{StaticResource TextBlock.Body}" />
-            </StackPanel>
-        </Border>
+            <!-- School year cards -->
+            <Border Grid.Column="0"
+                    Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Saved School Years"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource TextBlock.SectionTitle}" />
+
+                        <Button x:Name="NewSchoolYearButton"
+                                Grid.Column="1"
+                                MinWidth="72"
+                                Height="32"
+                                Margin="12,0,0,0"
+                                Content="New"
+                                Click="NewSchoolYearButton_Click" />
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="2"
+                                  VerticalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="SchoolYearsItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,10"
+                                            Padding="12"
+                                            Cursor="Hand"
+                                            Tag="{Binding}"
+                                            Style="{StaticResource CardBorderStyle}"
+                                            MouseLeftButtonUp="SchoolYearCard_MouseLeftButtonUp">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontWeight="SemiBold"
+                                                       Style="{StaticResource TextBlock.Body}" />
+
+                                            <TextBlock Margin="0,6,0,0"
+                                                       Text="{Binding DateRangeDisplay}"
+                                                       Style="{StaticResource TextBlock.Body}" />
+
+                                            <TextBlock Margin="0,6,0,0"
+                                                       Text="{Binding TermSummaryDisplay}"
+                                                       Style="{StaticResource TextBlock.Body}" />
+
+                                            <TextBlock Margin="0,6,0,0"
+                                                       Text="{Binding StatusDisplay}"
+                                                       Style="{StaticResource TextBlock.Body}" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- Selected school year -->
+            <Border Grid.Column="2"
+                    Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="16"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock x:Name="SelectedSchoolYearTitleTextBlock"
+                                   Text="Select or create a school year"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource TextBlock.SectionTitle}" />
+
+                        <Button x:Name="SaveSchoolYearButton"
+                                Grid.Column="1"
+                                MinWidth="80"
+                                Height="32"
+                                Margin="12,0,0,0"
+                                Content="Save"
+                                Click="SaveSchoolYearButton_Click" />
+
+                        <Button x:Name="DeleteSchoolYearButton"
+                                Grid.Column="2"
+                                MinWidth="80"
+                                Height="32"
+                                Margin="8,0,0,0"
+                                Content="Delete"
+                                Click="DeleteSchoolYearButton_Click" />
+                    </Grid>
+
+                    <!-- School year edit fields -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="16"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="Name"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource TextBlock.Body}" />
+
+                        <TextBox x:Name="SchoolYearNameTextBox"
+                                 Grid.Row="0"
+                                 Grid.Column="1"
+                                 Grid.ColumnSpan="4"
+                                 Height="32" />
+
+                        <TextBlock Grid.Row="2"
+                                   Grid.Column="0"
+                                   Text="Start Date"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource TextBlock.Body}" />
+
+                        <DatePicker x:Name="SchoolYearStartDatePicker"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Height="32" />
+
+                        <TextBlock Grid.Row="2"
+                                   Grid.Column="3"
+                                   Text="End Date"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource TextBlock.Body}" />
+
+                        <DatePicker x:Name="SchoolYearEndDatePicker"
+                                    Grid.Row="2"
+                                    Grid.Column="4"
+                                    Height="32" />
+
+                        <CheckBox x:Name="SchoolYearIsCurrentCheckBox"
+                                  Grid.Row="4"
+                                  Grid.Column="1"
+                                  Content="Current school year"
+                                  VerticalAlignment="Center" />
+
+                        <CheckBox x:Name="SchoolYearIsActiveCheckBox"
+                                  Grid.Row="4"
+                                  Grid.Column="4"
+                                  Content="Active"
+                                  VerticalAlignment="Center" />
+                    </Grid>
+
+                    <!-- Terms header -->
+                    <Grid Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Terms under this school year"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource TextBlock.SectionTitle}" />
+
+                        <Button x:Name="AddTermButton"
+                                Grid.Column="1"
+                                MinWidth="88"
+                                Height="32"
+                                Content="Add Term"
+                                Click="AddTermButton_Click" />
+                    </Grid>
+
+                    <!-- Term accordion cards -->
+                    <ScrollViewer Grid.Row="6"
+                                  VerticalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="TermsItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Expander Margin="0,0,0,10"
+                                              Header="{Binding HeaderDisplay}"
+                                              IsExpanded="False">
+                                        <Border Padding="12"
+                                                Style="{StaticResource CardBorderStyle}">
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="8"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="8"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="12"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="160"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="16"/>
+                                                    <ColumnDefinition Width="160"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Row="0"
+                                                           Grid.Column="0"
+                                                           Text="Name"
+                                                           Style="{StaticResource TextBlock.Body}" />
+
+                                                <TextBlock Grid.Row="0"
+                                                           Grid.Column="1"
+                                                           Text="{Binding Name}"
+                                                           Style="{StaticResource TextBlock.Body}" />
+
+                                                <TextBlock Grid.Row="0"
+                                                           Grid.Column="3"
+                                                           Text="Short Name"
+                                                           Style="{StaticResource TextBlock.Body}" />
+
+                                                <TextBlock Grid.Row="0"
+                                                           Grid.Column="4"
+                                                           Text="{Binding ShortName}"
+                                                           Style="{StaticResource TextBlock.Body}" />
+
+                                                <TextBlock Grid.Row="2"
+                                                           Grid.Column="0"
+                                                           Text="Dates"
+                                                           Style="{StaticResource TextBlock.Body}" />
+
+                                                <TextBlock Grid.Row="2"
+                                                           Grid.Column="1"
+                                                           Text="{Binding DateRangeDisplay}"
+                                                           Style="{StaticResource TextBlock.Body}" />
+
+                                                <TextBlock Grid.Row="2"
+                                                           Grid.Column="3"
+                                                           Text="Scope"
+                                                           Style="{StaticResource TextBlock.Body}" />
+
+                                                <TextBlock Grid.Row="2"
+                                                           Grid.Column="4"
+                                                           Text="{Binding TermScope}"
+                                                           Style="{StaticResource TextBlock.Body}" />
+
+                                                <TextBlock Grid.Row="4"
+                                                           Grid.Column="0"
+                                                           Text="Use"
+                                                           Style="{StaticResource TextBlock.Body}" />
+
+                                                <TextBlock Grid.Row="4"
+                                                           Grid.Column="1"
+                                                           Grid.ColumnSpan="4"
+                                                           Text="{Binding UsageDisplay}"
+                                                           Style="{StaticResource TextBlock.Body}" />
+
+                                                <StackPanel Grid.Row="6"
+                                                            Grid.Column="0"
+                                                            Grid.ColumnSpan="5"
+                                                            Orientation="Horizontal"
+                                                            HorizontalAlignment="Right">
+                                                    <Button MinWidth="72"
+                                                            Height="32"
+                                                            Margin="0,0,8,0"
+                                                            Content="Edit"
+                                                            Tag="{Binding}"
+                                                            Click="EditTermButton_Click" />
+
+                                                    <Button MinWidth="72"
+                                                            Height="32"
+                                                            Content="Delete"
+                                                            Tag="{Binding}"
+                                                            Click="DeleteTermButton_Click" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </Expander>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>
