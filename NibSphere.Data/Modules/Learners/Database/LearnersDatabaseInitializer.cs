@@ -11,6 +11,8 @@ namespace NibSphere.Data.Modules.Learners.Database
 
 		public int SortOrder => 200;
 
+		public int SchemaVersion => 1;
+
 		public async Task InitializeAsync(
 			IAppPaths appPaths,
 			CancellationToken cancellationToken = default)

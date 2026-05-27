@@ -43,10 +43,31 @@ namespace NibSphere.Modules
 			IAppPaths appPaths,
 			CancellationToken cancellationToken = default)
 		{
+			DatabaseSchemaVersionService versionService =
+				new(new LocalDbConnectionFactory(appPaths));
+
+			await versionService.EnsureVersionTableAsync(cancellationToken);
+
 			foreach (IModuleDatabaseInitializer initializer in _databaseInitializers)
 			{
 				cancellationToken.ThrowIfCancellationRequested();
+
+				string schemaKey = $"module:{initializer.ModuleKey}";
+
+				if (await versionService.IsCurrentAsync(
+						schemaKey,
+						initializer.SchemaVersion,
+						cancellationToken))
+				{
+					continue;
+				}
+
 				await initializer.InitializeAsync(appPaths, cancellationToken);
+
+				await versionService.SetVersionAsync(
+					schemaKey,
+					initializer.SchemaVersion,
+					cancellationToken);
 			}
 		}
 

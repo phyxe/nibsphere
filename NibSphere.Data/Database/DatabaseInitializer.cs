@@ -8,6 +8,8 @@ namespace NibSphere.Data.Database
 	{
 		private readonly IAppPaths _appPaths;
 		private readonly LocalDbConnectionFactory _connectionFactory;
+		private const string CoreSchemaKey = "core";
+		private const int CoreSchemaVersion = 1;
 
 		public DatabaseInitializer(IAppPaths appPaths)
 		{
@@ -17,12 +19,25 @@ namespace NibSphere.Data.Database
 
 		public async Task InitializeAsync()
 		{
+			bool databaseCreated = false;
+
 			if (!File.Exists(_appPaths.DatabaseFilePath))
 			{
 				await CreateDatabaseAsync();
+				databaseCreated = true;
+			}
+
+			DatabaseSchemaVersionService versionService = new(_connectionFactory);
+			await versionService.EnsureVersionTableAsync();
+
+			if (!databaseCreated &&
+				await versionService.IsCurrentAsync(CoreSchemaKey, CoreSchemaVersion))
+			{
+				return;
 			}
 
 			await CreateTablesAsync();
+			await versionService.SetVersionAsync(CoreSchemaKey, CoreSchemaVersion);
 		}
 
 		private async Task CreateDatabaseAsync()

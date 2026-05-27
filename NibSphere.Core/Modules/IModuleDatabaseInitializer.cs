@@ -8,6 +8,8 @@ namespace NibSphere.Core.Modules
 
 		int SortOrder { get; }
 
+		int SchemaVersion { get; }
+
 		Task InitializeAsync(
 			IAppPaths appPaths,
 			CancellationToken cancellationToken = default);
