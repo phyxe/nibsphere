@@ -91,6 +91,25 @@ namespace NibSphere.Data.Modules.Academics.Database
                     );
                 END
 
+                IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_GradeLevel')
+                BEGIN
+                    CREATE TABLE Academics_GradeLevel
+                    (
+                        Id INT PRIMARY KEY IDENTITY(1,1),
+
+                        Name NVARCHAR(50) NOT NULL,
+                        ShortName NVARCHAR(50) NULL,
+
+                        SortOrder INT NOT NULL DEFAULT 0,
+                        IsActive BIT NOT NULL DEFAULT 1,
+
+                        CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+                        UpdatedAt DATETIME2 NULL,
+
+                        CONSTRAINT UQ_Academics_GradeLevel_Name UNIQUE (Name)
+                    );
+                END
+
                 IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'Academics_ProgramProspectusLine')
                 BEGIN
                     CREATE TABLE Academics_ProgramProspectusLine
@@ -1397,6 +1416,24 @@ namespace NibSphere.Data.Modules.Academics.Database
                 BEGIN
                     INSERT INTO Academics_EnrollmentStatus (Code, Name, SortOrder, IsActive)
                     VALUES ('CANCELLED', 'Cancelled', 70, 1);
+                END
+
+                IF NOT EXISTS (SELECT 1 FROM Academics_GradeLevel)
+                BEGIN
+                    INSERT INTO Academics_GradeLevel
+                    (
+                        Name,
+                        ShortName,
+                        SortOrder,
+                        IsActive
+                    )
+                    VALUES
+                    (N'Grade 7', N'G7', 70, 1),
+                    (N'Grade 8', N'G8', 80, 1),
+                    (N'Grade 9', N'G9', 90, 1),
+                    (N'Grade 10', N'G10', 100, 1),
+                    (N'Grade 11', N'G11', 110, 1),
+                    (N'Grade 12', N'G12', 120, 1);
                 END
                 """;
 

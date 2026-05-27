@@ -20,14 +20,408 @@
 
         <Border Grid.Row="2"
                 Style="{StaticResource CardBorderStyle}">
-            <StackPanel>
-                <TextBlock Text="Setup and Reference Lists"
-                           Style="{StaticResource TextBlock.SectionTitle}" />
+            <TabControl>
 
-                <TextBlock Margin="0,12,0,0"
-                           Text="This view will provide access to teachers, enrollment statuses, programs/prospectus, and section templates."
-                           Style="{StaticResource TextBlock.Body}" />
-            </StackPanel>
+                <!-- ===================================================== -->
+                <!-- GRADE LEVELS                                          -->
+                <!-- ===================================================== -->
+                <TabItem Header="Grade Levels">
+                    <Grid Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="380"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Grade Levels"
+                                       Style="{StaticResource TextBlock.SectionTitle}" />
+
+                            <TextBlock Margin="0,4,0,0"
+                                       Text="These become controlled options for sections, prospectus lines, deployment, and enrollment."
+                                       Style="{StaticResource TextBlock.Secondary}" />
+                        </StackPanel>
+
+                        <ScrollViewer Grid.Row="2"
+                                      Grid.Column="0"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl x:Name="GradeLevelsItemsControl">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="0,0,0,10"
+                                                Padding="14"
+                                                Style="{StaticResource CardBorderStyle}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding DisplayName}"
+                                                               FontWeight="SemiBold"
+                                                               Style="{StaticResource TextBlock.Body}" />
+
+                                                    <TextBlock Margin="0,4,0,0"
+                                                               Text="{Binding DetailDisplay}"
+                                                               Style="{StaticResource TextBlock.Secondary}" />
+                                                </StackPanel>
+
+                                                <Button Grid.Column="1"
+                                                        MinWidth="72"
+                                                        MinHeight="32"
+                                                        Padding="10,4"
+                                                        Margin="16,0,0,0"
+                                                        Content="Edit"
+                                                        Tag="{Binding}"
+                                                        Click="EditGradeLevelButton_Click" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <Border Grid.Column="2"
+                                Grid.RowSpan="3"
+                                Padding="14"
+                                Style="{StaticResource CardBorderStyle}">
+                            <StackPanel>
+                                <TextBlock x:Name="GradeLevelEditorTitleTextBlock"
+                                           Text="New Grade Level"
+                                           Style="{StaticResource TextBlock.SectionTitle}" />
+
+                                <TextBlock Margin="0,4,0,16"
+                                           Text="Use stable names such as Grade 11 and Grade 12."
+                                           Style="{StaticResource TextBlock.Secondary}" />
+
+                                <Label Content="Name" />
+                                <TextBox x:Name="GradeLevelNameTextBox"
+                                         MinHeight="34"
+                                         VerticalContentAlignment="Center" />
+
+                                <Label Margin="0,10,0,0"
+                                       Content="Short Name" />
+                                <TextBox x:Name="GradeLevelShortNameTextBox"
+                                         MinHeight="34"
+                                         VerticalContentAlignment="Center" />
+
+                                <Label Margin="0,10,0,0"
+                                       Content="Sort Order" />
+                                <TextBox x:Name="GradeLevelSortOrderTextBox"
+                                         MinHeight="34"
+                                         VerticalContentAlignment="Center" />
+
+                                <CheckBox x:Name="GradeLevelIsActiveCheckBox"
+                                          Margin="0,14,0,0"
+                                          Content="Active" />
+
+                                <StackPanel Margin="0,18,0,0"
+                                            Orientation="Horizontal"
+                                            HorizontalAlignment="Right">
+                                    <Button MinWidth="72"
+                                            MinHeight="32"
+                                            Margin="0,0,8,0"
+                                            Padding="10,4"
+                                            Content="New"
+                                            Click="NewGradeLevelButton_Click" />
+
+                                    <Button MinWidth="72"
+                                            MinHeight="32"
+                                            Margin="0,0,8,0"
+                                            Padding="10,4"
+                                            Content="Save"
+                                            Click="SaveGradeLevelButton_Click" />
+
+                                    <Button x:Name="DeleteGradeLevelButton"
+                                            MinWidth="72"
+                                            MinHeight="32"
+                                            Padding="10,4"
+                                            Content="Delete"
+                                            Click="DeleteGradeLevelButton_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+                <!-- ===================================================== -->
+                <!-- PROGRAMS                                              -->
+                <!-- ===================================================== -->
+                <TabItem Header="Programs">
+                    <Grid Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="420"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Programs"
+                                       Style="{StaticResource TextBlock.SectionTitle}" />
+
+                            <TextBlock Margin="0,4,0,0"
+                                       Text="These are master program names. Later, selected programs are deployed into a school year."
+                                       Style="{StaticResource TextBlock.Secondary}" />
+                        </StackPanel>
+
+                        <ScrollViewer Grid.Row="2"
+                                      Grid.Column="0"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl x:Name="ProgramsItemsControl">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="0,0,0,10"
+                                                Padding="14"
+                                                Style="{StaticResource CardBorderStyle}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding DisplayName}"
+                                                               FontWeight="SemiBold"
+                                                               Style="{StaticResource TextBlock.Body}" />
+
+                                                    <TextBlock Margin="0,4,0,0"
+                                                               Text="{Binding DetailDisplay}"
+                                                               Style="{StaticResource TextBlock.Secondary}" />
+                                                </StackPanel>
+
+                                                <Button Grid.Column="1"
+                                                        MinWidth="72"
+                                                        MinHeight="32"
+                                                        Padding="10,4"
+                                                        Margin="16,0,0,0"
+                                                        Content="Edit"
+                                                        Tag="{Binding}"
+                                                        Click="EditProgramButton_Click" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <Border Grid.Column="2"
+                                Grid.RowSpan="3"
+                                Padding="14"
+                                Style="{StaticResource CardBorderStyle}">
+                            <StackPanel>
+                                <TextBlock x:Name="ProgramEditorTitleTextBlock"
+                                           Text="New Program"
+                                           Style="{StaticResource TextBlock.SectionTitle}" />
+
+                                <TextBlock Margin="0,4,0,16"
+                                           Text="Examples: HUMSS, ABM, STEM, TVL-ICT, TVL-HE."
+                                           Style="{StaticResource TextBlock.Secondary}" />
+
+                                <Label Content="Code" />
+                                <TextBox x:Name="ProgramCodeTextBox"
+                                         MinHeight="34"
+                                         VerticalContentAlignment="Center" />
+
+                                <Label Margin="0,10,0,0"
+                                       Content="Name" />
+                                <TextBox x:Name="ProgramNameTextBox"
+                                         MinHeight="34"
+                                         VerticalContentAlignment="Center" />
+
+                                <Label Margin="0,10,0,0"
+                                       Content="Description" />
+                                <TextBox x:Name="ProgramDescriptionTextBox"
+                                         MinHeight="80"
+                                         TextWrapping="Wrap"
+                                         AcceptsReturn="True"
+                                         VerticalScrollBarVisibility="Auto" />
+
+                                <Label Margin="0,10,0,0"
+                                       Content="Sort Order" />
+                                <TextBox x:Name="ProgramSortOrderTextBox"
+                                         MinHeight="34"
+                                         VerticalContentAlignment="Center" />
+
+                                <CheckBox x:Name="ProgramIsActiveCheckBox"
+                                          Margin="0,14,0,0"
+                                          Content="Active" />
+
+                                <StackPanel Margin="0,18,0,0"
+                                            Orientation="Horizontal"
+                                            HorizontalAlignment="Right">
+                                    <Button MinWidth="72"
+                                            MinHeight="32"
+                                            Margin="0,0,8,0"
+                                            Padding="10,4"
+                                            Content="New"
+                                            Click="NewProgramButton_Click" />
+
+                                    <Button MinWidth="72"
+                                            MinHeight="32"
+                                            Margin="0,0,8,0"
+                                            Padding="10,4"
+                                            Content="Save"
+                                            Click="SaveProgramButton_Click" />
+
+                                    <Button x:Name="ToggleProgramActiveButton"
+                                            MinWidth="86"
+                                            MinHeight="32"
+                                            Padding="10,4"
+                                            Content="Archive"
+                                            Click="ToggleProgramActiveButton_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+                <!-- ===================================================== -->
+                <!-- SECTION TEMPLATES                                      -->
+                <!-- ===================================================== -->
+                <TabItem Header="Section Templates">
+                    <Grid Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="400"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="12"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Section Templates"
+                                       Style="{StaticResource TextBlock.SectionTitle}" />
+
+                            <TextBlock Margin="0,4,0,0"
+                                       Text="These are reusable section names. They are not yet school-year sections until deployed."
+                                       Style="{StaticResource TextBlock.Secondary}" />
+                        </StackPanel>
+
+                        <ScrollViewer Grid.Row="2"
+                                      Grid.Column="0"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl x:Name="SectionTemplatesItemsControl">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="0,0,0,10"
+                                                Padding="14"
+                                                Style="{StaticResource CardBorderStyle}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding DisplayName}"
+                                                               FontWeight="SemiBold"
+                                                               Style="{StaticResource TextBlock.Body}" />
+
+                                                    <TextBlock Margin="0,4,0,0"
+                                                               Text="{Binding DetailDisplay}"
+                                                               Style="{StaticResource TextBlock.Secondary}" />
+                                                </StackPanel>
+
+                                                <Button Grid.Column="1"
+                                                        MinWidth="72"
+                                                        MinHeight="32"
+                                                        Padding="10,4"
+                                                        Margin="16,0,0,0"
+                                                        Content="Edit"
+                                                        Tag="{Binding}"
+                                                        Click="EditSectionTemplateButton_Click" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <Border Grid.Column="2"
+                                Grid.RowSpan="3"
+                                Padding="14"
+                                Style="{StaticResource CardBorderStyle}">
+                            <StackPanel>
+                                <TextBlock x:Name="SectionTemplateEditorTitleTextBlock"
+                                           Text="New Section Template"
+                                           Style="{StaticResource TextBlock.SectionTitle}" />
+
+                                <TextBlock Margin="0,4,0,16"
+                                           Text="Choose a grade level, then define the reusable section name."
+                                           Style="{StaticResource TextBlock.Secondary}" />
+
+                                <Label Content="Grade Level" />
+                                <ComboBox x:Name="SectionTemplateGradeLevelComboBox"
+                                          MinHeight="34"
+                                          DisplayMemberPath="DisplayName"
+                                          SelectedValuePath="Name"
+                                          VerticalContentAlignment="Center" />
+
+                                <Label Margin="0,10,0,0"
+                                       Content="Section Name" />
+                                <TextBox x:Name="SectionTemplateNameTextBox"
+                                         MinHeight="34"
+                                         VerticalContentAlignment="Center" />
+
+                                <Label Margin="0,10,0,0"
+                                       Content="Sort Order" />
+                                <TextBox x:Name="SectionTemplateSortOrderTextBox"
+                                         MinHeight="34"
+                                         VerticalContentAlignment="Center" />
+
+                                <CheckBox x:Name="SectionTemplateIsActiveCheckBox"
+                                          Margin="0,14,0,0"
+                                          Content="Active" />
+
+                                <StackPanel Margin="0,18,0,0"
+                                            Orientation="Horizontal"
+                                            HorizontalAlignment="Right">
+                                    <Button MinWidth="72"
+                                            MinHeight="32"
+                                            Margin="0,0,8,0"
+                                            Padding="10,4"
+                                            Content="New"
+                                            Click="NewSectionTemplateButton_Click" />
+
+                                    <Button MinWidth="72"
+                                            MinHeight="32"
+                                            Margin="0,0,8,0"
+                                            Padding="10,4"
+                                            Content="Save"
+                                            Click="SaveSectionTemplateButton_Click" />
+
+                                    <Button x:Name="DeleteSectionTemplateButton"
+                                            MinWidth="72"
+                                            MinHeight="32"
+                                            Padding="10,4"
+                                            Content="Delete"
+                                            Click="DeleteSectionTemplateButton_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+            </TabControl>
         </Border>
     </Grid>
 </UserControl>
