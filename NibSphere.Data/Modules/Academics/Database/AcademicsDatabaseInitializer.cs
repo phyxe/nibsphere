@@ -490,15 +490,6 @@ namespace NibSphere.Data.Modules.Academics.Database
                 IF EXISTS
                 (
                     SELECT 1
-                    FROM sys.columns
-                    WHERE object_id = OBJECT_ID('Academics_Enrollment')
-                      AND name = 'SchoolYearProgramId'
-                      AND is_nullable = 0
-                )
-
-                IF EXISTS
-                (
-                    SELECT 1
                     FROM sys.indexes
                     WHERE name = 'UX_Academics_Enrollment_CurrentLearnerSchoolYear'
                       AND object_id = OBJECT_ID('Academics_Enrollment')
@@ -508,6 +499,14 @@ namespace NibSphere.Data.Modules.Academics.Database
                     ON Academics_Enrollment;
                 END
 
+                IF EXISTS
+                (
+                    SELECT 1
+                    FROM sys.columns
+                    WHERE object_id = OBJECT_ID('Academics_Enrollment')
+                      AND name = 'SchoolYearProgramId'
+                      AND is_nullable = 0
+                )
                 BEGIN
                     IF EXISTS
                     (
@@ -535,7 +534,6 @@ namespace NibSphere.Data.Modules.Academics.Database
                     ALTER TABLE Academics_Enrollment
                     ALTER COLUMN SchoolYearProgramId INT NULL;
                 END
-
                 -- ============================================================
                 -- 2. FOREIGN KEYS
                 -- ============================================================
