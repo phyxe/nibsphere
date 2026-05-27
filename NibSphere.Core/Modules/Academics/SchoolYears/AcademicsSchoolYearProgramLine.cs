@@ -6,7 +6,10 @@
 
 		public int SchoolYearProgramId { get; set; }
 
-		public int SourceProgramProspectusLineId { get; set; }
+		public int? SourceProgramProspectusLineId { get; set; }
+
+		public string LineOrigin { get; set; } = "MasterProspectus";
+		public string SnapshotNotes { get; set; } = string.Empty;
 
 		public string GradeLevelName { get; set; } = string.Empty;
 
@@ -22,6 +25,10 @@
 		public int SortOrder { get; set; }
 
 		public bool IsActive { get; set; } = true;
+
+		public bool IsFromMasterProspectus =>
+			SourceProgramProspectusLineId.HasValue &&
+			string.Equals(LineOrigin, "MasterProspectus", StringComparison.OrdinalIgnoreCase);
 
 		public string LearningAreaDisplayName
 		{

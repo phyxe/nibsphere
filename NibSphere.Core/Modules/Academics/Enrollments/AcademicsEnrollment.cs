@@ -15,7 +15,7 @@
 		public int SchoolYearId { get; set; }
 		public string SchoolYearName { get; set; } = string.Empty;
 
-		public int SchoolYearProgramId { get; set; }
+		public int? SchoolYearProgramId { get; set; }
 
 		public string ProgramCode { get; set; } = string.Empty;
 		public string ProgramName { get; set; } = string.Empty;
@@ -24,6 +24,9 @@
 
 		public string GradeLevelName { get; set; } = string.Empty;
 		public string SectionName { get; set; } = string.Empty;
+
+		public string EnrollmentOrigin { get; set; } = "SchoolAdmin";
+		public string EnrollmentScope { get; set; } = "ProgramSection";
 
 		public int EnrollmentStatusId { get; set; }
 
@@ -38,6 +41,8 @@
 		public bool IsActive { get; set; } = true;
 
 		public string Remarks { get; set; } = string.Empty;
+
+		public bool HasProgramContext => SchoolYearProgramId.HasValue;
 
 		public string LearnerFullNameDisplay
 		{
@@ -63,6 +68,11 @@
 		{
 			get
 			{
+				if (!HasProgramContext)
+				{
+					return "No program context";
+				}
+
 				if (!string.IsNullOrWhiteSpace(ProgramCode))
 				{
 					return $"{ProgramCode} - {ProgramName}".Trim();

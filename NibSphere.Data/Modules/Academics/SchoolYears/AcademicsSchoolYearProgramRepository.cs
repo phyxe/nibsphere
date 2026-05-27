@@ -73,6 +73,8 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
                     Id,
                     SchoolYearProgramId,
                     SourceProgramProspectusLineId,
+                	LineOrigin,
+                SnapshotNotes,
                     GradeLevelName,
                     TemplateTermSequence,
                     TemplateTermLabel,
@@ -158,6 +160,8 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
                 (
                     SchoolYearProgramId,
                     SourceProgramProspectusLineId,
+                	LineOrigin,
+                SnapshotNotes,
                     GradeLevelName,
                     TemplateTermSequence,
                     TemplateTermLabel,
@@ -171,6 +175,8 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
                 SELECT
                     @SchoolYearProgramId,
                     ppl.Id,
+                	N'MasterProspectus',
+                NULL,
                     ppl.GradeLevelName,
                     ppl.TemplateTermSequence,
                     ppl.TemplateTermLabel,
@@ -317,7 +323,11 @@ namespace NibSphere.Data.Modules.Academics.SchoolYears
 			{
 				Id = reader.GetInt32(reader.GetOrdinal("Id")),
 				SchoolYearProgramId = reader.GetInt32(reader.GetOrdinal("SchoolYearProgramId")),
-				SourceProgramProspectusLineId = reader.GetInt32(reader.GetOrdinal("SourceProgramProspectusLineId")),
+				SourceProgramProspectusLineId = reader["SourceProgramProspectusLineId"] == DBNull.Value
+					? null
+					: reader.GetInt32(reader.GetOrdinal("SourceProgramProspectusLineId")),
+				LineOrigin = reader["LineOrigin"] as string ?? "MasterProspectus",
+				SnapshotNotes = reader["SnapshotNotes"] as string ?? string.Empty,
 				GradeLevelName = reader["GradeLevelName"] as string ?? string.Empty,
 				TemplateTermSequence = reader.GetInt32(reader.GetOrdinal("TemplateTermSequence")),
 				TemplateTermLabel = reader["TemplateTermLabel"] as string ?? string.Empty,

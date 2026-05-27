@@ -11,7 +11,7 @@ namespace NibSphere.Data.Modules.Academics.Database
 
 		public int SortOrder => 300;
 
-		public int SchemaVersion => 1;
+		public int SchemaVersion => 2;
 
 		public async Task InitializeAsync(
 			IAppPaths appPaths,
@@ -228,7 +228,10 @@ namespace NibSphere.Data.Modules.Academics.Database
                         Id INT PRIMARY KEY IDENTITY(1,1),
 
                         SchoolYearProgramId INT NOT NULL,
-                        SourceProgramProspectusLineId INT NOT NULL,
+                        SourceProgramProspectusLineId INT NULL,
+
+                LineOrigin NVARCHAR(50) NOT NULL DEFAULT N'MasterProspectus',
+                SnapshotNotes NVARCHAR(500) NULL,
 
                         GradeLevelName NVARCHAR(50) NOT NULL,
 
@@ -364,10 +367,12 @@ namespace NibSphere.Data.Modules.Academics.Database
                         LearnerId INT NOT NULL,
 
                         SchoolYearId INT NOT NULL,
-                        SchoolYearProgramId INT NOT NULL,
+                        SchoolYearProgramId INT NULL,
                         SchoolYearSectionId INT NOT NULL,
 
                         GradeLevelName NVARCHAR(50) NOT NULL,
+                                        EnrollmentOrigin NVARCHAR(50) NOT NULL DEFAULT N'SchoolAdmin',
+                EnrollmentScope NVARCHAR(50) NOT NULL DEFAULT N'ProgramSection',
 
                         EnrollmentStatusId INT NOT NULL,
 
@@ -410,6 +415,112 @@ namespace NibSphere.Data.Modules.Academics.Database
                         CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
                         UpdatedAt DATETIME2 NULL
                     );
+                END
+
+                -- ============================================================
+                -- 1B. SCHEMA UPGRADES
+                -- ============================================================
+
+                IF COL_LENGTH('Academics_SchoolYearProgramLine', 'LineOrigin') IS NULL
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearProgramLine
+                    ADD LineOrigin NVARCHAR(50) NOT NULL
+                        CONSTRAINT DF_Academics_SchoolYearProgramLine_LineOrigin
+                        DEFAULT N'MasterProspectus';
+                END
+
+                IF COL_LENGTH('Academics_SchoolYearProgramLine', 'SnapshotNotes') IS NULL
+                BEGIN
+                    ALTER TABLE Academics_SchoolYearProgramLine
+                    ADD SnapshotNotes NVARCHAR(500) NULL;
+                END
+
+                IF EXISTS
+                (
+                    SELECT 1
+                    FROM sys.columns
+                    WHERE object_id = OBJECT_ID('Academics_SchoolYearProgramLine')
+                      AND name = 'SourceProgramProspectusLineId'
+                      AND is_nullable = 0
+                )
+                BEGIN
+                    IF EXISTS
+                    (
+                        SELECT 1
+                        FROM sys.foreign_keys
+                        WHERE name = 'FK_Academics_SchoolYearProgramLine_SourceProspectusLine'
+                    )
+                    BEGIN
+                        ALTER TABLE Academics_SchoolYearProgramLine
+                        DROP CONSTRAINT FK_Academics_SchoolYearProgramLine_SourceProspectusLine;
+                    END
+
+                    IF EXISTS
+                    (
+                        SELECT 1
+                        FROM sys.indexes
+                        WHERE name = 'UX_Academics_SchoolYearProgramLine_SourceLine'
+                          AND object_id = OBJECT_ID('Academics_SchoolYearProgramLine')
+                    )
+                    BEGIN
+                        DROP INDEX UX_Academics_SchoolYearProgramLine_SourceLine
+                        ON Academics_SchoolYearProgramLine;
+                    END
+
+                    ALTER TABLE Academics_SchoolYearProgramLine
+                    ALTER COLUMN SourceProgramProspectusLineId INT NULL;
+                END
+
+                IF COL_LENGTH('Academics_Enrollment', 'EnrollmentOrigin') IS NULL
+                BEGIN
+                    ALTER TABLE Academics_Enrollment
+                    ADD EnrollmentOrigin NVARCHAR(50) NOT NULL
+                        CONSTRAINT DF_Academics_Enrollment_EnrollmentOrigin
+                        DEFAULT N'SchoolAdmin';
+                END
+
+                IF COL_LENGTH('Academics_Enrollment', 'EnrollmentScope') IS NULL
+                BEGIN
+                    ALTER TABLE Academics_Enrollment
+                    ADD EnrollmentScope NVARCHAR(50) NOT NULL
+                        CONSTRAINT DF_Academics_Enrollment_EnrollmentScope
+                        DEFAULT N'ProgramSection';
+                END
+
+                IF EXISTS
+                (
+                    SELECT 1
+                    FROM sys.columns
+                    WHERE object_id = OBJECT_ID('Academics_Enrollment')
+                      AND name = 'SchoolYearProgramId'
+                      AND is_nullable = 0
+                )
+                BEGIN
+                    IF EXISTS
+                    (
+                        SELECT 1
+                        FROM sys.foreign_keys
+                        WHERE name = 'FK_Academics_Enrollment_Program'
+                    )
+                    BEGIN
+                        ALTER TABLE Academics_Enrollment
+                        DROP CONSTRAINT FK_Academics_Enrollment_Program;
+                    END
+
+                    IF EXISTS
+                    (
+                        SELECT 1
+                        FROM sys.indexes
+                        WHERE name = 'IX_Academics_Enrollment_SchoolYear'
+                          AND object_id = OBJECT_ID('Academics_Enrollment')
+                    )
+                    BEGIN
+                        DROP INDEX IX_Academics_Enrollment_SchoolYear
+                        ON Academics_Enrollment;
+                    END
+
+                    ALTER TABLE Academics_Enrollment
+                    ALTER COLUMN SchoolYearProgramId INT NULL;
                 END
 
                 -- ============================================================
@@ -1025,12 +1136,13 @@ namespace NibSphere.Data.Modules.Academics.Database
                       AND object_id = OBJECT_ID('Academics_SchoolYearProgramLine')
                 )
                 BEGIN
-                    CREATE UNIQUE INDEX UX_Academics_SchoolYearProgramLine_SourceLine
-                    ON Academics_SchoolYearProgramLine
-                    (
-                        SchoolYearProgramId,
-                        SourceProgramProspectusLineId
-                    );
+                CREATE UNIQUE INDEX UX_Academics_SchoolYearProgramLine_SourceLine
+                ON Academics_SchoolYearProgramLine
+                (
+                    SchoolYearProgramId,
+                    SourceProgramProspectusLineId
+                )
+                WHERE SourceProgramProspectusLineId IS NOT NULL;
                 END
 
                 IF NOT EXISTS

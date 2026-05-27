@@ -36,6 +36,8 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
                     program.ProgramName,
                     enrollment.SchoolYearSectionId,
                     section.GradeLevelName,
+                	enrollment.EnrollmentOrigin,
+                enrollment.EnrollmentScope,
                     section.SectionName,
                     enrollment.EnrollmentStatusId,
                     enrollment.EnrollmentStatusCode,
@@ -51,7 +53,7 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
                     ON enrollment.LearnerId = learner.Id
                 INNER JOIN Academics_SchoolYear schoolYear
                     ON enrollment.SchoolYearId = schoolYear.Id
-                INNER JOIN Academics_SchoolYearProgram program
+                LEFT JOIN Academics_SchoolYearProgram program
                     ON enrollment.SchoolYearProgramId = program.Id
                 INNER JOIN Academics_SchoolYearSection section
                     ON enrollment.SchoolYearSectionId = section.Id
@@ -108,6 +110,8 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
                     program.ProgramName,
                     enrollment.SchoolYearSectionId,
                     section.GradeLevelName,
+                	enrollment.EnrollmentOrigin,
+                enrollment.EnrollmentScope,
                     section.SectionName,
                     enrollment.EnrollmentStatusId,
                     enrollment.EnrollmentStatusCode,
@@ -123,7 +127,7 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
                     ON enrollment.LearnerId = learner.Id
                 INNER JOIN Academics_SchoolYear schoolYear
                     ON enrollment.SchoolYearId = schoolYear.Id
-                INNER JOIN Academics_SchoolYearProgram program
+                LEFT JOIN Academics_SchoolYearProgram program
                     ON enrollment.SchoolYearProgramId = program.Id
                 INNER JOIN Academics_SchoolYearSection section
                     ON enrollment.SchoolYearSectionId = section.Id
@@ -175,6 +179,8 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
                     program.ProgramName,
                     enrollment.SchoolYearSectionId,
                     section.GradeLevelName,
+                	enrollment.EnrollmentOrigin,
+                enrollment.EnrollmentScope,
                     section.SectionName,
                     enrollment.EnrollmentStatusId,
                     enrollment.EnrollmentStatusCode,
@@ -190,7 +196,7 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
                     ON enrollment.LearnerId = learner.Id
                 INNER JOIN Academics_SchoolYear schoolYear
                     ON enrollment.SchoolYearId = schoolYear.Id
-                INNER JOIN Academics_SchoolYearProgram program
+                LEFT JOIN Academics_SchoolYearProgram program
                     ON enrollment.SchoolYearProgramId = program.Id
                 INNER JOIN Academics_SchoolYearSection section
                     ON enrollment.SchoolYearSectionId = section.Id
@@ -250,6 +256,8 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
                     SchoolYearProgramId,
                     SchoolYearSectionId,
                     GradeLevelName,
+                	EnrollmentOrigin,
+                EnrollmentScope,
                     EnrollmentStatusId,
                     EnrollmentStatusCode,
                     EnrollmentStatusName,
@@ -267,6 +275,8 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
                     @SchoolYearProgramId,
                     @SchoolYearSectionId,
                     @GradeLevelName,
+                	@EnrollmentOrigin,
+                @EnrollmentScope,
                     @EnrollmentStatusId,
                     @EnrollmentStatusCode,
                     @EnrollmentStatusName,
@@ -371,6 +381,8 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
                     SchoolYearProgramId = @SchoolYearProgramId,
                     SchoolYearSectionId = @SchoolYearSectionId,
                     GradeLevelName = @GradeLevelName,
+                	EnrollmentOrigin = @EnrollmentOrigin,
+                EnrollmentScope = @EnrollmentScope,
                     EnrollmentStatusId = @EnrollmentStatusId,
                     EnrollmentStatusCode = @EnrollmentStatusCode,
                     EnrollmentStatusName = @EnrollmentStatusName,
@@ -795,7 +807,9 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
 				LearnerLrn = reader["LearnerLrn"] as string ?? string.Empty,
 				SchoolYearId = reader.GetInt32(reader.GetOrdinal("SchoolYearId")),
 				SchoolYearName = reader["SchoolYearName"] as string ?? string.Empty,
-				SchoolYearProgramId = reader.GetInt32(reader.GetOrdinal("SchoolYearProgramId")),
+				SchoolYearProgramId = reader["SchoolYearProgramId"] == DBNull.Value
+					? null
+					: reader.GetInt32(reader.GetOrdinal("SchoolYearProgramId")),
 				ProgramCode = reader["ProgramCode"] as string ?? string.Empty,
 				ProgramName = reader["ProgramName"] as string ?? string.Empty,
 				SchoolYearSectionId = reader.GetInt32(reader.GetOrdinal("SchoolYearSectionId")),
@@ -807,6 +821,8 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
 				EnrollmentDate = reader["EnrollmentDate"] == DBNull.Value
 					? null
 					: reader.GetDateTime(reader.GetOrdinal("EnrollmentDate")),
+				EnrollmentOrigin = reader["EnrollmentOrigin"] as string ?? "SchoolAdmin",
+				EnrollmentScope = reader["EnrollmentScope"] as string ?? "ProgramSection",
 				EffectiveStartDate = reader["EffectiveStartDate"] == DBNull.Value
 					? null
 					: reader.GetDateTime(reader.GetOrdinal("EffectiveStartDate")),
@@ -858,10 +874,16 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
 			enrollment.EnrollmentStatusName = NormalizeRequired(enrollment.EnrollmentStatusName);
 			enrollment.Remarks = Normalize(enrollment.Remarks) ?? string.Empty;
 
+			enrollment.EnrollmentOrigin = Normalize(enrollment.EnrollmentOrigin) ?? "SchoolAdmin";
+
+			enrollment.EnrollmentScope = Normalize(enrollment.EnrollmentScope)
+				?? (enrollment.SchoolYearProgramId.HasValue ? "ProgramSection" : "SubjectRoster");
+
 			if (!enrollment.IsActive)
 			{
 				enrollment.IsCurrent = false;
 			}
+
 		}
 
 		private static void AddEnrollmentParameters(
@@ -870,9 +892,11 @@ namespace NibSphere.Data.Modules.Academics.Enrollments
 		{
 			command.Parameters.AddWithValue("@LearnerId", enrollment.LearnerId);
 			command.Parameters.AddWithValue("@SchoolYearId", enrollment.SchoolYearId);
-			command.Parameters.AddWithValue("@SchoolYearProgramId", enrollment.SchoolYearProgramId);
+			command.Parameters.AddWithValue("@SchoolYearProgramId", ToDbNullable(enrollment.SchoolYearProgramId));
 			command.Parameters.AddWithValue("@SchoolYearSectionId", enrollment.SchoolYearSectionId);
 			command.Parameters.AddWithValue("@GradeLevelName", enrollment.GradeLevelName);
+			command.Parameters.AddWithValue("@EnrollmentOrigin", enrollment.EnrollmentOrigin);
+			command.Parameters.AddWithValue("@EnrollmentScope", enrollment.EnrollmentScope);
 			command.Parameters.AddWithValue("@EnrollmentStatusId", enrollment.EnrollmentStatusId);
 			command.Parameters.AddWithValue("@EnrollmentStatusCode", enrollment.EnrollmentStatusCode);
 			command.Parameters.AddWithValue("@EnrollmentStatusName", enrollment.EnrollmentStatusName);
